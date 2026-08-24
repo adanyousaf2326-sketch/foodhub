@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ isset($announcement) ? 'Edit' : 'Create' }} Announcement - FoodHub</title>
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     <style>
         * { box-sizing: border-box; font-family: Arial, sans-serif; }
         body { margin: 0; background: #f4f6f9; color: #222; }

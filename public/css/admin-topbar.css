@@ -122,6 +122,38 @@
     box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4) !important;
 }
 
+.topbar .theme-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    font-size: 18px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-shrink: 0 !important;
+}
+
+.topbar .theme-toggle:hover {
+    background: rgba(255, 200, 60, 0.18) !important;
+    border-color: rgba(255, 200, 60, 0.4) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(255, 200, 60, 0.2) !important;
+}
+
+.topbar .theme-toggle .theme-icon {
+    font-size: 18px !important;
+    transition: transform 0.3s ease !important;
+}
+
+.topbar .theme-toggle:hover .theme-icon {
+    transform: rotate(20deg) scale(1.15) !important;
+}
+
 .topbar .logout-form {
     margin: 0 !important;
     display: inline-flex !important;

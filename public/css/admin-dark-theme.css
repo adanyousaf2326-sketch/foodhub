@@ -1,0 +1,203 @@
+/* ==========================================================================
+   FoodHub Admin - Dark Theme
+   ========================================================================== */
+
+/* Dark Theme Variables */
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --accent: #ff6b00;
+}
+
+/* Dark Theme Class */
+body.dark-theme {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Topbar - Already dark, no changes needed */
+
+/* Container */
+body.dark-theme .container {
+    background: var(--bg-primary);
+}
+
+/* Header */
+body.dark-theme .header h1 {
+    color: var(--text-primary);
+}
+
+body.dark-theme .header p,
+body.dark-theme .subtitle {
+    color: var(--text-secondary);
+}
+
+/* Cards */
+body.dark-theme .card,
+body.dark-theme .stat-card,
+body.dark-theme .table-card,
+body.dark-theme .action {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .stat-title {
+    color: var(--text-secondary);
+}
+
+body.dark-theme .stat-number {
+    color: var(--text-primary);
+}
+
+/* Table */
+body.dark-theme table {
+    background: var(--bg-card);
+}
+
+body.dark-theme th {
+    background: var(--bg-secondary) !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+body.dark-theme td {
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+body.dark-theme tbody tr:hover {
+    background: rgba(255, 107, 0, 0.05) !important;
+}
+
+/* Order Filter */
+body.dark-theme .order-filter {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .order-filter input,
+body.dark-theme .order-filter select {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-theme .order-filter label {
+    color: var(--text-secondary);
+}
+
+/* Quick Actions */
+body.dark-theme .action-icon {
+    background: rgba(255, 107, 0, 0.1);
+}
+
+body.dark-theme .action h3 {
+    color: var(--text-primary);
+}
+
+body.dark-theme .action p {
+    color: var(--text-secondary);
+}
+
+/* Status Badges - Keep colorful */
+body.dark-theme .pending {
+    background: rgba(254, 243, 199, 0.15) !important;
+}
+
+body.dark-theme .preparing {
+    background: rgba(219, 234, 254, 0.15) !important;
+}
+
+body.dark-theme .completed,
+body.dark-theme .delivered {
+    background: rgba(220, 252, 231, 0.15) !important;
+}
+
+body.dark-theme .cancelled {
+    background: rgba(254, 226, 226, 0.15) !important;
+}
+
+/* Section Title */
+body.dark-theme .section-title {
+    color: var(--text-primary);
+}
+
+/* Alert */
+body.dark-theme .alert {
+    background: rgba(220, 252, 231, 0.1) !important;
+    color: #4ade80 !important;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+/* Empty State */
+body.dark-theme .empty {
+    color: var(--text-secondary);
+}
+
+body.dark-theme .empty h2 {
+    color: var(--text-primary);
+}
+
+/* Buttons */
+body.dark-theme .back-btn {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .back-btn:hover {
+    background: var(--accent) !important;
+}
+
+/* Footer Row */
+body.dark-theme .cart-footer,
+body.dark-theme [style*="background:#fff7ed"] {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Scrollbar */
+body.dark-theme ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Theme Toggle Button Animation */
+.theme-toggle {
+    position: relative;
+}
+
+body.dark-theme .topbar .theme-toggle {
+    background: rgba(255, 200, 60, 0.15) !important;
+    border-color: rgba(255, 200, 60, 0.3) !important;
+}
+
+/* Smooth transition for theme change */
+body,
+body.dark-theme .card,
+body.dark-theme .stat-card,
+body.dark-theme .table-card,
+body.dark-theme .action,
+body.dark-theme .container,
+body.dark-theme th,
+body.dark-theme td {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

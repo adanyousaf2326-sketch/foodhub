@@ -29,6 +29,9 @@
         <a href="{{ url('/') }}" class="website-btn" target="_blank" rel="noopener">
             <span>🌐</span> View Website
         </a>
+        <button type="button" class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <span class="theme-icon">🌙</span>
+        </button>
         <form method="POST" action="{{ route('logout') }}" class="logout-form">
             @csrf
             <button type="submit" class="logout-btn">
@@ -37,3 +40,32 @@
         </form>
     </nav>
 </div>
+
+<script>
+    // Theme Toggle Functionality
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.querySelector('.theme-icon');
+        
+        if (body.classList.contains('dark-theme')) {
+            body.classList.remove('dark-theme');
+            icon.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.classList.add('dark-theme');
+            icon.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Apply saved theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme');
+        const icon = document.querySelector('.theme-icon');
+        
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            if (icon) icon.textContent = '☀️';
+        }
+    });
+</script>
