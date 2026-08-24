@@ -1,0 +1,32 @@
+/* Shared FoodHub navigation styling */
+.topbar,
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+}
+
+.topbar {
+    background: #111827;
+    color: white;
+}
+
+.topbar .nav,
+nav > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.topbar a,
+nav a {
+    text-decoration: none;
+}
+
+@media (max-width: 700px) {
+    .topbar,
+    nav {
+        padding-left: 4%;
+        padding-right: 4%;
+    }
+}

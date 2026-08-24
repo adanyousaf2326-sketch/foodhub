@@ -1,0 +1,94 @@
+/* Shared admin navigation */
+.topbar {
+    width: 100%;
+    min-height: 70px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111827;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.topbar .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.topbar .logo span {
+    color: #ff6b00;
+}
+
+.topbar .nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar .nav a {
+    padding: 11px 15px;
+    border-radius: 8px;
+    color: #d1d5db;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: .2s ease;
+}
+
+.topbar .nav a:hover,
+.topbar .nav a.active {
+    background: #ff6b00;
+    color: white;
+}
+
+.topbar .nav a.website-btn {
+    background: #16a34a;
+    color: white;
+}
+
+.topbar .nav a.website-btn:hover {
+    background: #15803d;
+}
+
+.topbar .logout-form {
+    margin: 0;
+}
+
+.topbar .logout-btn {
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 8px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.topbar .logout-btn:hover {
+    background: #b91c1c;
+}
+
+@media (max-width: 1000px) {
+    .topbar {
+        gap: 12px;
+        padding: 14px 20px;
+        flex-direction: column;
+    }
+
+    .topbar .nav {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+}

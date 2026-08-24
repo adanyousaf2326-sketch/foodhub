@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ExamAssignment extends Model
+{
+    protected $fillable = [
+        'college_entry_id',
+        'exam_paper_id',
+        'paper_date',
+        'start_time',
+        'end_time',
+        'email_sent_at',
+    ];
+
+    protected $casts = [
+        'paper_date' => 'date',
+        'email_sent_at' => 'datetime',
+    ];
+
+    public function student()
+    {
+        return $this->belongsTo(
+            CollegeEntry::class,
+            'college_entry_id'
+        );
+    }
+
+    public function paper()
+    {
+        return $this->belongsTo(
+            ExamPaper::class,
+            'exam_paper_id'
+        );
+    }
+}

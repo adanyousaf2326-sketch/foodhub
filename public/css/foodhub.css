@@ -1,0 +1,173 @@
+/* ==========================================================================
+   FoodHub Shared Navigation & Topbar Styling
+   ========================================================================== */
+
+nav,
+.customer-navbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10000 !important;
+    width: 100% !important;
+    min-height: 68px !important;
+    padding: 12px 7% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.97) 0%, rgba(30, 41, 59, 0.95) 100%) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+    box-sizing: border-box !important;
+}
+
+nav .logo,
+.customer-navbar .logo {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 23px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.3px !important;
+}
+
+nav .logo .logo-icon,
+.customer-navbar .logo .logo-icon {
+    font-size: 26px !important;
+    filter: drop-shadow(0 2px 6px rgba(255, 107, 0, 0.35)) !important;
+    transition: transform 0.25s ease !important;
+}
+
+nav .logo:hover .logo-icon,
+.customer-navbar .logo:hover .logo-icon {
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+nav .logo span.hub-brand,
+.customer-navbar .logo span.hub-brand {
+    background: linear-gradient(135deg, #ff6b00 0%, #ff8c38 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    font-weight: 900 !important;
+}
+
+nav > div:last-child,
+.customer-navbar > div:last-child,
+.customer-navbar .nav-links {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+nav a,
+.customer-navbar a {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 8px 14px !important;
+    border-radius: 9999px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: #cbd5e1 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-left: 0 !important;
+}
+
+nav a:hover,
+.customer-navbar a:hover {
+    background: rgba(255, 107, 0, 0.15) !important;
+    color: #ff8c38 !important;
+    border-color: rgba(255, 107, 0, 0.4) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(255, 107, 0, 0.2) !important;
+}
+
+nav a.announcement-nav,
+.customer-navbar a.announcement-nav {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+}
+
+nav a.announcement-nav:hover,
+.customer-navbar a.announcement-nav:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4) !important;
+}
+
+nav a.cart-nav,
+nav a.cart,
+.customer-navbar a.cart-nav {
+    background: linear-gradient(135deg, #ff6b00 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 107, 0, 0.35) !important;
+    box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35) !important;
+}
+
+nav a.cart-nav:hover,
+nav a.cart:hover,
+.customer-navbar a.cart-nav:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(255, 107, 0, 0.45) !important;
+}
+
+nav .cart-count,
+.customer-navbar .cart-count {
+    background: #ffffff !important;
+    color: #ff6b00 !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    padding: 0 6px !important;
+    border-radius: 9999px !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: 6px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+}
+
+nav a.track-active,
+.customer-navbar a.track-active {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3) !important;
+}
+
+@media (max-width: 768px) {
+    nav,
+    .customer-navbar {
+        padding: 10px 16px !important;
+        gap: 8px !important;
+    }
+
+    nav .logo,
+    .customer-navbar .logo {
+        font-size: 19px !important;
+    }
+
+    nav > div:last-child,
+    .customer-navbar > div:last-child {
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+    }
+
+    nav a,
+    .customer-navbar a {
+        padding: 7px 11px !important;
+        font-size: 12.5px !important;
+    }
+}
+
