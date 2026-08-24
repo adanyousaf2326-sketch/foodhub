@@ -44,7 +44,7 @@
 
     window.clearNotifications = function() {
         notifications = [];
-        if (notifList) notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">🔔 Koi notification nahi</div>';
+        if (notifList) notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">🔔 No notifications yet</div>';
         if (notifBadge) notifBadge.textContent = '';
     };
 
@@ -59,7 +59,7 @@
     function renderNotifications() {
         if (!notifList) return;
         if (notifications.length === 0) {
-            notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">🔔 Koi notification nahi</div>';
+            notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">🔔 No notifications yet</div>';
             if (notifBadge) notifBadge.textContent = '';
             return;
         }
@@ -167,28 +167,28 @@
                 if (data.pending_count > lastPendingCount) {
                     var diff = data.pending_count - lastPendingCount;
                     playSound(); flashPending();
-                    showToast('🔔 ' + diff + ' naya order aaya hai!');
-                    addNotification('new', diff + ' naya order aaya hai! (' + ts + ')');
+                    showToast('🔔 ' + diff + ' new order received!');
+                    addNotification('new', diff + ' new order received! (' + ts + ')');
                 }
                 if (data.completed_count > lastCompletedCount) {
                     var diff = data.completed_count - lastCompletedCount;
-                    showToast('✅ ' + diff + ' order complete hua');
-                    addNotification('complete', diff + ' order complete hua (' + ts + ')');
+                    showToast('✅ ' + diff + ' order completed');
+                    addNotification('complete', diff + ' order completed (' + ts + ')');
                     playSound();
                 }
                 if (data.cancelled_count > lastCancelledCount) {
                     var diff = data.cancelled_count - lastCancelledCount;
-                    showToast('❌ ' + diff + ' order cancel hua');
-                    addNotification('cancel', diff + ' order cancel hua (' + ts + ')');
+                    showToast('❌ ' + diff + ' order cancelled');
+                    addNotification('cancel', diff + ' order cancelled (' + ts + ')');
                     playSound();
                 }
                 if (data.preparing_count > lastPreparingCount) {
                     var diff = data.preparing_count - lastPreparingCount;
-                    showToast('👨‍🍳 ' + diff + ' order prepare ho raha hai');
-                    addNotification('preparing', diff + ' order prepare ho raha hai (' + ts + ')');
+                    showToast('👨‍🍳 ' + diff + ' order is being prepared');
+                    addNotification('preparing', diff + ' order is being prepared (' + ts + ')');
                 }
                 if (data.total_count > lastTotalCount && data.pending_count <= lastPendingCount) {
-                    addNotification('update', 'Naya order aaya (' + ts + ')');
+                    addNotification('update', 'New order received (' + ts + ')');
                     playSound(); flashPending();
                 }
 
