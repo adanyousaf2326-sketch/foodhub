@@ -23,13 +23,10 @@
             background: #111827;
             color: white;
             min-height: 70px;
-            
             padding: 0 30px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             box-shadow: 0 4px 20px rgba(0,0,0,.15);
         }
 
@@ -121,10 +118,6 @@
             text-align: left;
             border-bottom: 1px solid #eee;
         }
-.topbar .nav a.website-btn{
-    background:#16a34a;
-    clor:white;
-}
 
         th {
             background: #f8f9fa;
@@ -202,6 +195,8 @@
                 gap: 15px;
             }
         }
+    </style>
+
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
 </head>
@@ -210,16 +205,12 @@
 
 @include('admin.partials.topbar')
 
-
-
 <div class="container">
 
     <div class="header">
 
         <div>
             <h1>👥 Admin Users</h1>
-
-            
         </div>
 
         <a href="{{ route('admin.users.create') }}" class="add-btn">
@@ -227,7 +218,6 @@
         </a>
 
     </div>
-
 
     @if(session('success'))
         <div class="success">
@@ -240,7 +230,6 @@
             {{ session('error') }}
         </div>
     @endif
-
 
     <div class="card">
 
@@ -282,11 +271,9 @@
                         </td>
 
                         <td>
-
                             <span class="role {{ strtolower($user->role) }}">
                                 {{ $user->role }}
                             </span>
-
                         </td>
 
                         <td>
@@ -314,7 +301,7 @@
                                     @csrf
                                     @method('DELETE')
 
-                                    <button class="delete">
+                                    <button type="submit" class="delete">
                                         🗑️ Delete
                                     </button>
 

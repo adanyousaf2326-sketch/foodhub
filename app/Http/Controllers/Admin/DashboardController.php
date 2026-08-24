@@ -13,50 +13,79 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Dashboard totals
         $totalCategories = Category::count();
 
         $totalFood = Food::count();
 
         $availableFood = Food::where('is_available', 1)->count();
 
-        $totalOrders = Order::count();
+        $dateQuery = Order::query();
 
-        $pendingOrders = Order::where('status', 'Pending')->count();
+        if ($request->filled('from_date')) {
+            $fromTime = $request->input('from_time', '00:00');
 
-        $completedOrders = Order::whereIn('status', [
-            'Completed',
-            'Delivered',
-        ])->count();
+            $from = Carbon::parse(
+                $request->from_date . ' ' . $fromTime
+            );
 
-        // All-time revenue
-        $totalRevenue = Order::whereIn('status', [
-            'Completed',
-            'Delivered',
-        ])->sum('total_amount');
+            $dateQuery->where('created_at', '>=', $from);
+        }
 
-        // Today's revenue
-        $todayRevenue = Order::whereDate('created_at', today())
+        if ($request->filled('to_date')) {
+            $toTime = $request->input('to_time', '23:59:59');
+
+            $to = Carbon::parse(
+                $request->to_date . ' ' . $toTime
+            );
+
+            $dateQuery->where('created_at', '<=', $to);
+        }
+
+        if (
+            !$request->filled('from_date') &&
+            !$request->filled('to_date')
+        ) {
+            $dateQuery->whereDate('created_at', today());
+        }
+
+        $totalOrders = (clone $dateQuery)->count();
+
+        $pendingOrders = (clone $dateQuery)
+            ->where('status', 'Pending')
+            ->count();
+
+        $completedOrders = (clone $dateQuery)
+            ->whereIn('status', [
+                'Completed',
+                'Delivered',
+            ])
+            ->count();
+
+        $totalRevenue = (clone $dateQuery)
             ->whereIn('status', [
                 'Completed',
                 'Delivered',
             ])
             ->sum('total_amount');
 
-        // Order type totals
-        $dineInOrders = Order::where('order_type', 'Dine In')->count();
+        $todayRevenue = $totalRevenue;
 
-        $takeAwayOrders = Order::whereIn('order_type', [
-            'Takeaway',
-            'Take Away',
-            'TakeAway',
-        ])->count();
+        $dineInOrders = (clone $dateQuery)
+            ->where('order_type', 'Dine In')
+            ->count();
 
-        $deliveryOrders = Order::where('order_type', 'Delivery')->count();
+        $takeAwayOrders = (clone $dateQuery)
+            ->whereIn('order_type', [
+                'Takeaway',
+                'Take Away',
+                'TakeAway',
+            ])
+            ->count();
 
-        /*
-         * Search and date/time range filter
-         */
+        $deliveryOrders = (clone $dateQuery)
+            ->where('order_type', 'Delivery')
+            ->count();
+
         $ordersQuery = Order::query();
 
         if ($request->filled('search')) {
@@ -94,15 +123,28 @@ class DashboardController extends Controller
             $ordersQuery->where('created_at', '<=', $to);
         }
 
-        // All old orders stay visible unless a filter is applied.
+        if (
+            !$request->filled('search') &&
+            !$request->filled('from_date') &&
+            !$request->filled('to_date')
+        ) {
+            $ordersQuery->whereDate('created_at', today());
+        }
+
         $recentOrders = $ordersQuery
             ->latest()
             ->get();
 
         $filteredOrdersCount = $recentOrders->count();
-$filteredOrdersTotal = $recentOrders
-    ->whereIn('status', ['Completed', 'Delivered'])
-    ->sum('total_amount');        return view('admin.dashboard', compact(
+
+        $filteredOrdersTotal = $recentOrders
+            ->whereIn('status', [
+                'Completed',
+                'Delivered',
+            ])
+            ->sum('total_amount');
+
+        return view('admin.dashboard', compact(
             'totalCategories',
             'totalFood',
             'availableFood',

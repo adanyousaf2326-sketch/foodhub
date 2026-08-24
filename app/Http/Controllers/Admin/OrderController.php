@@ -7,31 +7,64 @@ use App\Models\Order;
 use App\Models\RestaurantTable;
 use App\Models\Food;
 use App\Models\OrderItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-  public function index(Request $request)
-{
-    $orders = Order::query();
+    public function index(Request $request)
+    {
+        $orders = Order::query();
 
-    $type = $request->query('type');
+        $type = $request->query('type');
+        $fromDate = $request->query('from_date');
+        $toDate = $request->query('to_date');
 
-    if ($type) {
-        $normalizedType = strtolower(str_replace(' ', '', $type));
+        if ($type) {
+            $normalizedType = strtolower(str_replace(' ', '', $type));
 
-        if ($normalizedType === 'takeaway') {
-            $orders->where('order_type', 'Takeaway');
-        } else {
-            $orders->where('order_type', $type);
+            if ($normalizedType === 'takeaway') {
+                $orders->whereIn('order_type', [
+                    'Takeaway',
+                    'Take Away',
+                    'TakeAway',
+                ]);
+            } else {
+                $orders->where('order_type', $type);
+            }
         }
+
+        if ($fromDate) {
+            $fromTime = $request->query('from_time', '00:00');
+
+            $from = Carbon::parse(
+                $fromDate . ' ' . $fromTime
+            );
+
+            $orders->where('created_at', '>=', $from);
+        }
+
+        if ($toDate) {
+            $toTime = $request->query('to_time', '23:59:59');
+
+            $to = Carbon::parse(
+                $toDate . ' ' . $toTime
+            );
+
+            $orders->where('created_at', '<=', $to);
+        }
+
+        if (!$fromDate && !$toDate) {
+            $orders->whereDate('created_at', today());
+        }
+
+        $orders = $orders
+            ->latest()
+            ->get();
+
+        return view('admin.orders.index', compact('orders'));
     }
-
-    $orders = $orders->latest()->get();
-
-    return view('admin.orders.index', compact('orders'));
-}
 
     public function track()
     {
@@ -76,7 +109,11 @@ class OrderController extends Controller
         $this->changeStatus($order, 'Completed');
 
         return redirect()
-            ->route('admin.orders.index', ['type' => $order->order_type])
+            ->route('admin.orders.index', [
+                'type' => $order->order_type,
+                'from_date' => $order->created_at->toDateString(),
+                'to_date' => $order->created_at->toDateString(),
+            ])
             ->with('success', 'Order closed successfully.');
     }
 
@@ -85,7 +122,11 @@ class OrderController extends Controller
         $this->changeStatus($order, 'Cancelled');
 
         return redirect()
-            ->route('admin.orders.index', ['type' => $order->order_type])
+            ->route('admin.orders.index', [
+                'type' => $order->order_type,
+                'from_date' => $order->created_at->toDateString(),
+                'to_date' => $order->created_at->toDateString(),
+            ])
             ->with('success', 'Order cancelled successfully.');
     }
 
@@ -95,7 +136,6 @@ class OrderController extends Controller
             'status' => $status,
         ]);
 
-       
         if (
             $order->order_type === 'Dine In'
             && in_array($status, ['Completed', 'Cancelled'])
@@ -120,125 +160,144 @@ class OrderController extends Controller
             ->route('admin.orders.index')
             ->with('success', 'Order deleted successfully.');
     }
-   public function bill(Order $order)
-{
-    $order->load('items.food');
 
-    if ($order->status === 'Cancelled') {
-        return redirect()
-            ->route('admin.orders.index', ['type' => $order->order_type])
-            ->with('success', 'Cancelled order ka bill close nahi ho sakta.');
-    }
+    public function bill(Order $order)
+    {
+        $order->load('items.food');
 
-    if ($order->status === 'Completed') {
-        return redirect()
-            ->route('admin.orders.index', ['type' => $order->order_type])
-            ->with('success', 'This bill is already closed.');
-    }
-
-    return view('admin.orders.bill', compact('order'));
-}
-
-public function completePayment(Request $request, Order $order)
-{
-    if (in_array($order->status, ['Completed',  'Cancelled'])) {
-        return redirect()
-            ->route('admin.orders.index', ['type' => $order->order_type])
-            ->with('success', 'This order cannot be billed again.');
-    }
-
-    $request->validate([
-        'paid_amount' => [
-            'required',
-            'numeric',
-            'min:' . $order->total_amount,
-        ],
-    ]);
-
-    $paidAmount = (float) $request->paid_amount;
-
-    $changeAmount = $paidAmount - (float) $order->total_amount;
-
-    $order->update([
-        'status' => 'Completed',
-        'paid_amount' => $paidAmount,
-        'change_amount' => $changeAmount,
-        'paid_at' => now(),
-    ]);
-
-   
-    if ($order->order_type === 'Dine In' && $order->table_id) {
-        $table = \App\Models\RestaurantTable::find($order->table_id);
-
-        if ($table) {
-            $table->update([
-                'status' => 'available',
-            ]);
+        if ($order->status === 'Cancelled') {
+            return redirect()
+                ->route('admin.orders.index', [
+                    'type' => $order->order_type,
+                    'from_date' => $order->created_at->toDateString(),
+                    'to_date' => $order->created_at->toDateString(),
+                ])
+                ->with('success', 'Cancelled order ka bill close nahi ho sakta.');
         }
+
+        if ($order->status === 'Completed') {
+            return redirect()
+                ->route('admin.orders.index', [
+                    'type' => $order->order_type,
+                    'from_date' => $order->created_at->toDateString(),
+                    'to_date' => $order->created_at->toDateString(),
+                ])
+                ->with('success', 'This bill is already closed.');
+        }
+
+        return view('admin.orders.bill', compact('order'));
     }
 
-    return redirect()
-        ->route('admin.orders.index', ['type' => $order->order_type])
-        ->with('success', 'Bill closed successfully. Sale added to revenue.');
-}
+    public function completePayment(Request $request, Order $order)
+    {
+        if (in_array($order->status, ['Completed', 'Cancelled'])) {
+            return redirect()
+                ->route('admin.orders.index', [
+                    'type' => $order->order_type,
+                    'from_date' => $order->created_at->toDateString(),
+                    'to_date' => $order->created_at->toDateString(),
+                ])
+                ->with('success', 'This order cannot be billed again.');
+        }
+
+        $request->validate([
+            'paid_amount' => [
+                'required',
+                'numeric',
+                'min:' . $order->total_amount,
+            ],
+        ]);
+
+        $paidAmount = (float) $request->paid_amount;
+
+        $changeAmount = $paidAmount - (float) $order->total_amount;
+
+        $order->update([
+            'status' => 'Completed',
+            'paid_amount' => $paidAmount,
+            'change_amount' => $changeAmount,
+            'paid_at' => now(),
+        ]);
+
+        if ($order->order_type === 'Dine In' && $order->table_id) {
+            $table = RestaurantTable::find($order->table_id);
+
+            if ($table) {
+                $table->update([
+                    'status' => 'available',
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('admin.orders.index', [
+                'type' => $order->order_type,
+                'from_date' => $order->created_at->toDateString(),
+                'to_date' => $order->created_at->toDateString(),
+            ])
+            ->with('success', 'Bill closed successfully. Sale added to revenue.');
+    }
+
     public function cancelFromTracking(Order $order)
-{
-    // Cancelled ya completed bill dobara cancel nahi hoga
-    if (in_array($order->status, ['Cancelled', 'Completed'])) {
-        return redirect()
-            ->route('track.order.search', [
-                'order_number' => $order->id,
-            ])
-            ->with('error', 'This order cannot be cancelled.');
-    }
-
-    // Order create hone ke 15 minutes ke baad cancel nahi hoga
-    if ($order->created_at->lt(now()->subMinutes(15))) {
-        return redirect()
-            ->route('track.order.search', [
-                'order_number' => $order->id,
-            ])
-            ->with(
-                'error',
-                'Cancellation time expired. Orders can only be cancelled within 15 minutes.'
-            );
-    }
-
-    $order->update([
-        'status' => 'Cancelled',
-    ]);
-
-    // Dine In order cancel ho to table available ho jaye
-    if ($order->order_type === 'Dine In' && $order->table_id) {
-        $table = \App\Models\RestaurantTable::find($order->table_id);
-
-        if ($table) {
-            $table->update([
-                'status' => 'available',
-            ]);
+    {
+        if (in_array($order->status, ['Cancelled', 'Completed'])) {
+            return redirect()
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
+                ->with('error', 'This order cannot be cancelled.');
         }
-    }
 
-    return redirect()
-        ->route('track.order.search', [
-            'order_number' => $order->id,
-        ])
-        ->with('success', 'Your order has been cancelled successfully.');
-}
+        if ($order->created_at->lt(now()->subMinutes(15))) {
+            return redirect()
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
+                ->with(
+                    'error',
+                    'Cancellation time expired. Orders can only be cancelled within 15 minutes.'
+                );
+        }
+
+        $order->update([
+            'status' => 'Cancelled',
+        ]);
+
+        if ($order->order_type === 'Dine In' && $order->table_id) {
+            $table = RestaurantTable::find($order->table_id);
+
+            if ($table) {
+                $table->update([
+                    'status' => 'available',
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('track.order.search', [
+                'order_number' => $order->id,
+            ])
+            ->with('success', 'Your order has been cancelled successfully.');
+    }
 
     public function trackEdit(Order $order)
     {
-        // Cancelled, Completed or Delivered orders cannot be modified
         if (in_array($order->status, ['Cancelled', 'Completed', 'Delivered'])) {
             return redirect()
-                ->route('track.order.search', ['order_number' => $order->id])
-                ->with('error', 'This order cannot be modified in its current status (' . $order->status . ').');
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
+                ->with(
+                    'error',
+                    'This order cannot be modified in its current status (' . $order->status . ').'
+                );
         }
 
-        // Strict 15-minute window from original order creation
         if ($order->created_at->lt(now()->subMinutes(15))) {
             return redirect()
-                ->route('track.order.search', ['order_number' => $order->id])
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
                 ->with(
                     'error',
                     'Order update time expired. Orders can only be modified within 15 minutes of initial placement.'
@@ -258,24 +317,42 @@ public function completePayment(Request $request, Order $order)
             ->get();
 
         $deadline = $order->created_at->copy()->addMinutes(15);
-        $remainingSeconds = max(0, $deadline->diffInSeconds(now(), false) * -1);
 
-        return view('order-edit', compact('order', 'availableFoods', 'tables', 'deadline', 'remainingSeconds'));
+        $remainingSeconds = max(
+            0,
+            $deadline->diffInSeconds(now(), false) * -1
+        );
+
+        return view(
+            'order-edit',
+            compact(
+                'order',
+                'availableFoods',
+                'tables',
+                'deadline',
+                'remainingSeconds'
+            )
+        );
     }
 
     public function trackUpdate(Request $request, Order $order)
     {
-        // Cancelled, Completed or Delivered orders cannot be modified
         if (in_array($order->status, ['Cancelled', 'Completed', 'Delivered'])) {
             return redirect()
-                ->route('track.order.search', ['order_number' => $order->id])
-                ->with('error', 'This order cannot be modified in its current status (' . $order->status . ').');
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
+                ->with(
+                    'error',
+                    'This order cannot be modified in its current status (' . $order->status . ').'
+                );
         }
 
-        // Strict 15-minute window from original created_at timestamp
         if ($order->created_at->lt(now()->subMinutes(15))) {
             return redirect()
-                ->route('track.order.search', ['order_number' => $order->id])
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
                 ->with(
                     'error',
                     'Order update time expired. Orders can only be modified within 15 minutes of initial placement.'
@@ -307,7 +384,9 @@ public function completePayment(Request $request, Order $order)
                     if ($order->table_id !== $requestedTableId) {
                         if ($order->table_id) {
                             RestaurantTable::where('id', $order->table_id)
-                                ->update(['status' => 'available']);
+                                ->update([
+                                    'status' => 'available',
+                                ]);
                         }
 
                         $table = RestaurantTable::where('id', $requestedTableId)
@@ -316,10 +395,15 @@ public function completePayment(Request $request, Order $order)
                             ->first();
 
                         if (!$table) {
-                            throw new \Exception('Selected table is currently not available. Please pick another table.');
+                            throw new \Exception(
+                                'Selected table is currently not available. Please pick another table.'
+                            );
                         }
 
-                        $table->update(['status' => 'occupied']);
+                        $table->update([
+                            'status' => 'occupied',
+                        ]);
+
                         $newTableId = $table->id;
                     } else {
                         $newTableId = $order->table_id;
@@ -327,7 +411,9 @@ public function completePayment(Request $request, Order $order)
                 } else {
                     if ($order->order_type === 'Dine In' && $order->table_id) {
                         RestaurantTable::where('id', $order->table_id)
-                            ->update(['status' => 'available']);
+                            ->update([
+                                'status' => 'available',
+                            ]);
                     }
                 }
 
@@ -338,11 +424,14 @@ public function completePayment(Request $request, Order $order)
                     $qty = (int) $item['quantity'];
                     $price = (float) $item['price'];
                     $subtotal = $price * $qty;
+
                     $total += $subtotal;
 
                     $itemsData[] = [
                         'order_id' => $order->id,
-                        'food_id' => !empty($item['food_id']) ? (int) $item['food_id'] : null,
+                        'food_id' => !empty($item['food_id'])
+                            ? (int) $item['food_id']
+                            : null,
                         'food_name' => $item['food_name'],
                         'price' => $price,
                         'quantity' => $qty,
@@ -352,11 +441,12 @@ public function completePayment(Request $request, Order $order)
                     ];
                 }
 
-                // Update order details. Note: created_at remains unchanged!
                 $order->update([
                     'customer_name' => $request->customer_name,
                     'phone' => $request->phone,
-                    'address' => $request->order_type === 'Delivery' ? $request->address : null,
+                    'address' => $request->order_type === 'Delivery'
+                        ? $request->address
+                        : null,
                     'total_amount' => $total,
                     'payment_method' => $request->payment_method,
                     'notes' => $request->notes,
@@ -364,14 +454,19 @@ public function completePayment(Request $request, Order $order)
                     'table_id' => $newTableId,
                 ]);
 
-                // Sync items
                 $order->items()->delete();
+
                 OrderItem::insert($itemsData);
             });
 
             return redirect()
-                ->route('track.order.search', ['order_number' => $order->id])
-                ->with('success', 'Your order #' . $order->id . ' has been updated successfully!');
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
+                ->with(
+                    'success',
+                    'Your order #' . $order->id . ' has been updated successfully!'
+                );
         } catch (\Exception $e) {
             return back()
                 ->withInput()

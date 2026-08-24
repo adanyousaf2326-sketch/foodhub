@@ -444,26 +444,26 @@
     <h2 class="section-title">Quick Actions</h2>
 
     <div class="quick-actions">
-        <a href="{{ route('admin.orders.index', ['type' => 'Dine In']) }}"
-           class="action">
-            <div class="action-icon">🍽️</div>
-            <h3>Dine In Orders</h3>
-            <p>{{ $dineInOrders }} dine-in orders</p>
-        </a>
+<a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Dine In'])) }}"
+   class="action">
+    <div class="action-icon">🍽️</div>
+    <h3>Dine In Orders</h3>
+    <p>{{ $dineInOrders }} dine-in orders</p>
+</a>
 
-        <a href="{{ route('admin.orders.index', ['type' => 'Takeaway']) }}"
-           class="action">
-            <div class="action-icon">🥡</div>
-            <h3>Takeaway Orders</h3>
-            <p>{{ $takeAwayOrders }} takeaway orders</p>
-        </a>
+<a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Takeaway'])) }}"
+   class="action">
+    <div class="action-icon">🥡</div>
+    <h3>Takeaway Orders</h3>
+    <p>{{ $takeAwayOrders }} takeaway orders</p>
+</a>
 
-        <a href="{{ route('admin.orders.index', ['type' => 'Delivery']) }}"
-           class="action">
-            <div class="action-icon">🛵</div>
-            <h3>Delivery Orders</h3>
-            <p>{{ $deliveryOrders }} delivery orders</p>
-        </a>
+<a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Delivery'])) }}"
+   class="action">
+    <div class="action-icon">🛵</div>
+    <h3>Delivery Orders</h3>
+    <p>{{ $deliveryOrders }} delivery orders</p>
+</a>
     </div>
 
     <h2 class="section-title">Search Orders</h2>
