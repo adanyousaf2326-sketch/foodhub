@@ -9,6 +9,9 @@
     var notifications = [];
     var maxNotifications = 50;
 
+    // Track order states to detect updates
+    var knownOrders = {};  // { orderId: { status, order_type, total_amount, updated_at } }
+
     var refreshBtn = document.getElementById('autoRefreshToggle');
     var notifBtn = document.getElementById('notifToggle');
     var notifBadge = document.getElementById('notifBadge');
@@ -66,10 +69,10 @@
 
         var html = '';
         notifications.forEach(function(n) {
-            var icons = { 'new': '🆕', 'cancel': '❌', 'complete': '✅', 'preparing': '👨‍🍳', 'update': '📦' };
-            var bgColors = { 'new': '#fff7ed', 'cancel': '#fef2f2', 'complete': '#f0fdf4', 'preparing': '#eff6ff', 'update': '#f8fafc' };
-            var txtColors = { 'new': '#c2410c', 'cancel': '#991b1b', 'complete': '#166534', 'preparing': '#1d4ed8', 'update': '#334155' };
-            var borders = { 'new': '#ff6b00', 'cancel': '#ef4444', 'complete': '#22c55e', 'preparing': '#3b82f6', 'update': '#94a3b8' };
+            var icons = { 'new': '🆕', 'cancel': '❌', 'complete': '✅', 'preparing': '👨‍🍳', 'update': '📦', 'edit': '✏️' };
+            var bgColors = { 'new': '#fff7ed', 'cancel': '#fef2f2', 'complete': '#f0fdf4', 'preparing': '#eff6ff', 'update': '#f8fafc', 'edit': '#fefce8' };
+            var txtColors = { 'new': '#c2410c', 'cancel': '#991b1b', 'complete': '#166534', 'preparing': '#1d4ed8', 'update': '#334155', 'edit': '#a16207' };
+            var borders = { 'new': '#ff6b00', 'cancel': '#ef4444', 'complete': '#22c55e', 'preparing': '#3b82f6', 'update': '#94a3b8', 'edit': '#eab308' };
 
             var icon = icons[n.type] || '📋';
             var bg = bgColors[n.type] || '#f8fafc';
@@ -130,6 +133,61 @@
         setTimeout(function() { t.classList.remove('show'); }, 3000);
     }
 
+    // Detect changes in individual orders (updates, type changes, etc.)
+    function detectOrderChanges(orders) {
+        var ts = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+        orders.forEach(function(o) {
+            var known = knownOrders[o.id];
+
+            if (!known) {
+                // Brand new order we haven't tracked yet
+                return;
+            }
+
+            // Status changed
+            if (known.status !== o.status) {
+                var statusEmojis = {
+                    'Pending': '⏳', 'Preparing': '👨‍🍳', 'Completed': '✅',
+                    'Delivered': '🚚', 'Cancelled': '❌'
+                };
+                var emoji = statusEmojis[o.status] || '📋';
+                var msg = '#' + o.id + ' status changed: ' + known.status + ' → ' + o.status;
+                showToast(emoji + ' ' + msg);
+                addNotification('edit', msg + ' (' + ts + ')');
+                playSound();
+            }
+
+            // Order type changed (e.g. Dine In → Delivery)
+            if (known.order_type !== o.order_type) {
+                var msg = '#' + o.id + ' type changed: ' + known.order_type + ' → ' + o.order_type;
+                showToast('🔄 ' + msg);
+                addNotification('edit', msg + ' (' + ts + ')');
+                playSound();
+            }
+
+            // Total amount changed (items added/removed)
+            if (Math.abs(known.total_amount - o.total_amount) > 0.01) {
+                var diff = o.total_amount - known.total_amount;
+                var direction = diff > 0 ? 'increased' : 'decreased';
+                var msg = '#' + o.id + ' total ' + direction + ': Rs. ' + Math.abs(diff).toFixed(2);
+                showToast('💰 ' + msg);
+                addNotification('edit', msg + ' (' + ts + ')');
+                playSound();
+            }
+        });
+
+        // Update known orders
+        orders.forEach(function(o) {
+            knownOrders[o.id] = {
+                status: o.status,
+                order_type: o.order_type,
+                total_amount: parseFloat(o.total_amount),
+                updated_at: o.updated_at || o.created_at
+            };
+        });
+    }
+
     function buildRow(o) {
         var sm = { 'Pending':'pending','Preparing':'preparing','Completed':'completed','Delivered':'delivered','Cancelled':'cancelled' };
         var tm = { 'Dine In':'dine-in','Delivery':'delivery','Takeaway':'takeaway','Take Away':'takeaway','TakeAway':'takeaway' };
@@ -164,40 +222,54 @@
                 var now = new Date();
                 var ts = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
 
+                // Detect individual order changes (updates, type changes, amount changes)
+                detectOrderChanges(data.orders);
+
+                // NEW PENDING ORDERS
                 if (data.pending_count > lastPendingCount) {
                     var diff = data.pending_count - lastPendingCount;
                     playSound(); flashPending();
                     showToast('🔔 ' + diff + ' new order received!');
                     addNotification('new', diff + ' new order received! (' + ts + ')');
                 }
+
+                // NEW COMPLETED
                 if (data.completed_count > lastCompletedCount) {
                     var diff = data.completed_count - lastCompletedCount;
                     showToast('✅ ' + diff + ' order completed');
                     addNotification('complete', diff + ' order completed (' + ts + ')');
                     playSound();
                 }
+
+                // NEW CANCELLED
                 if (data.cancelled_count > lastCancelledCount) {
                     var diff = data.cancelled_count - lastCancelledCount;
                     showToast('❌ ' + diff + ' order cancelled');
                     addNotification('cancel', diff + ' order cancelled (' + ts + ')');
                     playSound();
                 }
+
+                // STATUS CHANGES (preparing)
                 if (data.preparing_count > lastPreparingCount) {
                     var diff = data.preparing_count - lastPreparingCount;
                     showToast('👨‍🍳 ' + diff + ' order is being prepared');
                     addNotification('preparing', diff + ' order is being prepared (' + ts + ')');
                 }
+
+                // ANY ORDER COUNT CHANGE
                 if (data.total_count > lastTotalCount && data.pending_count <= lastPendingCount) {
                     addNotification('update', 'New order received (' + ts + ')');
                     playSound(); flashPending();
                 }
 
+                // Update counts
                 lastPendingCount = data.pending_count;
                 lastTotalCount = data.total_count;
                 lastCompletedCount = data.completed_count;
                 lastCancelledCount = data.cancelled_count;
                 lastPreparingCount = data.preparing_count;
 
+                // Update stat numbers
                 var el1 = document.getElementById('pendingOrdersNum');
                 var el2 = document.getElementById('totalOrdersNum');
                 var el3 = document.getElementById('completedOrdersNum');
@@ -205,6 +277,7 @@
                 if (el2) el2.textContent = data.total_count;
                 if (el3) el3.textContent = data.completed_count;
 
+                // Update orders table live
                 updateTable(data.orders);
             })
             .catch(function() {});
