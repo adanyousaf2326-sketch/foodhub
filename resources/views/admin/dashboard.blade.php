@@ -663,7 +663,8 @@
     </div>
 </div>
 
-<script>window.__dashboardPendingCount = {{ $pendingOrders }};</script>
+<script>window.__dashboardPendingCount = {{ $pendingOrders }};
+    window.__dashboardTotalCount = {{ $totalOrders }};</script>
 <script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
 </body>
 </html>
