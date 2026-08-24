@@ -8,7 +8,6 @@
     var pollInterval = null;
     var notifications = [];
     var maxNotifications = 50;
-    var knownOrders = {};
 
     var refreshBtn = document.getElementById('autoRefreshToggle');
     var notifBtn = document.getElementById('notifToggle');
@@ -20,8 +19,8 @@
     function updateBtnUI() {
         if (!refreshBtn) return;
         refreshBtn.innerHTML = autoRefresh
-            ? '<span>\uD83D\uDD14</span> Live: ON'
-            : '<span>\uD83D\uDD15</span> Live: OFF';
+            ? '<span>🔔</span> Live: ON'
+            : '<span>🔕</span> Live: OFF';
         refreshBtn.style.background = autoRefresh ? '#16a34a' : '#6b7280';
     }
 
@@ -38,15 +37,14 @@
         var isOpen = notifDropdown.style.display === 'block';
         notifDropdown.style.display = isOpen ? 'none' : 'block';
         if (!isOpen) {
-            // Mark all as read
-            notifications.forEach(function(n) { n.read = true; });
-            if (notifBadge) notifBadge.textContent = '';
+            var unread = notifications.filter(function(n) { return !n.read; }).length;
+            if (notifBadge) notifBadge.textContent = unread > 0 ? unread : '';
         }
     };
 
     window.clearNotifications = function() {
         notifications = [];
-        if (notifList) notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">\uD83D\uDD14 No notifications yet</div>';
+        if (notifList) notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">🔔 Koi notification nahi</div>';
         if (notifBadge) notifBadge.textContent = '';
     };
 
@@ -61,34 +59,40 @@
     function renderNotifications() {
         if (!notifList) return;
         if (notifications.length === 0) {
-            notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">\uD83D\uDD14 No notifications yet</div>';
+            notifList.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">🔔 Koi notification nahi</div>';
             if (notifBadge) notifBadge.textContent = '';
             return;
         }
 
         var html = '';
         notifications.forEach(function(n) {
-            var icons = { 'new': '\uD83C\uDD95', 'cancel': '\u274C', 'complete': '\u2705', 'preparing': '\uD83D\uDC68\u200D\uD83C\uDF73', 'update': '\uD83D\uDCE6', 'edit': '\u270F\uFE0F' };
-            var bgColors = { 'new': '#fff7ed', 'cancel': '#fef2f2', 'complete': '#f0fdf4', 'preparing': '#eff6ff', 'update': '#f8fafc', 'edit': '#fefce8' };
-            var txtColors = { 'new': '#c2410c', 'cancel': '#991b1b', 'complete': '#166534', 'preparing': '#1d4ed8', 'update': '#334155', 'edit': '#a16207' };
-            var borders = { 'new': '#ff6b00', 'cancel': '#ef4444', 'complete': '#22c55e', 'preparing': '#3b82f6', 'update': '#94a3b8', 'edit': '#eab308' };
+            var icons = { 'new': '🆕', 'cancel': '❌', 'complete': '✅', 'preparing': '👨‍🍳', 'update': '📦' };
+            var bgColors = { 'new': '#fff7ed', 'cancel': '#fef2f2', 'complete': '#f0fdf4', 'preparing': '#eff6ff', 'update': '#f8fafc' };
+            var txtColors = { 'new': '#c2410c', 'cancel': '#991b1b', 'complete': '#166534', 'preparing': '#1d4ed8', 'update': '#334155' };
+            var borders = { 'new': '#ff6b00', 'cancel': '#ef4444', 'complete': '#22c55e', 'preparing': '#3b82f6', 'update': '#94a3b8' };
 
-            var icon = icons[n.type] || '\uD83D\uDCCB';
+            var icon = icons[n.type] || '📋';
             var bg = bgColors[n.type] || '#f8fafc';
             var tc = txtColors[n.type] || '#334155';
             var bc = borders[n.type] || '#94a3b8';
 
-            html += '<div style="padding:12px 14px;border-bottom:1px solid #eee;background:' + bg + ';border-left:4px solid ' + bc + ';">' +
+            html += '<div class="notif-item" style="padding:12px 14px;border-bottom:1px solid #eee;background:' + bg + ';border-left:4px solid ' + bc + ';">' +
                 '<div style="display:flex;align-items:flex-start;gap:10px;">' +
                 '<span style="font-size:20px;">' + icon + '</span>' +
                 '<div style="flex:1;">' +
-                '<div style="font-size:13px;font-weight:600;color:' + tc + ';">' + n.message + '</div>' +
+                '<div style="font-size:13px;font-weight:600;color:' + tc + ';">' + escHtml(n.message) + '</div>' +
                 '<div style="font-size:11px;color:#999;margin-top:3px;">' + n.time + '</div>' +
                 '</div></div></div>';
         });
         notifList.innerHTML = html;
         var unread = notifications.filter(function(n) { return !n.read; }).length;
         if (notifBadge) notifBadge.textContent = unread > 0 ? unread : '';
+    }
+
+    function escHtml(text) {
+        var div = document.createElement('div');
+        div.innerText = text || '';
+        return div.innerHTML;
     }
 
     function playSound() {
@@ -120,52 +124,10 @@
 
     function showToast(msg) {
         var t = document.getElementById('toast');
-        if (!t) { t = document.createElement('div'); t.className = 'toast'; t.style.cssText = 'position:fixed;right:25px;bottom:25px;background:#111827;color:white;padding:14px 20px;border-radius:9px;box-shadow:0 5px 20px rgba(0,0,0,.2);transform:translateY(100px);opacity:0;transition:.3s;z-index:100000;'; document.body.appendChild(t); }
+        if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
         t.innerText = msg;
         t.classList.add('show');
         setTimeout(function() { t.classList.remove('show'); }, 3000);
-    }
-
-    function detectOrderChanges(orders) {
-        var ts = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-
-        orders.forEach(function(o) {
-            var known = knownOrders[o.id];
-            if (!known) return;
-
-            if (known.status !== o.status) {
-                var emojis = { 'Pending': '\u23F3', 'Preparing': '\uD83D\uDC68\u200D\uD83C\uDF73', 'Completed': '\u2705', 'Delivered': '\uD83D\uDE9A', 'Cancelled': '\u274C' };
-                var emoji = emojis[o.status] || '\uD83D\uDCCB';
-                var msg = '#' + o.id + ' status: ' + known.status + ' \u2192 ' + o.status;
-                showToast(emoji + ' ' + msg);
-                addNotification('edit', msg + ' (' + ts + ')');
-                playSound();
-            }
-
-            if (known.order_type !== o.order_type) {
-                var msg = '#' + o.id + ' type: ' + known.order_type + ' \u2192 ' + o.order_type;
-                showToast('\uD83D\uDD04 ' + msg);
-                addNotification('edit', msg + ' (' + ts + ')');
-                playSound();
-            }
-
-            if (Math.abs(known.total_amount - o.total_amount) > 0.01) {
-                var diff = o.total_amount - known.total_amount;
-                var direction = diff > 0 ? 'increased' : 'decreased';
-                var msg = '#' + o.id + ' total ' + direction + ': Rs. ' + Math.abs(diff).toFixed(2);
-                showToast('\uD83D\uDCB0 ' + msg);
-                addNotification('edit', msg + ' (' + ts + ')');
-                playSound();
-            }
-        });
-
-        orders.forEach(function(o) {
-            knownOrders[o.id] = {
-                status: o.status,
-                order_type: o.order_type,
-                total_amount: parseFloat(o.total_amount)
-            };
-        });
     }
 
     function buildRow(o) {
@@ -173,20 +135,20 @@
         var tm = { 'Dine In':'dine-in','Delivery':'delivery','Takeaway':'takeaway','Take Away':'takeaway','TakeAway':'takeaway' };
         var sc = sm[o.status] || 'pending';
         var tc = tm[o.order_type] || 'takeaway';
-        var te = o.order_type === 'Dine In' ? '\uD83C\uDF7D\uFE0F' : (o.order_type === 'Delivery' ? '\uD83D\uDEF5' : '\uD83E\uDD61');
+        var te = o.order_type === 'Dine In' ? '🍽️' : (o.order_type === 'Delivery' ? '🛵' : '🥡');
         var d = new Date(o.created_at);
         var ds = d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
         var ts = d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
         var act = o.status !== 'Completed' && o.status !== 'Cancelled'
-            ? '<a href="/admin/orders/' + o.id + '/bill" class="view">\uD83D\uDCB3 Bill</a>'
+            ? '<a href="/admin/orders/' + o.id + '/bill" class="view">💳 Bill</a>'
             : '<a href="/admin/orders/' + o.id + '" class="view">View</a>';
-        return '<tr><td>#' + o.id + '</td><td><strong>' + o.customer_name + '</strong></td><td>' + o.phone + '</td><td><span class="order-type ' + tc + '">' + te + ' ' + o.order_type + '</span></td><td>Rs. ' + Number(o.total_amount).toLocaleString('en-PK', {minimumFractionDigits:2}) + '</td><td>' + o.payment_method + '</td><td><span class="status ' + sc + '">' + o.status + '</span></td><td>' + ds + '<br><small>' + ts + '</small></td><td>' + act + '</td></tr>';
+        return '<tr><td>#' + o.id + '</td><td><strong>' + escHtml(o.customer_name) + '</strong></td><td>' + escHtml(o.phone) + '</td><td><span class="order-type ' + tc + '">' + te + ' ' + escHtml(o.order_type) + '</span></td><td>Rs. ' + Number(o.total_amount).toLocaleString('en-PK', {minimumFractionDigits:2}) + '</td><td>' + escHtml(o.payment_method) + '</td><td><span class="status ' + sc + '">' + escHtml(o.status) + '</span></td><td>' + ds + '<br><small>' + ts + '</small></td><td>' + act + '</td></tr>';
     }
 
     function updateTable(orders) {
         var tbody = document.querySelector('.table-card table tbody');
         if (!tbody) return;
-        if (!orders.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#777;padding:40px;">\uD83D\uDCCB No orders found</td></tr>'; return; }
+        if (!orders.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#777;padding:40px;">📋 No orders found</td></tr>'; return; }
         var html = '';
         orders.forEach(function(o) { html += buildRow(o); });
         tbody.innerHTML = html;
@@ -196,49 +158,37 @@
         var params = new URLSearchParams(window.location.search);
         params.set('_', Date.now());
 
-        fetch('/admin/dashboard/orders-json?' + params.toString(), {
-            credentials: 'same-origin',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-            .then(function(r) {
-                if (!r.ok) throw new Error('Not OK');
-                return r.json();
-            })
+        fetch('/admin/dashboard/orders-json?' + params.toString(), { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function(r) { return r.json(); })
             .then(function(data) {
-                var ts = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-
-                // Detect individual order changes
-                detectOrderChanges(data.orders);
+                var now = new Date();
+                var ts = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
 
                 if (data.pending_count > lastPendingCount) {
                     var diff = data.pending_count - lastPendingCount;
                     playSound(); flashPending();
-                    showToast('\uD83D\uDD14 ' + diff + ' new order received!');
-                    addNotification('new', diff + ' new order received! (' + ts + ')');
+                    showToast('🔔 ' + diff + ' naya order aaya hai!');
+                    addNotification('new', diff + ' naya order aaya hai! (' + ts + ')');
                 }
-
                 if (data.completed_count > lastCompletedCount) {
                     var diff = data.completed_count - lastCompletedCount;
-                    showToast('\u2705 ' + diff + ' order completed');
-                    addNotification('complete', diff + ' order completed (' + ts + ')');
+                    showToast('✅ ' + diff + ' order complete hua');
+                    addNotification('complete', diff + ' order complete hua (' + ts + ')');
                     playSound();
                 }
-
                 if (data.cancelled_count > lastCancelledCount) {
                     var diff = data.cancelled_count - lastCancelledCount;
-                    showToast('\u274C ' + diff + ' order cancelled');
-                    addNotification('cancel', diff + ' order cancelled (' + ts + ')');
+                    showToast('❌ ' + diff + ' order cancel hua');
+                    addNotification('cancel', diff + ' order cancel hua (' + ts + ')');
                     playSound();
                 }
-
                 if (data.preparing_count > lastPreparingCount) {
                     var diff = data.preparing_count - lastPreparingCount;
-                    showToast('\uD83D\uDC68\u200D\uD83C\uDF73 ' + diff + ' order is being prepared');
-                    addNotification('preparing', diff + ' order is being prepared (' + ts + ')');
+                    showToast('👨‍🍳 ' + diff + ' order prepare ho raha hai');
+                    addNotification('preparing', diff + ' order prepare ho raha hai (' + ts + ')');
                 }
-
                 if (data.total_count > lastTotalCount && data.pending_count <= lastPendingCount) {
-                    addNotification('update', 'New order received (' + ts + ')');
+                    addNotification('update', 'Naya order aaya (' + ts + ')');
                     playSound(); flashPending();
                 }
 
@@ -257,9 +207,7 @@
 
                 updateTable(data.orders);
             })
-            .catch(function(e) {
-                console.log('Auto-refresh poll failed:', e.message);
-            });
+            .catch(function() {});
     }
 
     function startPolling() {
@@ -271,15 +219,11 @@
         if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
     }
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
         if (notifDropdown && notifBtn && !notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
             notifDropdown.style.display = 'none';
         }
     });
 
-    // Start polling
-    if (autoRefresh) {
-        startPolling();
-    }
+    if (autoRefresh) startPolling();
 })();
