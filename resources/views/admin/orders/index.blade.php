@@ -714,11 +714,13 @@
             </h2>
 
 
-            <span style="color:#777;font-size:14px;">
-
-                {{ $totalOrders }} Orders
-
-            </span>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="color:#777;font-size:14px;">
+                    {{ $totalOrders }} Orders
+                </span>
+                <a href="{{ route("admin.orders.export.csv", request()->query()) }}" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;background:#16a34a;color:white;text-decoration:none;font-size:12px;font-weight:bold;">📥 CSV</a>
+                <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;background:#dc2626;color:white;text-decoration:none;font-size:12px;font-weight:bold;">📄 PDF</a>
+            </div>
 
         </div>
 

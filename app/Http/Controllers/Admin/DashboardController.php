@@ -42,8 +42,7 @@ class DashboardController extends Controller
         }
 
         if (
-            !$request->filled('from_date') &&
-            !$request->filled('to_date')
+            !$request->filled('from_date') && !$request->filled('to_date')
         ) {
             $dateQuery->whereDate('created_at', today());
         }
@@ -56,15 +55,13 @@ class DashboardController extends Controller
 
         $completedOrders = (clone $dateQuery)
             ->whereIn('status', [
-                'Completed',
-                'Delivered',
+                'Completed', 'Delivered',
             ])
             ->count();
 
         $totalRevenue = (clone $dateQuery)
             ->whereIn('status', [
-                'Completed',
-                'Delivered',
+                'Completed', 'Delivered',
             ])
             ->sum('total_amount');
 
@@ -76,9 +73,7 @@ class DashboardController extends Controller
 
         $takeAwayOrders = (clone $dateQuery)
             ->whereIn('order_type', [
-                'Takeaway',
-                'Take Away',
-                'TakeAway',
+                'Takeaway', 'Take Away', 'TakeAway',
             ])
             ->count();
 
@@ -124,9 +119,7 @@ class DashboardController extends Controller
         }
 
         if (
-            !$request->filled('search') &&
-            !$request->filled('from_date') &&
-            !$request->filled('to_date')
+            !$request->filled('search') && !$request->filled('from_date') && !$request->filled('to_date')
         ) {
             $ordersQuery->whereDate('created_at', today());
         }
@@ -139,26 +132,51 @@ class DashboardController extends Controller
 
         $filteredOrdersTotal = $recentOrders
             ->whereIn('status', [
-                'Completed',
-                'Delivered',
+                'Completed', 'Delivered',
             ])
             ->sum('total_amount');
 
         return view('admin.dashboard', compact(
-            'totalCategories',
-            'totalFood',
-            'availableFood',
-            'totalOrders',
-            'pendingOrders',
-            'completedOrders',
-            'totalRevenue',
-            'todayRevenue',
-            'dineInOrders',
-            'takeAwayOrders',
-            'filteredOrdersTotal',
-            'deliveryOrders',
-            'recentOrders',
-            'filteredOrdersCount'
+            'totalCategories', 'totalFood', 'availableFood',
+            'totalOrders', 'pendingOrders', 'completedOrders',
+            'totalRevenue', 'todayRevenue', 'dineInOrders',
+            'takeAwayOrders', 'filteredOrdersTotal', 'deliveryOrders',
+            'recentOrders', 'filteredOrdersCount'
         ));
+    }
+
+    public function ordersJson(Request $request)
+    {
+        $query = Order::query();
+
+        if ($request->filled('from_date')) {
+            $fromTime = $request->input('from_time', '00:00');
+            $from = Carbon::parse($request->from_date . ' ' . $fromTime);
+            $query->where('created_at', '>=', $from);
+        }
+
+        if ($request->filled('to_date')) {
+            $toTime = $request->input('to_time', '23:59:59');
+            $to = Carbon::parse($request->to_date . ' ' . $toTime);
+            $query->where('created_at', '<=', $to);
+        }
+
+        if (!$request->filled('from_date') && !$request->filled('to_date')) {
+            $query->whereDate('created_at', today());
+        }
+
+        $pendingCount = (clone $query)->where('status', 'Pending')->count();
+        $totalCount = (clone $query)->count();
+
+        $recentOrders = (clone $query)->latest()->limit(50)->get([
+            'id', 'customer_name', 'phone', 'order_type',
+            'total_amount', 'payment_method', 'status', 'created_at'
+        ]);
+
+        return response()->json([
+            'pending_count' => $pendingCount,
+            'total_count' => $totalCount,
+            'orders' => $recentOrders,
+        ]);
     }
 }

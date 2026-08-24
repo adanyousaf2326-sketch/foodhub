@@ -2319,6 +2319,7 @@
 
 </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/customer-dark-theme.css') }}">
 
     <style>
         #fh-loader {
@@ -2459,6 +2460,9 @@
             <span>🛒</span> Cart
             <span class="cart-count" id="navCartCount">0</span>
         </a>
+        <button type="button" class="theme-toggle-customer" onclick="toggleCustomerTheme()" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:17px;margin-left:6px;transition:all .25s ease;">
+            <span class="theme-icon-customer">🌙</span>
+        </button>
     </div>
 </nav>
 
@@ -3951,6 +3955,29 @@ document.addEventListener(
 <script src="{{ asset('js/foodhub-cart.js') }}"></script>
 
 
+<script>
+    function toggleCustomerTheme() {
+        var body = document.body;
+        var icon = document.querySelector(".theme-icon-customer");
+        if (body.classList.contains("dark-theme")) {
+            body.classList.remove("dark-theme");
+            if (icon) icon.textContent = "🌙";
+            localStorage.setItem("foodhub-theme", "light");
+        } else {
+            body.classList.add("dark-theme");
+            if (icon) icon.textContent = "☀️";
+            localStorage.setItem("foodhub-theme", "dark");
+        }
+    }
+    (function() {
+        var saved = localStorage.getItem("foodhub-theme");
+        var icon = document.querySelector(".theme-icon-customer");
+        if (saved === "dark") {
+            document.body.classList.add("dark-theme");
+            if (icon) icon.textContent = "☀️";
+        }
+    })();
+</script>
 </body>
 
 </html>

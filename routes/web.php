@@ -496,6 +496,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
+Route::get('/dashboard/orders-json', [DashboardController::class, 'ordersJson'])->name('dashboard.orders-json');
         ->name('dashboard');
 
     Route::resource('categories', CategoryController::class);
@@ -522,6 +523,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::post('/orders/{order}/complete-payment', [OrderController::class, 'completePayment'])
         ->name('orders.complete-payment');
+
+    Route::get('/orders/export/csv', [OrderController::class, 'exportCsv'])
+        ->name('orders.export.csv');
+
+    Route::get('/orders/export/pdf', [OrderController::class, 'exportPdf'])
+        ->name('orders.export.pdf');
 
 });
 

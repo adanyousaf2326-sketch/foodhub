@@ -475,4 +475,111 @@ class OrderController extends Controller
                 ]);
         }
     }
+    public function exportCsv(Request $request)
+    {
+        $orders = Order::query();
+
+        $type = $request->query('type');
+        if ($type) {
+            $normalizedType = strtolower(str_replace(' ', '', $type));
+            if ($normalizedType === 'takeaway') {
+                $orders->whereIn('order_type', ['Takeaway', 'Take Away', 'TakeAway']);
+            } else {
+                $orders->where('order_type', $type);
+            }
+        }
+
+        if ($request->filled('from_date')) {
+            $fromTime = $request->query('from_time', '00:00');
+            $from = Carbon::parse($request->from_date . ' ' . $fromTime);
+            $orders->where('created_at', '>=', $from);
+        }
+
+        if ($request->filled('to_date')) {
+            $toTime = $request->query('to_time', '23:59:59');
+            $to = Carbon::parse($request->to_date . ' ' . $toTime);
+            $orders->where('created_at', '<=', $to);
+        }
+
+        if (!$request->filled('from_date') && !$request->filled('to_date')) {
+            $orders->whereDate('created_at', today());
+        }
+
+        $orders = $orders->latest()->get();
+
+        $filename = 'foodhub-orders-' . now()->format('Y-m-d-H-i') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function () use ($orders) {
+            $file = fopen('php://output', 'w');
+
+            fputcsv($file, ['Order ID', 'Customer', 'Phone', 'Order Type', 'Total (Rs.)', 'Payment', 'Status', 'Date', 'Time']);
+
+            foreach ($orders as $order) {
+                fputcsv($file, [
+                    '#' . $order->id,
+                    $order->customer_name,
+                    $order->phone,
+                    $order->order_type,
+                    number_format($order->total_amount, 2),
+                    $order->payment_method,
+                    $order->status,
+                    $order->created_at->format('d M Y'),
+                    $order->created_at->format('h:i A'),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $orders = Order::query();
+
+        $type = $request->query('type');
+        if ($type) {
+            $normalizedType = strtolower(str_replace(' ', '', $type));
+            if ($normalizedType === 'takeaway') {
+                $orders->whereIn('order_type', ['Takeaway', 'Take Away', 'TakeAway']);
+            } else {
+                $orders->where('order_type', $type);
+            }
+        }
+
+        if ($request->filled('from_date')) {
+            $fromTime = $request->query('from_time', '00:00');
+            $from = Carbon::parse($request->from_date . ' ' . $fromTime);
+            $orders->where('created_at', '>=', $from);
+        }
+
+        if ($request->filled('to_date')) {
+            $toTime = $request->query('to_time', '23:59:59');
+            $to = Carbon::parse($request->to_date . ' ' . $toTime);
+            $orders->where('created_at', '<=', $to);
+        }
+
+        if (!$request->filled('from_date') && !$request->filled('to_date')) {
+            $orders->whereDate('created_at', today());
+        }
+
+        $orders = $orders->latest()->get();
+
+        $totalRevenue = $orders->whereIn('status', ['Completed', 'Delivered'])->sum('total_amount');
+
+        $dateRange = 'Today';
+        if ($request->filled('from_date') || $request->filled('to_date')) {
+            $from = $request->filled('from_date') ? $request->from_date : 'Start';
+            $to = $request->filled('to_date') ? $request->to_date : 'Now';
+            $dateRange = $from . ' to ' . $to;
+        }
+
+        return view('admin.orders.export-pdf', compact('orders', 'totalRevenue', 'dateRange'));
+    }
 }

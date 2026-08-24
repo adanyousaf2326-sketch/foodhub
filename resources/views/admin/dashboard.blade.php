@@ -374,9 +374,16 @@
 
 <div class="container">
 
-    <div class="header">
+    <div class="header" style="display:flex;justify-content:space-between;align-items:center;">
         <h1>🍔 FoodHub Hotel</h1>
+        <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:#16a34a;">
+            <span>🔔</span> Auto-Refresh: ON
+        </button>
     </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <a href="{{ route("admin.orders.export.csv", request()->query()) }}" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#16a34a;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📥 CSV</a>
+            <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#dc2626;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📄 PDF</a>
+        </div>
 
     <div class="cards">
         <div class="card stat-card">
@@ -400,7 +407,7 @@
         <div class="card stat-card">
             <div>
                 <div class="stat-title">Total Orders</div>
-                <div class="stat-number">{{ $totalOrders }}</div>
+                <div class="stat-number" id="totalOrdersNum">{{ $totalOrders }}</div>
             </div>
 
             <div class="stat-icon icon-green">🛒</div>
@@ -426,7 +433,7 @@
 
         <div class="card">
             <div class="stat-title">Pending Orders</div>
-            <div class="stat-number">{{ $pendingOrders }}</div>
+            <div class="stat-number" id="pendingOrdersNum">{{ $pendingOrders }}</div>
         </div>
 
         <div class="card">
@@ -656,5 +663,7 @@
     </div>
 </div>
 
+<script>window.__dashboardPendingCount = {{ $pendingOrders }};</script>
+<script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
 </body>
 </html>

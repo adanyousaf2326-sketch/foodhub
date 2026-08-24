@@ -196,7 +196,17 @@
                 overflow-x: auto;
             }
         }
-    </style>
+        @media print {
+        body { background: white; }
+        .topbar, .actions, .payment-box, .cart-overlay, .draggable-cart-btn, .toast { display: none !important; }
+        .container { margin: 0; padding: 15px; max-width: 100%; }
+        .bill-card { box-shadow: none; border-radius: 0; border: none; }
+        .bill-header { background: #111827 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .content { padding: 15px; }
+        .total-row { background: #fff7ed !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        table { min-width: auto; }
+    }
+</style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
@@ -341,6 +351,7 @@
                 </div>
 
                 <div class="actions">
+                    <button type="button" class="btn" onclick="window.print()" style="background:#2563eb;color:white;">🖨️ Print Bill</button>
                     <button type="submit" class="btn btn-close">
                         ✅ Close Bill & Add Sale
                     </button>
