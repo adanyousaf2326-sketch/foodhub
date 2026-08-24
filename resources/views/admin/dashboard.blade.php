@@ -438,7 +438,7 @@
 
         <div class="card">
             <div class="stat-title">Completed Orders</div>
-            <div class="stat-number">{{ $completedOrders }}</div>
+            <div class="stat-number" id="completedOrdersNum">{{ $completedOrders }}</div>
         </div>
 
         <div class="card">
@@ -664,7 +664,10 @@
 </div>
 
 <script>window.__dashboardPendingCount = {{ $pendingOrders }};
-    window.__dashboardTotalCount = {{ $totalOrders }};</script>
+    window.__dashboardTotalCount = {{ $totalOrders }};
+    window.__dashboardCompletedCount = {{ $completedOrders }};
+    window.__dashboardCancelledCount = 0;
+    window.__dashboardPreparingCount = 0;</script>
 <script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
 </body>
 </html>
