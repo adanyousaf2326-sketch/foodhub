@@ -198,27 +198,7 @@
 
             notifItems = [];
 
-            // Edit Requests
-            if (data.edit_requests) {
-                data.edit_requests.forEach(function(req) {
-                    var key = 'edit-' + req.id;
-                    if (!knownNotifIds[key]) {
-                        knownNotifIds[key] = true;
-                        var orderId = req.order ? req.order.id : req.order_id;
-                        notifItems.unshift({
-                            icon: '\u270F\uFE0F',
-                            title: 'Edit Request - Order #' + orderId,
-                            detail: (req.customer_name || 'Customer') + ': ' + (req.message || 'Wants to edit order'),
-                            color: '#b45309',
-                            bg: '#fffbeb',
-                            border: '#fde68a',
-                            link: '/admin/orders/' + orderId
-                        });
-                    }
-                });
-            }
-
-            // Unread Messages
+            // Unread customer messages
             if (data.unread_messages) {
                 data.unread_messages.forEach(function(msg) {
                     var key = 'msg-' + msg.id;
@@ -233,6 +213,25 @@
                             bg: '#eff6ff',
                             border: '#bfdbfe',
                             link: '/admin/orders/' + orderId
+                        });
+                    }
+                });
+            }
+
+            // Recently updated orders (customer edited their order)
+            if (data.recently_updated_orders) {
+                data.recently_updated_orders.forEach(function(ord) {
+                    var key = 'upd-' + ord.id + '-' + ord.updated_at;
+                    if (!knownNotifIds[key]) {
+                        knownNotifIds[key] = true;
+                        notifItems.unshift({
+                            icon: '\u270F\uFE0F',
+                            title: 'Order #' + ord.id + ' Updated',
+                            detail: (ord.customer_name || 'Customer') + ' edited order - Rs. ' + parseFloat(ord.total_amount).toFixed(2),
+                            color: '#b45309',
+                            bg: '#fffbeb',
+                            border: '#fde68a',
+                            link: '/admin/orders/' + ord.id
                         });
                     }
                 });

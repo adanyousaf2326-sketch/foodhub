@@ -138,22 +138,32 @@ class DashboardController extends Controller
 
     public function notificationsJson()
     {
-        $pendingEditRequests = \App\Models\OrderEditRequest::where('status', 'pending')
-            ->with('order')
-            ->latest()
-            ->get();
-
+        // Unread customer messages
         $unreadMessages = \App\Models\Message::where('sender_type', 'customer')
             ->where('is_read', false)
             ->with('order')
             ->latest()
             ->get();
 
+        // Pending edit requests (shown in messages section only, NOT in bell)
+        $pendingEditRequests = \App\Models\OrderEditRequest::where('status', 'pending')
+            ->with('order')
+            ->latest()
+            ->get();
+
+        // Recently updated orders (customer edited their order — show in bell)
+        $recentlyUpdated = Order::where('updated_at', '>', now()->subMinutes(5))
+            ->whereColumn('updated_at', '>', 'created_at')
+            ->whereNotIn('status', ['Cancelled', 'Completed', 'Delivered'])
+            ->latest('updated_at')
+            ->limit(10)
+            ->get(['id', 'customer_name', 'order_type', 'total_amount', 'status', 'updated_at', 'created_at']);
+
         return response()->json([
-            'edit_requests' => $pendingEditRequests,
             'unread_messages' => $unreadMessages,
-            'edit_requests_count' => $pendingEditRequests->count(),
             'unread_messages_count' => $unreadMessages->count(),
+            'edit_requests' => $pendingEditRequests,
+            'recently_updated_orders' => $recentlyUpdated,
         ]);
     }
 }
