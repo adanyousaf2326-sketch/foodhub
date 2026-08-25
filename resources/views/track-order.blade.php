@@ -776,13 +776,15 @@
                     @elseif($pendingEditRequest)
 
                         {{-- Pending edit request --}}
-                        <div class="edit-request-status edit-request-pending">
-                            &#9203; Your edit request is pending admin approval.
-                            <br>
-                            <small>Requested: {{ $pendingEditRequest->created_at->format('h:i A') }}</small>
-                            @if($pendingEditRequest->message)
-                                <br><small>Message: {{ $pendingEditRequest->message }}</small>
-                            @endif
+                        <div id="editRequestBox">
+                            <div class="edit-request-status edit-request-pending">
+                                &#9203; Your edit request is pending admin approval.
+                                <br>
+                                <small>Requested: {{ $pendingEditRequest->created_at->format('h:i A') }}</small>
+                                @if($pendingEditRequest->message)
+                                    <br><small>Message: {{ $pendingEditRequest->message }}</small>
+                                @endif
+                            </div>
                         </div>
 
                     @elseif($rejectedEditRequest && !$canSendRequest)
@@ -979,6 +981,59 @@ document.addEventListener("DOMContentLoaded", function () {
     if (orderId) {
         loadMessages();
         chatPolling = setInterval(loadMessages, 5000);
+
+        // Poll edit request status every 5 seconds
+        setInterval(pollEditStatus, 5000);
+    }
+
+    function pollEditStatus() {
+        if (!orderId) return;
+
+        fetch("/track-order/" + orderId + "/edit-status", {
+            credentials: "same-origin",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.can_edit && data.edit_url) {
+                // Admin accepted! Show edit button if not already shown
+                var editBox = document.getElementById("editRequestBox");
+                if (editBox && !editBox.querySelector(".edit-order-btn")) {
+                    editBox.innerHTML =
+                        '<div class="edit-request-status edit-request-accepted">' +
+                        '&#9989; Your edit request has been approved! You can now edit the order.' +
+                        '</div>' +
+                        '<div class="countdown-box">' +
+                        '<span class="countdown-label">Time remaining to edit</span>' +
+                        '<span class="countdown" id="orderCountdown" data-deadline="' + new Date(data.expires_at).getTime() + '">Loading...</span>' +
+                        '</div>' +
+                        '<a href="' + data.edit_url + '" class="edit-order-btn">&#9998; Edit My Order</a>' +
+                        '<form method="POST" action="/track-order/' + orderId + '/cancel" onsubmit="return confirm(\'Are you sure you want to cancel this order?\');">' +
+                        '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+                        '<button type="submit" class="cancel-btn">&#10060; Cancel My Order</button>' +
+                        '</form>';
+                    // Start countdown
+                    var deadline = new Date(data.expires_at).getTime();
+                    var cd = document.getElementById("orderCountdown");
+                    if (cd) {
+                        function updateEditCountdown() {
+                            var remaining = deadline - new Date().getTime();
+                            if (remaining <= 0) {
+                                cd.textContent = "00:00";
+                                return;
+                            }
+                            var totalSec = Math.floor(remaining / 1000);
+                            var mins = Math.floor(totalSec / 60);
+                            var secs = totalSec % 60;
+                            cd.textContent = String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+                        }
+                        updateEditCountdown();
+                        setInterval(updateEditCountdown, 1000);
+                    }
+                }
+            }
+        })
+        .catch(function() {});
     }
 
     function loadMessages() {

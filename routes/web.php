@@ -583,3 +583,8 @@ Route::post(
     '/track-order/{order}/message',
     [\App\Http\Controllers\Admin\OrderController::class, 'sendMessage']
 )->name('track.order.send-message');
+
+Route::get(
+    '/track-order/{order}/edit-status',
+    [\App\Http\Controllers\Admin\OrderController::class, 'editStatus']
+)->name('track.order.edit-status');

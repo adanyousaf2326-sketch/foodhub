@@ -758,4 +758,34 @@ class OrderController extends Controller
 
         return back()->with('success', 'Message sent!');
     }
+
+    /*
+     * CUSTOMER: Check edit request status (JSON)
+     */
+    public function editStatus(Order $order)
+    {
+        $approved = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'accepted')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        $pending = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+
+        $rejected = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'rejected')
+            ->latest()
+            ->first();
+
+        return response()->json([
+            'can_edit' => $approved !== null,
+            'edit_url' => $approved ? route('track.order.edit', $order) : null,
+            'expires_at' => $approved ? $approved->expires_at->toISOString() : null,
+            'pending' => $pending !== null,
+            'rejected' => $rejected !== null && !$pending && !$approved,
+        ]);
+    }
 }
