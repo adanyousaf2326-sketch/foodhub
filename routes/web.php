@@ -531,6 +531,21 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/orders/export/pdf', [OrderController::class, 'exportPdf'])
         ->name('orders.export.pdf');
 
+    // Edit Requests
+    Route::post('/orders/{order}/edit-requests/{editRequest}/accept', [OrderController::class, 'acceptEditRequest'])
+        ->name('orders.edit-requests.accept');
+
+    Route::post('/orders/{order}/edit-requests/{editRequest}/reject', [OrderController::class, 'rejectEditRequest'])
+        ->name('orders.edit-requests.reject');
+
+    // Messages (Admin)
+    Route::post('/orders/{order}/messages', [OrderController::class, 'adminSendMessage'])
+        ->name('orders.messages.send');
+
+    // Notifications JSON for bell
+    Route::get('/notifications-json', [DashboardController::class, 'notificationsJson'])
+        ->name('notifications-json');
+
 });
 
 Route::post(
@@ -547,3 +562,24 @@ Route::post(
     '/track-order/{order}/update',
     [\App\Http\Controllers\Admin\OrderController::class, 'trackUpdate']
 )->name('track.order.update');
+
+/*
+ * EDIT REQUEST (Customer sends request to admin)
+ */
+Route::post(
+    '/track-order/{order}/edit-request',
+    [\App\Http\Controllers\Admin\OrderController::class, 'storeEditRequest']
+)->name('track.order.edit-request');
+
+/*
+ * MESSAGES (Customer ↔ Admin chat)
+ */
+Route::get(
+    '/track-order/{order}/messages',
+    [\App\Http\Controllers\Admin\OrderController::class, 'getMessages']
+)->name('track.order.messages');
+
+Route::post(
+    '/track-order/{order}/message',
+    [\App\Http\Controllers\Admin\OrderController::class, 'sendMessage']
+)->name('track.order.send-message');

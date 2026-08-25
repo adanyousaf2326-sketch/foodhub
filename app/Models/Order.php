@@ -30,7 +30,17 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
     public function table()
-{
-    return $this->belongsTo(RestaurantTable::class, 'table_id');
-}
+    {
+        return $this->belongsTo(RestaurantTable::class, 'table_id');
+    }
+
+    public function editRequests()
+    {
+        return $this->hasMany(OrderEditRequest::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }

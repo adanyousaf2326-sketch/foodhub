@@ -293,15 +293,34 @@ class OrderController extends Controller
                 );
         }
 
-        if ($order->created_at->lt(now()->subMinutes(15))) {
+        // Check for admin-approved edit request (15 min window from acceptance)
+        $approvedRequest = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'accepted')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        // Also allow original 15-min window from order creation
+        $withinOriginalWindow = $order->created_at->gt(now()->subMinutes(15));
+
+        if (!$approvedRequest && !$withinOriginalWindow) {
             return redirect()
                 ->route('track.order.search', [
                     'order_number' => $order->id,
                 ])
                 ->with(
                     'error',
-                    'Order update time expired. Orders can only be modified within 15 minutes of initial placement.'
+                    'Order update time expired. Please send an edit request to the admin for approval.'
                 );
+        }
+
+        // Use the approved request deadline if available
+        if ($approvedRequest) {
+            $deadline = $approvedRequest->expires_at;
+            $remainingSeconds = max(0, $deadline->diffInSeconds(now(), false) * -1);
+        } else {
+            $deadline = $order->created_at->copy()->addMinutes(15);
+            $remainingSeconds = max(0, $deadline->diffInSeconds(now(), false) * -1);
         }
 
         $order->load(['items.food', 'table']);
@@ -315,13 +334,6 @@ class OrderController extends Controller
             ->orWhere('id', $order->table_id)
             ->orderBy('table_number')
             ->get();
-
-        $deadline = $order->created_at->copy()->addMinutes(15);
-
-        $remainingSeconds = max(
-            0,
-            $deadline->diffInSeconds(now(), false) * -1
-        );
 
         return view(
             'order-edit',
@@ -348,14 +360,23 @@ class OrderController extends Controller
                 );
         }
 
-        if ($order->created_at->lt(now()->subMinutes(15))) {
+        // Check for admin-approved edit request
+        $approvedRequest = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'accepted')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        $withinOriginalWindow = $order->created_at->gt(now()->subMinutes(15));
+
+        if (!$approvedRequest && !$withinOriginalWindow) {
             return redirect()
                 ->route('track.order.search', [
                     'order_number' => $order->id,
                 ])
                 ->with(
                     'error',
-                    'Order update time expired. Orders can only be modified within 15 minutes of initial placement.'
+                    'Order update time expired. Please send an edit request to the admin for approval.'
                 );
         }
 
@@ -581,5 +602,160 @@ class OrderController extends Controller
         }
 
         return view('admin.orders.export-pdf', compact('orders', 'totalRevenue', 'dateRange'));
+    }
+
+    /*
+     * CUSTOMER: Submit Edit Request
+     */
+    public function storeEditRequest(Request $request, Order $order)
+    {
+        if (in_array($order->status, ['Cancelled', 'Completed', 'Delivered'])) {
+            return back()->with('error', 'This order cannot be edited in its current status.');
+        }
+
+        $existingPending = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($existingPending) {
+            return back()->with('error', 'You already have a pending edit request. Please wait for admin response.');
+        }
+
+        $existingAccepted = \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('status', 'accepted')
+            ->where('expires_at', '>', now())
+            ->exists();
+
+        if ($existingAccepted) {
+            return redirect()->route('track.order.edit', $order);
+        }
+
+        \App\Models\OrderEditRequest::create([
+            'order_id' => $order->id,
+            'customer_name' => $order->customer_name,
+            'phone' => $order->phone,
+            'message' => $request->input('message', 'Customer wants to edit this order.'),
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', 'Edit request sent! Waiting for admin approval. You will be notified when approved.');
+    }
+
+    /*
+     * CUSTOMER: Get Messages (JSON)
+     */
+    public function getMessages(Order $order)
+    {
+        $lastId = request()->input('last_id', 0);
+
+        $messages = \App\Models\Message::where('order_id', $order->id)
+            ->where('id', '>', $lastId)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'messages' => $messages,
+        ]);
+    }
+
+    /*
+     * CUSTOMER: Send Message
+     */
+    public function sendMessage(Request $request, Order $order)
+    {
+        if (in_array($order->status, ['Cancelled', 'Completed'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot send messages for this order.',
+            ], 422);
+        }
+
+        $request->validate([
+            'message' => 'required|string|max:500',
+            'customer_name' => 'required|string|max:255',
+        ]);
+
+        \App\Models\Message::create([
+            'order_id' => $order->id,
+            'sender_type' => 'customer',
+            'sender_name' => $request->customer_name,
+            'message' => $request->message,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Message sent!',
+        ]);
+    }
+
+    /*
+     * ADMIN: Accept Edit Request
+     */
+    public function acceptEditRequest(Order $order, \App\Models\OrderEditRequest $editRequest)
+    {
+        if ($editRequest->order_id !== $order->id) {
+            return back()->with('error', 'Invalid edit request.');
+        }
+
+        // Reject other pending requests for this order
+        \App\Models\OrderEditRequest::where('order_id', $order->id)
+            ->where('id', '!=', $editRequest->id)
+            ->where('status', 'pending')
+            ->update(['status' => 'rejected']);
+
+        $editRequest->update([
+            'status' => 'accepted',
+            'accepted_at' => now(),
+            'expires_at' => now()->addMinutes(15),
+        ]);
+
+        return back()->with('success', 'Edit request accepted! Customer can now edit the order for 15 minutes.');
+    }
+
+    /*
+     * ADMIN: Reject Edit Request
+     */
+    public function rejectEditRequest(Order $order, \App\Models\OrderEditRequest $editRequest)
+    {
+        if ($editRequest->order_id !== $order->id) {
+            return back()->with('error', 'Invalid edit request.');
+        }
+
+        $editRequest->update([
+            'status' => 'rejected',
+            'admin_response' => request()->input('admin_response', 'Request rejected by admin.'),
+        ]);
+
+        return back()->with('success', 'Edit request rejected.');
+    }
+
+    /*
+     * ADMIN: Send Message
+     */
+    public function adminSendMessage(Request $request, Order $order)
+    {
+        if (in_array($order->status, ['Cancelled', 'Completed'])) {
+            return back()->with('error', 'Cannot send messages for this order.');
+        }
+
+        $request->validate([
+            'message' => 'required|string|max:500',
+        ]);
+
+        \App\Models\Message::create([
+            'order_id' => $order->id,
+            'sender_type' => 'admin',
+            'sender_name' => auth()->user()->name ?? 'Admin',
+            'message' => $request->message,
+        ]);
+
+        // Mark customer messages as read
+        \App\Models\Message::where('order_id', $order->id)
+            ->where('sender_type', 'customer')
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return back()->with('success', 'Message sent!');
     }
 }

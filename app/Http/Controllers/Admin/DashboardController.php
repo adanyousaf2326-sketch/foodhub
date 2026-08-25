@@ -135,4 +135,25 @@ class DashboardController extends Controller
             'recent_changes' => $recentChanges,
         ]);
     }
+
+    public function notificationsJson()
+    {
+        $pendingEditRequests = \App\Models\OrderEditRequest::where('status', 'pending')
+            ->with('order')
+            ->latest()
+            ->get();
+
+        $unreadMessages = \App\Models\Message::where('sender_type', 'customer')
+            ->where('is_read', false)
+            ->with('order')
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'edit_requests' => $pendingEditRequests,
+            'unread_messages' => $unreadMessages,
+            'edit_requests_count' => $pendingEditRequests->count(),
+            'unread_messages_count' => $unreadMessages->count(),
+        ]);
+    }
 }
