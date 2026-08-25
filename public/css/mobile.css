@@ -15,6 +15,20 @@ video {
     height: auto;
 }
 
+/* Prevent horizontal overflow on body */
+body {
+    overflow-x: hidden;
+}
+
+/* Touch-friendly tap targets - minimum 44px */
+button,
+a,
+input,
+select,
+textarea {
+    min-height: 44px;
+}
+
 @media (max-width: 768px) {
     body {
         min-width: 0;
@@ -183,6 +197,49 @@ video {
     table {
         font-size: 13px;
     }
+
+    /* Prevent text overflow */
+    p, span, div, td, th, li, a, label, strong, small {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    }
+
+    /* Forms */
+    .form-group {
+        margin-bottom: 14px !important;
+    }
+
+    .form-group label {
+        font-size: 13px !important;
+        margin-bottom: 5px !important;
+    }
+
+    select, textarea, input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="date"], input[type="time"] {
+        font-size: 16px !important;
+        padding: 10px 12px !important;
+    }
+
+    /* Full-width buttons on mobile */
+    .btn-primary, .btn-close, .filter-btn, .clear-filter,
+    .place-order, .track-btn, .cancel-btn,
+    .buttons > *, .checkout {
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* Flex wraps */
+    .buttons, .item, .card-header, .header {
+        flex-wrap: wrap !important;
+    }
+
+    /* Spacing reduction */
+    .card {
+        margin-bottom: 12px !important;
+    }
+
+    .section-title {
+        margin: 18px 0 12px !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -222,5 +279,32 @@ video {
     .buttons > * {
         width: 100%;
         text-align: center;
+    }
+
+    /* Reduce spacing further on small phones */
+    .card {
+        padding: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
+    h1 {
+        font-size: 20px !important;
+    }
+
+    h2 {
+        font-size: 17px !important;
+    }
+}
+
+/* ================= LANDSCAPE ================= */
+@media (max-height: 500px) and (orientation: landscape) {
+    nav,
+    .topbar {
+        min-height: auto !important;
+        padding: 8px 16px !important;
+    }
+
+    .container {
+        padding: 10px 16px !important;
     }
 }

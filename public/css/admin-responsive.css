@@ -1,0 +1,527 @@
+/* ==========================================================================
+   FoodHub Admin - Complete Responsive CSS
+   ========================================================================== */
+
+/* ================= HAMBURGER BUTTON ================= */
+.hamburger-btn {
+    display: none !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+    z-index: 10002 !important;
+}
+
+.hamburger-btn span {
+    display: block !important;
+    width: 20px !important;
+    height: 2px !important;
+    background: white !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+}
+
+.hamburger-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px) !important;
+}
+
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0 !important;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px) !important;
+}
+
+/* ================= TABLET (max 1024px) ================= */
+@media (max-width: 1024px) {
+    .topbar {
+        flex-wrap: wrap !important;
+        padding: 12px 20px !important;
+    }
+
+    .topbar .nav {
+        display: none !important;
+        width: 100% !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 4px !important;
+        padding-top: 12px !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+        margin-top: 10px !important;
+    }
+
+    .topbar .nav.open {
+        display: flex !important;
+    }
+
+    .topbar .nav a,
+    .topbar .nav button,
+    .topbar .nav form {
+        width: 100% !important;
+        text-align: left !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        box-sizing: border-box !important;
+    }
+
+    .topbar .nav a {
+        justify-content: flex-start !important;
+    }
+
+    .hamburger-btn {
+        display: flex !important;
+    }
+
+    /* Dashboard & page containers */
+    .container {
+        padding: 20px 16px !important;
+    }
+
+    /* Header responsive */
+    .header,
+    .top {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .header h1,
+    .top h1 {
+        font-size: 24px !important;
+    }
+
+    .header .btn,
+    .header .back-btn,
+    .header .add-btn,
+    .header .website-btn {
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* Stats cards 2 columns */
+    .cards,
+    .stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Quick actions */
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Order filter */
+    .order-filter {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .order-filter input,
+    .order-filter select,
+    .order-filter div {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .order-filter input[name="search"] {
+        min-width: 100% !important;
+    }
+
+    /* Tables - horizontal scroll */
+    .table-wrapper,
+    .table-card,
+    .card {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    table {
+        min-width: 700px !important;
+    }
+
+    /* Bill page */
+    .bill-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .actions {
+        flex-wrap: wrap !important;
+    }
+
+    /* Order show page grid */
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Card header responsive */
+    .card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+}
+
+/* ================= MOBILE (max 768px) ================= */
+@media (max-width: 768px) {
+    /* Container */
+    .container {
+        padding: 16px 12px !important;
+        max-width: 100% !important;
+    }
+
+    /* Headings */
+    h1 {
+        font-size: 22px !important;
+        line-height: 1.3 !important;
+    }
+
+    h2 {
+        font-size: 18px !important;
+    }
+
+    .section-title {
+        font-size: 18px !important;
+        margin: 20px 0 12px !important;
+    }
+
+    /* Stats cards - stack */
+    .cards,
+    .stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .card {
+        padding: 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .stat-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .stat-number {
+        font-size: 22px !important;
+    }
+
+    .stat-icon {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 22px !important;
+    }
+
+    /* Quick actions - stack */
+    .quick-actions {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .action {
+        padding: 16px !important;
+    }
+
+    .action-icon {
+        font-size: 26px !important;
+    }
+
+    .action h3 {
+        font-size: 15px !important;
+    }
+
+    .action p {
+        font-size: 13px !important;
+    }
+
+    /* Filter form */
+    .order-filter {
+        padding: 14px !important;
+        gap: 10px !important;
+    }
+
+    .order-filter > div {
+        width: 100% !important;
+    }
+
+    .filter-btn,
+    .clear-filter {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 12px !important;
+    }
+
+    /* Tables */
+    table {
+        min-width: 600px !important;
+        font-size: 13px !important;
+    }
+
+    th, td {
+        padding: 10px 8px !important;
+    }
+
+    .table-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 14px !important;
+    }
+
+    /* Buttons */
+    .btn,
+    .action-btn,
+    .back-btn,
+    .add-btn {
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+    }
+
+    .actions {
+        gap: 6px !important;
+    }
+
+    .actions .btn,
+    .actions .action-btn {
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+    }
+
+    /* Status badges */
+    .status,
+    .order-type {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+    }
+
+    /* Bill page */
+    .bill-card {
+        border-radius: 12px !important;
+    }
+
+    .bill-header {
+        padding: 18px !important;
+    }
+
+    .bill-header h1 {
+        font-size: 20px !important;
+    }
+
+    .content {
+        padding: 16px !important;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .total-row {
+        font-size: 18px !important;
+        padding: 14px !important;
+    }
+
+    .payment-box input {
+        font-size: 16px !important;
+    }
+
+    .actions {
+        flex-direction: column !important;
+    }
+
+    .actions .btn {
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* Order show page */
+    .top {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .item-total {
+        align-self: flex-end !important;
+    }
+
+    /* Announcement cards */
+    .card-head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .foods {
+        gap: 5px !important;
+    }
+
+    /* Export buttons */
+    a[href*="export"] {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
+
+    /* Header export/action row */
+    .header > div:last-child,
+    .card-header > div:last-child {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    /* Toast notification */
+    .toast {
+        left: 12px !important;
+        right: 12px !important;
+        bottom: 20px !important;
+        font-size: 13px !important;
+    }
+
+    /* Notification dropdown */
+    #notifDropdown {
+        width: calc(100vw - 24px) !important;
+        right: -60px !important;
+        max-height: 60vh !important;
+    }
+}
+
+/* ================= SMALL MOBILE (max 480px) ================= */
+@media (max-width: 480px) {
+    .container {
+        padding: 12px 10px !important;
+    }
+
+    /* Stats - full width */
+    .cards,
+    .stats {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+
+    .card {
+        padding: 14px !important;
+        border-radius: 10px !important;
+    }
+
+    .stat-number {
+        font-size: 20px !important;
+    }
+
+    .stat-title {
+        font-size: 13px !important;
+    }
+
+    h1 {
+        font-size: 20px !important;
+    }
+
+    /* Header */
+    .header h1,
+    .top h1 {
+        font-size: 20px !important;
+    }
+
+    .header .btn,
+    .header .back-btn,
+    .header .add-btn,
+    .header a {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 12px !important;
+    }
+
+    /* Tables */
+    table {
+        min-width: 550px !important;
+        font-size: 12px !important;
+    }
+
+    /* Actions - stack vertically */
+    .actions {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .actions .btn,
+    .actions .action-btn,
+    .actions form {
+        width: 100% !important;
+    }
+
+    .actions .btn,
+    .actions .action-btn {
+        text-align: center !important;
+        display: block !important;
+    }
+
+    /* Empty state */
+    .empty {
+        padding: 30px 15px !important;
+    }
+
+    .empty-icon {
+        font-size: 40px !important;
+    }
+
+    /* Bill total */
+    .total-row {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 8px !important;
+    }
+
+    .change-box {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 6px !important;
+    }
+}
+
+/* ================= LANDSCAPE MOBILE ================= */
+@media (max-height: 500px) and (orientation: landscape) {
+    .topbar {
+        min-height: 50px !important;
+        padding: 8px 16px !important;
+    }
+
+    .container {
+        padding: 10px 12px !important;
+    }
+}
+
+/* ================= SCROLLBAR HIDE FOR MOBILE NAV ================= */
+@media (max-width: 1024px) {
+    .topbar .nav::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .topbar .nav {
+        scrollbar-width: none !important;
+    }
+}
+
+/* ================= PRINT - ALL RESPONSIVE OVERRIDES DISABLED ================= */
+@media print {
+    .hamburger-btn {
+        display: none !important;
+    }
+}

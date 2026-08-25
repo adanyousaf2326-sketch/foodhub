@@ -19,54 +19,6 @@
             color: #222;
         }
 
-        .topbar {
-            width: 100%;
-            background: #111827;
-            color: white;
-            padding: 0 30px;
-            min-height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0,0,0,.15);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .logo span {
-            color: #ff6b00;
-        }
-
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav a {
-            text-decoration: none;
-            color: #d1d5db;
-            padding: 11px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .nav a:hover,
-        .nav .active {
-            background: #ff6b00;
-            color: white;
-        }
-
-        .nav .website-btn {
-            background: #16a34a;
-            color: white;
-        }
-
         .container {
             max-width: 1250px;
             margin: auto;
@@ -319,53 +271,11 @@
             text-align: center;
             color: #777;
         }
-
-        @media (max-width: 1000px) {
-            .topbar {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 650px) {
-            .container {
-                padding: 15px;
-            }
-
-            .cards,
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .nav {
-                justify-content: flex-start;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-
-            .nav a {
-                white-space: nowrap;
-            }
-
-            .order-filter input[name="search"] {
-                min-width: 100%;
-            }
-        }
     </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-responsive.css') }}">
 </head>
 
 <body>
@@ -374,16 +284,16 @@
 
 <div class="container">
 
-    <div class="header" style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
         <h1>🍔 FoodHub Hotel</h1>
-        <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:#16a34a;">
-            <span>🔔</span> Auto-Refresh: ON
-        </button>
-    </div>
-        <div style="display:flex;gap:8px;align-items:center;">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:#16a34a;">
+                <span>🔔</span> Auto-Refresh: ON
+            </button>
             <a href="{{ route("admin.orders.export.csv", request()->query()) }}" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#16a34a;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📥 CSV</a>
             <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#dc2626;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📄 PDF</a>
         </div>
+    </div>
 
     <div class="cards">
         <div class="card stat-card">
@@ -391,7 +301,6 @@
                 <div class="stat-title">Total Categories</div>
                 <div class="stat-number">{{ $totalCategories }}</div>
             </div>
-
             <div class="stat-icon icon-orange">📂</div>
         </div>
 
@@ -400,7 +309,6 @@
                 <div class="stat-title">Total Food</div>
                 <div class="stat-number">{{ $totalFood }}</div>
             </div>
-
             <div class="stat-icon icon-blue">🍔</div>
         </div>
 
@@ -409,18 +317,14 @@
                 <div class="stat-title">Total Orders</div>
                 <div class="stat-number" id="totalOrdersNum">{{ $totalOrders }}</div>
             </div>
-
             <div class="stat-icon icon-green">🛒</div>
         </div>
 
         <div class="card stat-card">
             <div>
                 <div class="stat-title">Today Revenue</div>
-                <div class="stat-number">
-                    Rs. {{ number_format($todayRevenue, 0) }}
-                </div>
+                <div class="stat-number">Rs. {{ number_format($todayRevenue, 0) }}</div>
             </div>
-
             <div class="stat-icon icon-purple">💰</div>
         </div>
     </div>
@@ -430,119 +334,72 @@
             <div class="stat-title">Available Food</div>
             <div class="stat-number">{{ $availableFood }}</div>
         </div>
-
         <div class="card">
             <div class="stat-title">Pending Orders</div>
             <div class="stat-number" id="pendingOrdersNum">{{ $pendingOrders }}</div>
         </div>
-
         <div class="card">
             <div class="stat-title">Completed Orders</div>
             <div class="stat-number" id="completedOrdersNum">{{ $completedOrders }}</div>
         </div>
-
         <div class="card">
             <div class="stat-title">Total Revenue</div>
-            <div class="stat-number">
-                Rs. {{ number_format($totalRevenue, 0) }}
-            </div>
+            <div class="stat-number">Rs. {{ number_format($totalRevenue, 0) }}</div>
         </div>
     </div>
 
     <h2 class="section-title">Quick Actions</h2>
 
     <div class="quick-actions">
-<a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Dine In'])) }}"
-   class="action">
-    <div class="action-icon">🍽️</div>
-    <h3>Dine In Orders</h3>
-    <p>{{ $dineInOrders }} dine-in orders</p>
-</a>
-
-<a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Takeaway'])) }}"
-   class="action">
-    <div class="action-icon">🥡</div>
-    <h3>Takeaway Orders</h3>
-    <p>{{ $takeAwayOrders }} takeaway orders</p>
-</a>
-
-<a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Delivery'])) }}"
-   class="action">
-    <div class="action-icon">🛵</div>
-    <h3>Delivery Orders</h3>
-    <p>{{ $deliveryOrders }} delivery orders</p>
-</a>
+        <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Dine In'])) }}" class="action">
+            <div class="action-icon">🍽️</div>
+            <h3>Dine In Orders</h3>
+            <p>{{ $dineInOrders }} dine-in orders</p>
+        </a>
+        <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Takeaway'])) }}" class="action">
+            <div class="action-icon">🥡</div>
+            <h3>Takeaway Orders</h3>
+            <p>{{ $takeAwayOrders }} takeaway orders</p>
+        </a>
+        <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Delivery'])) }}" class="action">
+            <div class="action-icon">🛵</div>
+            <h3>Delivery Orders</h3>
+            <p>{{ $deliveryOrders }} delivery orders</p>
+        </a>
     </div>
 
     <h2 class="section-title">Search Orders</h2>
 
-    <form method="GET" action="{{ route('admin.dashboard') }}"
-          class="order-filter">
-
-        <input
-            type="text"
-            name="search"
-            value="{{ request('search') }}"
-            placeholder="Order ID, customer, phone, status..."
-        >
-
+    <form method="GET" action="{{ route('admin.dashboard') }}" class="order-filter">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Order ID, customer, phone, status...">
         <div>
             <label>From Date</label>
-            <input
-                type="date"
-                name="from_date"
-                value="{{ request('from_date') }}"
-            >
+            <input type="date" name="from_date" value="{{ request('from_date') }}">
         </div>
-
         <div>
             <label>From Time</label>
-            <input
-                type="time"
-                name="from_time"
-                value="{{ request('from_time') }}"
-            >
+            <input type="time" name="from_time" value="{{ request('from_time') }}">
         </div>
-
         <div>
             <label>To Date</label>
-            <input
-                type="date"
-                name="to_date"
-                value="{{ request('to_date') }}"
-            >
+            <input type="date" name="to_date" value="{{ request('to_date') }}">
         </div>
-
         <div>
             <label>To Time</label>
-            <input
-                type="time"
-                name="to_time"
-                value="{{ request('to_time') }}"
-            >
+            <input type="time" name="to_time" value="{{ request('to_time') }}">
         </div>
-
-        <button type="submit" class="filter-btn">
-            🔍 Search
-        </button>
-
-        <a href="{{ route('admin.dashboard') }}" class="clear-filter">
-            Clear
-        </a>
+        <button type="submit" class="filter-btn">🔍 Search</button>
+        <a href="{{ route('admin.dashboard') }}" class="clear-filter">Clear</a>
     </form>
 
     <p class="filter-result">
-        Selected period / search result:
-        <strong>{{ $filteredOrdersCount }}</strong> orders
+        Selected period / search result: <strong>{{ $filteredOrdersCount }}</strong> orders
     </p>
 
     <div class="table-card">
         <div class="table-header">
             <h2>Recent Orders</h2>
-
-            <span>
-                {{ $filteredOrdersCount }} Orders
-            </span>
+            <span>{{ $filteredOrdersCount }} Orders</span>
         </div>
 
         @if($recentOrders->count())
@@ -560,7 +417,6 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @foreach($recentOrders as $order)
                         @php
@@ -571,90 +427,48 @@
                                 'Preparing' => 'preparing',
                                 default => 'pending',
                             };
-
                             $typeClass = match($order->order_type) {
                                 'Dine In' => 'dine-in',
                                 'Delivery' => 'delivery',
                                 default => 'takeaway',
                             };
                         @endphp
-
                         <tr>
                             <td>#{{ $order->id }}</td>
-
-                            <td>
-                                <strong>{{ $order->customer_name }}</strong>
-                            </td>
-
+                            <td><strong>{{ $order->customer_name }}</strong></td>
                             <td>{{ $order->phone }}</td>
-
                             <td>
                                 @if($order->order_type === 'Dine In')
-                                    <span class="order-type dine-in">
-                                        🍽️ Dine In
-                                    </span>
+                                    <span class="order-type dine-in">🍽️ Dine In</span>
                                 @elseif($order->order_type === 'Delivery')
-                                    <span class="order-type delivery">
-                                        🛵 Delivery
-                                    </span>
+                                    <span class="order-type delivery">🛵 Delivery</span>
                                 @else
-                                    <span class="order-type takeaway">
-                                        🥡 Takeaway
-                                    </span>
+                                    <span class="order-type takeaway">🥡 Takeaway</span>
                                 @endif
                             </td>
-
-                            <td>
-                                Rs. {{ number_format($order->total_amount, 2) }}
-                            </td>
-
+                            <td>Rs. {{ number_format($order->total_amount, 2) }}</td>
                             <td>{{ $order->payment_method }}</td>
-
-                            <td>
-                                <span class="status {{ $statusClass }}">
-                                    {{ $order->status }}
-                                </span>
-                            </td>
-
+                            <td><span class="status {{ $statusClass }}">{{ $order->status }}</span></td>
                             <td>
                                 {{ $order->created_at->format('d M Y') }}
-                                <br>
-                                <small>{{ $order->created_at->format('h:i A') }}</small>
+                                <br><small>{{ $order->created_at->format('h:i A') }}</small>
                             </td>
-
                             <td>
-                               @if(!in_array($order->status, ['Completed', 'Delivered', 'Cancelled']))
-    <a href="{{ route('admin.orders.bill', $order) }}" class="view">
-        💳 Bill
-    </a>
-@else
-    <a href="{{ route('admin.orders.show', $order) }}" class="view">
-        View
-    </a>
-@endif
+                                @if(!in_array($order->status, ['Completed', 'Delivered', 'Cancelled']))
+                                    <a href="{{ route('admin.orders.bill', $order) }}" class="view">💳 Bill</a>
+                                @else
+                                    <a href="{{ route('admin.orders.show', $order) }}" class="view">View</a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-        <div style="
-    display:flex;
-    justify-content:flex-end;
-    gap:12px;
-    padding:18px 20px;
-    font-size:18px;
-    font-weight:bold;
-    background:#fff7ed;
-    color:#c2410c;
-">
-    <span>Total Amount:</span>
-
-    <span>
-        Rs. {{ number_format($filteredOrdersTotal, 2) }}
-    </span>
-</div>
+            <div style="display:flex;justify-content:flex-end;gap:12px;padding:18px 20px;font-size:18px;font-weight:bold;background:#fff7ed;color:#c2410c;">
+                <span>Total Amount:</span>
+                <span>Rs. {{ number_format($filteredOrdersTotal, 2) }}</span>
+            </div>
         @else
-        
             <div class="empty">
                 <h2>📋 No Orders Found</h2>
                 <p>Search ya selected date/time range mein koi order nahi mila.</p>

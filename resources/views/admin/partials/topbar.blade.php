@@ -5,7 +5,13 @@
         <span class="badge-admin">Admin</span>
     </a>
 
-    <nav class="nav" aria-label="Admin navigation">
+    <button type="button" class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav class="nav" id="adminNav" aria-label="Admin navigation">
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <span>🏠</span> Dashboard
         </a>
@@ -55,6 +61,36 @@
 </div>
 
 <script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+        var nav = document.getElementById('adminNav');
+        var btn = document.querySelector('.hamburger-btn');
+        if (nav && btn) {
+            nav.classList.toggle('open');
+            btn.classList.toggle('active');
+        }
+    }
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('#adminNav a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            var nav = document.getElementById('adminNav');
+            var btn = document.querySelector('.hamburger-btn');
+            if (nav) nav.classList.remove('open');
+            if (btn) btn.classList.remove('active');
+        });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        var nav = document.getElementById('adminNav');
+        var btn = document.querySelector('.hamburger-btn');
+        if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
+            nav.classList.remove('open');
+            btn.classList.remove('active');
+        }
+    });
+
     // Theme Toggle Functionality
     function toggleTheme() {
         const body = document.body;

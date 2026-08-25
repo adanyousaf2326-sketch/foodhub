@@ -146,6 +146,82 @@ nav a.track-active,
     box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3) !important;
 }
 
+/* ================= CUSTOMER HAMBURGER ================= */
+.customer-hamburger {
+    display: none !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+}
+
+.customer-hamburger span {
+    display: block !important;
+    width: 18px !important;
+    height: 2px !important;
+    background: white !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+}
+
+.customer-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px) !important;
+}
+
+.customer-hamburger.active span:nth-child(2) {
+    opacity: 0 !important;
+}
+
+.customer-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px) !important;
+}
+
+@media (max-width: 900px) {
+    .customer-hamburger {
+        display: flex !important;
+    }
+
+    nav > div:last-child,
+    #customerNavLinks {
+        display: none !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: #111827 !important;
+        flex-direction: column !important;
+        padding: 10px 16px !important;
+        gap: 4px !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+        z-index: 9999 !important;
+    }
+
+    nav > div:last-child.open,
+    #customerNavLinks.open {
+        display: flex !important;
+    }
+
+    nav > div:last-child a,
+    #customerNavLinks a,
+    nav > div:last-child button,
+    #customerNavLinks button {
+        width: 100% !important;
+        text-align: left !important;
+        padding: 12px 14px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+}
+
 @media (max-width: 768px) {
     nav,
     .customer-navbar {

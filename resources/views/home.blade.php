@@ -2426,12 +2426,15 @@
 
 
 <nav>
+    <button type="button" class="customer-hamburger" onclick="toggleCustomerNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
     <a href="{{ url('/') }}" class="logo">
         <span class="logo-icon">🍔</span>
         Food<span class="hub-brand">Hub</span>
     </a>
 
-    <div>
+    <div id="customerNavLinks">
         <a href="{{ url('/') }}">
             <span>🏠</span> Home
         </a>
@@ -3671,8 +3674,34 @@ function updateCartCount() {
         btn.style.transition = '';
     });
 
-})();
+    })();
 
+    // Customer hamburger menu toggle
+    function toggleCustomerNav() {
+        var navLinks = document.getElementById("customerNavLinks");
+        var hamburger = document.querySelector(".customer-hamburger");
+        if (navLinks && hamburger) {
+            navLinks.classList.toggle("open");
+            hamburger.classList.toggle("active");
+        }
+    }
+    document.querySelectorAll("#customerNavLinks a").forEach(function(link) {
+        link.addEventListener("click", function() {
+            var navLinks = document.getElementById("customerNavLinks");
+            var hamburger = document.querySelector(".customer-hamburger");
+            if (navLinks) navLinks.classList.remove("open");
+            if (hamburger) hamburger.classList.remove("active");
+        });
+    });
+    document.addEventListener("click", function(e) {
+        var nav = document.querySelector("nav");
+        var navLinks = document.getElementById("customerNavLinks");
+        var hamburger = document.querySelector(".customer-hamburger");
+        if (nav && !nav.contains(e.target)) {
+            if (navLinks) navLinks.classList.remove("open");
+            if (hamburger) hamburger.classList.remove("active");
+        }
+    });
 
 
 function renderCart() {
@@ -3977,7 +4006,33 @@ document.addEventListener(
             if (icon) icon.textContent = "☀️";
         }
     })();
-</script>
+
+    // Customer hamburger menu toggle
+    function toggleCustomerNav() {
+        var navLinks = document.getElementById("customerNavLinks");
+        var hamburger = document.querySelector(".customer-hamburger");
+        if (navLinks && hamburger) {
+            navLinks.classList.toggle("open");
+            hamburger.classList.toggle("active");
+        }
+    }
+    document.querySelectorAll("#customerNavLinks a").forEach(function(link) {
+        link.addEventListener("click", function() {
+            var navLinks = document.getElementById("customerNavLinks");
+            var hamburger = document.querySelector(".customer-hamburger");
+            if (navLinks) navLinks.classList.remove("open");
+            if (hamburger) hamburger.classList.remove("active");
+        });
+    });
+    document.addEventListener("click", function(e) {
+        var nav = document.querySelector("nav");
+        var navLinks = document.getElementById("customerNavLinks");
+        var hamburger = document.querySelector(".customer-hamburger");
+        if (nav && !nav.contains(e.target)) {
+            if (navLinks) navLinks.classList.remove("open");
+            if (hamburger) hamburger.classList.remove("active");
+        }
+    });</script>
 </body>
 
 </html>
