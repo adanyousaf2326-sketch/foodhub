@@ -2317,9 +2317,97 @@
 
 
 
+
+/* ==================== MOBILE FIXES - AUTO INJECTED ==================== */
+
+/* Fix overflow - prevent horizontal scroll */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+/* Hero - not sticky on mobile, smaller */
+@media (max-width: 900px) {
+    .hero {
+        position: relative !important;
+        top: auto !important;
+        min-height: auto !important;
+        padding: 24px 5% !important;
+        z-index: auto !important;
+    }
+}
+
+/* Food grid - show 2 columns on ALL mobile sizes */
+@media (max-width: 700px) {
+    .foods {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    .food-image {
+        height: 110px !important;
+    }
+}
+
+@media (max-width: 450px) {
+    .foods {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    .food-image {
+        height: 100px !important;
+    }
+    .food-info {
+        padding: 8px !important;
+    }
+    .food-info h3 {
+        font-size: 13px !important;
+    }
+    .price {
+        font-size: 13px !important;
+    }
+}
+
+/* Draggable cart button - move up to not overlap content */
+.draggable-cart-btn {
+    bottom: 80px !important;
+}
+
+/* Fix padding-right overflow from 1100px media query */
+@media (max-width: 1100px) {
+    .hero, .section {
+        padding-right: 5% !important;
+    }
+}
+
+/* Hero h1 smaller on mobile */
+@media (max-width: 700px) {
+    .hero h1 {
+        font-size: 28px !important;
+    }
+    .hero p {
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+    }
+    .hero-btn {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+    }
+    .section-title h2 {
+        font-size: 22px !important;
+    }
+}
+
+/* Categories 2 cols on all mobile */
+@media (max-width: 700px) {
+    .categories {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+}
 </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customer-dark-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/customer-responsive.css') }}">
 
     <style>
         #fh-loader {
