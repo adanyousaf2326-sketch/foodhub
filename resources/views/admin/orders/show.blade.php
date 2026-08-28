@@ -943,6 +943,12 @@
 
                     </button>                </form>
 
+                @if(!in_array($order->status, ['Cancelled', 'Completed', 'Delivered']))
+                <a href="{{ route('admin.orders.admin-edit', $order) }}" style="display:block;margin-top:10px;padding:12px;border:none;border-radius:8px;background:#7c3aed;color:white;font-weight:bold;font-size:14px;text-align:center;text-decoration:none;">
+                    ✏️ Edit Order (Full Edit)
+                </a>
+                @endif
+
 
 
 

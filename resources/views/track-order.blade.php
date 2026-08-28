@@ -655,18 +655,20 @@
                         !$isCancelled
                         && !$isCompleted
                         && !$isDelivered
+                        && !$order->has_edited
                         && now()->lt($orderDeadline);
 
                     // Can edit if admin approved AND within edit window
                     $canEditNow = $approvedEditRequest && now()->lt($approvedEditRequest->expires_at);
 
-                    // Can send edit request if order is active and no pending request
+                    // Can send edit request if order is active and no pending request and not already edited
                     $canSendRequest =
                         !$isCancelled
                         && !$isCompleted
                         && !$isDelivered
                         && !$pendingEditRequest
-                        && !$approvedEditRequest;
+                        && !$approvedEditRequest
+                        && !$order->has_edited;
 
                     $statusClass = match($order->status) {
                         'Preparing' => 'status-preparing',
@@ -769,6 +771,13 @@
                             &#9989; This bill is closed and cannot be updated or cancelled.
                         </div>
 
+                    @elseif($order->has_edited)
+
+                        <div class="cancel-expired" style="background:#fff7ed;border:2px solid #fdba74;">
+                            &#9998; You have already edited this order once.
+                            <br>You cannot edit it again. Please contact the restaurant directly if you need further changes.
+                        </div>
+
                     @elseif($canEditNow)
 
                         {{-- Admin approved edit request - show edit button --}}
@@ -867,7 +876,10 @@
 
                         <form method="POST" action="{{ route('track.order.edit-request', $order) }}">
                             @csrf
-                            <div class="form-group" style="margin-top:15px;">
+                            <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#92400e;">
+                                ⚠️ <strong>Note:</strong> You can only edit your order <strong>once</strong>. Make sure to include all changes in your request.
+                            </div>
+                            <div class="form-group" style="margin-top:10px;">
                                 <input
                                     type="text"
                                     name="message"
@@ -876,7 +888,7 @@
                                 >
                             </div>
                             <button type="submit" class="request-edit-btn">
-                                &#9998; Request Edit
+                                &#9998; Request Edit (One-Time Only)
                             </button>
                         </form>
 

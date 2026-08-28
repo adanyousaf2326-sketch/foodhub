@@ -396,42 +396,9 @@
         Selected period / search result: <strong>{{ $filteredOrdersCount }}</strong> orders
     </p>
 
-    {{-- ANALYTICS CHARTS SECTION --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));gap:20px;margin-bottom:30px;">
-        {{-- Revenue Trend --}}
-        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-                <h3 style="margin:0;font-size:16px;color:#1f2937;">📈 Revenue Trend</h3>
-                <select id="analyticsRange" onchange="loadAnalytics()" style="padding:5px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;">
-                    <option value="7days">Last 7 Days</option>
-                    <option value="30days">Last 30 Days</option>
-                    <option value="12months">Last 12 Months</option>
-                </select>
-            </div>
-            <canvas id="revenueChart" height="180"></canvas>
-        </div>
+  
 
-        {{-- Order Status --}}
-        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
-            <h3 style="margin:0 0 15px;font-size:16px;color:#1f2937;">🍩 Order Status</h3>
-            <canvas id="statusChart" height="180"></canvas>
-        </div>
-
-        {{-- Order Type --}}
-        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
-            <h3 style="margin:0 0 15px;font-size:16px;color:#1f2937;">🍕 Order Types</h3>
-            <canvas id="typeChart" height="180"></canvas>
-        </div>
-
-        {{-- Top Selling Items + Inventory Alerts --}}
-        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
-            <h3 style="margin:0 0 15px;font-size:16px;color:#1f2937;">🏆 Top Selling Items</h3>
-            <div id="topSellingList" style="max-height:200px;overflow-y:auto;">
-                <div style="text-align:center;color:#999;padding:20px;">Loading...</div>
-            </div>
-        </div>
-    </div>
+      
 
     {{-- RATING SUMMARY --}}
     <div id="ratingSummary" style="display:none;background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:12px;padding:16px 24px;margin-bottom:20px;color:white;box-shadow:0 4px 12px rgba(245,158,11,.3);">

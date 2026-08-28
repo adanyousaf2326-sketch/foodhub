@@ -104,6 +104,138 @@ class OrderController extends Controller
             ->with('success', 'Order status updated successfully.');
     }
 
+    /*
+     * ADMIN: Edit Order (unlimited before delivery/completion, with reason)
+     */
+    public function adminEdit(Order $order)
+    {
+        if (in_array($order->status, ['Cancelled', 'Completed', 'Delivered'])) {
+            return redirect()
+                ->route('admin.orders.show', $order)
+                ->with('error', 'This order is already ' . $order->status . '. Cannot edit.');
+        }
+
+        $order->load(['items.food', 'table']);
+
+        $availableFoods = Food::where('is_available', true)
+            ->with('category')
+            ->orderBy('name')
+            ->get();
+
+        $tables = RestaurantTable::where('status', 'available')
+            ->orWhere('id', $order->table_id)
+            ->orderBy('table_number')
+            ->get();
+
+        return view('admin.orders.admin-edit', compact('order', 'availableFoods', 'tables'));
+    }
+
+    public function adminEditSave(Request $request, Order $order)
+    {
+        if (in_array($order->status, ['Cancelled', 'Completed', 'Delivered'])) {
+            return redirect()
+                ->route('admin.orders.show', $order)
+                ->with('error', 'This order is already ' . $order->status . '. Cannot edit.');
+        }
+
+        $request->validate([
+            'edit_reason' => 'required|string|max:500',
+            'order_type' => 'required|in:Delivery,Dine In,Takeaway',
+            'customer_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:30',
+            'address' => 'required_if:order_type,Delivery|nullable|string',
+            'table_id' => 'required_if:order_type,Dine In|nullable|exists:restaurant_tables,id',
+            'payment_method' => 'required|string',
+            'notes' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.food_id' => 'nullable|exists:food,id',
+            'items.*.food_name' => 'required|string|max:255',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.quantity' => 'required|integer|min:1|max:99',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request, $order) {
+                $newTableId = null;
+
+                if ($request->order_type === 'Dine In') {
+                    $requestedTableId = (int) $request->table_id;
+
+                    if ($order->table_id !== $requestedTableId) {
+                        if ($order->table_id) {
+                            RestaurantTable::where('id', $order->table_id)
+                                ->update(['status' => 'available']);
+                        }
+                        $table = RestaurantTable::where('id', $requestedTableId)
+                            ->where('status', 'available')
+                            ->lockForUpdate()
+                            ->first();
+                        if (!$table) {
+                            throw new \Exception('Selected table is currently not available.');
+                        }
+                        $table->update(['status' => 'occupied']);
+                        $newTableId = $table->id;
+                    } else {
+                        $newTableId = $order->table_id;
+                    }
+                } else {
+                    if ($order->order_type === 'Dine In' && $order->table_id) {
+                        RestaurantTable::where('id', $order->table_id)
+                            ->update(['status' => 'available']);
+                    }
+                }
+
+                $total = 0;
+                $itemsData = [];
+
+                foreach ($request->items as $item) {
+                    $qty = (int) $item['quantity'];
+                    $price = (float) $item['price'];
+                    $subtotal = $price * $qty;
+                    $total += $subtotal;
+                    $itemsData[] = [
+                        'order_id' => $order->id,
+                        'food_id' => !empty($item['food_id']) ? (int) $item['food_id'] : null,
+                        'food_name' => $item['food_name'],
+                        'price' => $price,
+                        'quantity' => $qty,
+                        'subtotal' => $subtotal,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+
+                $order->update([
+                    'customer_name' => $request->customer_name,
+                    'phone' => $request->phone,
+                    'address' => $request->order_type === 'Delivery' ? $request->address : null,
+                    'total_amount' => $total,
+                    'payment_method' => $request->payment_method,
+                    'notes' => $request->notes,
+                    'order_type' => $request->order_type,
+                    'table_id' => $newTableId,
+                ]);
+
+                $order->items()->delete();
+                OrderItem::insert($itemsData);
+
+                // Log the admin edit reason as a message in chat
+                \App\Models\Message::create([
+                    'order_id' => $order->id,
+                    'sender_type' => 'admin',
+                    'sender_name' => auth()->user()->name ?? 'Admin',
+                    'message' => '✏️ Admin edited this order. Reason: ' . $request->edit_reason,
+                ]);
+            });
+
+            return redirect()
+                ->route('admin.orders.show', $order)
+                ->with('success', 'Order updated successfully by admin.');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['table_id' => $e->getMessage()]);
+        }
+    }
+
     public function close(Order $order)
     {
         $this->changeStatus($order, 'Completed');
@@ -289,7 +421,19 @@ class OrderController extends Controller
                 ])
                 ->with(
                     'error',
-                    'This order cannot be modified in its current status (' . $order->status . ').'
+                    'This order cannot be modified. It is already ' . $order->status . '.'
+                );
+        }
+
+        // Customer can only edit once
+        if ($order->has_edited) {
+            return redirect()
+                ->route('track.order.search', [
+                    'order_number' => $order->id,
+                ])
+                ->with(
+                    'error',
+                    'You have already edited this order once. You cannot edit it again. Please contact the restaurant directly if you need further changes.'
                 );
         }
 
@@ -473,6 +617,7 @@ class OrderController extends Controller
                     'notes' => $request->notes,
                     'order_type' => $request->order_type,
                     'table_id' => $newTableId,
+                    'has_edited' => true,
                 ]);
 
                 $order->items()->delete();
@@ -610,7 +755,12 @@ class OrderController extends Controller
     public function storeEditRequest(Request $request, Order $order)
     {
         if (in_array($order->status, ['Cancelled', 'Completed', 'Delivered'])) {
-            return back()->with('error', 'This order cannot be edited in its current status.');
+            return back()->with('error', 'This order cannot be edited. It is already ' . $order->status . '.');
+        }
+
+        // Customer can only edit once
+        if ($order->has_edited) {
+            return back()->with('error', 'You have already edited this order once. You cannot edit it again. Please contact the restaurant directly if you need further changes.');
         }
 
         $existingPending = \App\Models\OrderEditRequest::where('order_id', $order->id)
@@ -618,7 +768,7 @@ class OrderController extends Controller
             ->exists();
 
         if ($existingPending) {
-            return back()->with('error', 'You already have a pending edit request. Please wait for admin response.');
+            return back()->with('error', 'You already have a pending edit request. Please wait for admin approval.');
         }
 
         $existingAccepted = \App\Models\OrderEditRequest::where('order_id', $order->id)
@@ -638,7 +788,7 @@ class OrderController extends Controller
             'status' => 'pending',
         ]);
 
-        return back()->with('success', 'Edit request sent! Waiting for admin approval. You will be notified when approved.');
+        return back()->with('success', 'Edit request sent! You can only edit your order once, so make sure to add all changes. Waiting for admin approval.');
     }
 
     /*

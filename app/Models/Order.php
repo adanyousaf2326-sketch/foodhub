@@ -16,9 +16,10 @@ class Order extends Model
     'notes',
     'order_type',
     'table_id',
-       'paid_amount',
-'change_amount',
-'paid_at',
+    'paid_amount',
+    'change_amount',
+    'paid_at',
+    'has_edited',
 ];
 
     protected $casts = [
