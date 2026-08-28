@@ -19,33 +19,14 @@
             color: #222;
         }
 
-        .topbar {
-            background: #111827;
-            color: white;
-            min-height: 70px;
-            padding: 0 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0,0,0,.15);
-        }
+        
 
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-        }
+        
 
-        .logo span {
-            color: #ff6b00;
-        }
+        
 
-        .nav {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
+        
 
-        .nav a,
         .logout-btn {
             color: #d1d5db;
             text-decoration: none;
@@ -55,15 +36,6 @@
             font-weight: bold;
             border: none;
             cursor: pointer;
-        }
-
-        .nav a:hover,
-        .nav .active {
-            background: #ff6b00;
-            color: white;
-        }
-
-        .logout-btn {
             background: #dc2626;
             color: white;
         }
@@ -174,16 +146,9 @@
         }
 
         @media(max-width: 800px) {
-            .topbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
-            }
+            
 
-            .nav {
-                width: 100%;
-                overflow-x: auto;
-            }
+            
 
             .container {
                 padding: 15px;
