@@ -90,10 +90,115 @@
     </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
 @include('admin.partials.topbar')
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>➕ Add New User</h1>
+
+        @if($errors->any())
+            <div class="error">
+                <ul style="padding-left:20px;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('admin.users.store') }}">
+
+            @csrf
+
+            <div class="form-group">
+                <label>Name</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name') }}"
+                    placeholder="Enter name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="Enter email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Minimum 8 characters"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    placeholder="Repeat password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+
+                <select name="role" required>
+
+                    <option value="Admin">
+                        Admin
+                    </option>
+
+                    <option value="Manager">
+                        Manager
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit">
+                    💾 Create User
+                </button>
+
+                <a
+                    href="{{ route('admin.users.index') }}"
+                    class="back"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

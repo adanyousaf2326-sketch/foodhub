@@ -19,14 +19,33 @@
             color: #222;
         }
 
-        
+        .topbar {
+            background: #111827;
+            color: white;
+            min-height: 70px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
+        }
 
-        
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
 
-        
+        .logo span {
+            color: #ff6b00;
+        }
 
-        
+        .nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
+        .nav a,
         .logout-btn {
             color: #d1d5db;
             text-decoration: none;
@@ -36,6 +55,15 @@
             font-weight: bold;
             border: none;
             cursor: pointer;
+        }
+
+        .nav a:hover,
+        .nav .active {
+            background: #ff6b00;
+            color: white;
+        }
+
+        .logout-btn {
             background: #dc2626;
             color: white;
         }
@@ -146,9 +174,16 @@
         }
 
         @media(max-width: 800px) {
-            
+            .topbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
 
-            
+            .nav {
+                width: 100%;
+                overflow-x: auto;
+            }
 
             .container {
                 padding: 15px;
@@ -164,10 +199,138 @@
 
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
 @include('admin.partials.topbar')
+
+<div class="container">
+
+    <div class="header">
+
+        <div>
+            <h1>👥 Admin Users</h1>
+        </div>
+
+        <a href="{{ route('admin.users.create') }}" class="add-btn">
+            ➕ Add New User
+        </a>
+
+    </div>
+
+    @if(session('success'))
+        <div class="success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="error">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="card">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @forelse($users as $user)
+
+                    <tr>
+
+                        <td>
+                            {{ $user->id }}
+                        </td>
+
+                        <td>
+                            <strong>{{ $user->name }}</strong>
+
+                            @if(Auth::id() === $user->id)
+                                <small style="color:#16a34a;">
+                                    (You)
+                                </small>
+                            @endif
+                        </td>
+
+                        <td>
+                            {{ $user->email }}
+                        </td>
+
+                        <td>
+                            <span class="role {{ strtolower($user->role) }}">
+                                {{ $user->role }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ $user->created_at->format('d M Y') }}
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{{ route('admin.users.edit', $user) }}"
+                                class="edit"
+                            >
+                                ✏️ Edit
+                            </a>
+
+                            @if(Auth::id() !== $user->id)
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('admin.users.destroy', $user) }}"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Are you sure you want to delete this user?');"
+                                >
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="delete">
+                                        🗑️ Delete
+                                    </button>
+
+                                </form>
+
+                            @endif
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+                        <td colspan="6" style="text-align:center;color:#777;">
+                            No users found.
+                        </td>
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

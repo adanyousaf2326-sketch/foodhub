@@ -151,10 +151,217 @@
     </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
 @include('admin.partials.topbar')
+
+<div class="container">
+
+    <div class="header">
+        <h1>✏️ Edit Food</h1>
+
+        <p class="subtitle">
+            Update food item information
+        </p>
+    </div>
+
+    <div class="card">
+
+        @if($errors->any())
+
+            <div class="error">
+                <strong>Please fix the following:</strong>
+
+                <ul style="margin-top:8px; margin-left:20px;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+
+        @endif
+
+
+        <form
+            action="{{ route('admin.food.update', $food) }}"
+            method="POST"
+        >
+
+            @csrf
+            @method('PUT')
+
+
+            <div class="form-group">
+
+                <label>
+                    Food Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name', $food->name) }}"
+                    placeholder="Enter food name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select name="category_id" required>
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        @foreach($categories as $category)
+
+                            <option
+                                value="{{ $category->id }}"
+                                {{ old('category_id', $food->category_id) == $category->id ? 'selected' : '' }}
+                            >
+                                {{ $category->name }}
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Price (Rs.)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="price"
+                        value="{{ old('price', $food->price) }}"
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Discount (%)
+                </label>
+
+                <input
+                    type="number"
+                    name="discount_percentage"
+                    value="{{ old('discount_percentage', $food->discount_percentage) }}"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    placeholder="0"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Enter food description"
+                >{{ old('description', $food->description) }}</textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Image URL
+                </label>
+
+                <input
+                    type="text"
+                    name="image"
+                    value="{{ old('image', $food->image) }}"
+                    placeholder="https://example.com/food.jpg"
+                >
+
+                @if($food->image)
+
+                    <div class="current-image">
+                        Current Image:
+                        {{ $food->image }}
+                    </div>
+
+                @endif
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label class="checkbox">
+
+                    <input
+                        type="checkbox"
+                        name="is_available"
+                        value="1"
+                        {{ old('is_available', $food->is_available) ? 'checked' : '' }}
+                    >
+
+                    <span>
+                        Food is Available
+                    </span>
+
+                </label>
+
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    💾 Update Food
+                </button>
+
+                <a
+                    href="{{ route('admin.food.index') }}"
+                    class="btn btn-secondary"
+                >
+                    ← Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

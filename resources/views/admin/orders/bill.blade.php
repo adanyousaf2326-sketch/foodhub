@@ -209,10 +209,182 @@
 </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
 @include('admin.partials.topbar')
+
+<div class="container">
+    <div class="bill-card">
+
+        <div class="bill-header">
+            <div>
+                <h1>🧾 FoodHub Bill</h1>
+                <p>Order #{{ $order->id }}</p>
+            </div>
+
+            <div>
+                {{ $order->created_at->format('d M Y, h:i A') }}
+            </div>
+        </div>
+
+        <div class="content">
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Customer</div>
+                    <div class="info-value">{{ $order->customer_name }}</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value">{{ $order->phone }}</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Order Type</div>
+                    <div class="info-value">{{ $order->order_type }}</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Payment Method</div>
+                    <div class="info-value">{{ $order->payment_method }}</div>
+                </div>
+
+                @if($order->order_type === 'Dine In')
+                    <div class="info-box">
+                        <div class="info-label">Table</div>
+                        <div class="info-value">
+                            Table #{{ $order->table_id }}
+                        </div>
+                    </div>
+                @endif
+
+                @if($order->address)
+                    <div class="info-box">
+                        <div class="info-label">Address</div>
+                        <div class="info-value">{{ $order->address }}</div>
+                    </div>
+                @endif
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th class="right">Price</th>
+                            <th class="right">Quantity</th>
+                            <th class="right">Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach($order->items as $item)
+                            @php
+                                $unitPrice = $item->price ?? $item->food->price ?? 0;
+                                $subtotal = $unitPrice * $item->quantity;
+                            @endphp
+
+                            <tr>
+                                <td>
+                                    {{ $item->food_name }}
+                                </td>
+
+                                <td class="right">
+                                    Rs. {{ number_format($unitPrice, 2) }}
+                                </td>
+
+                                <td class="right">
+                                    {{ $item->quantity }}
+                                </td>
+
+                                <td class="right">
+                                    Rs. {{ number_format($subtotal, 2) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="total-row">
+                <span>Total Bill</span>
+                <span id="totalAmount" data-total="{{ $order->total_amount }}">
+                    Rs. {{ number_format($order->total_amount, 2) }}
+                </span>
+            </div>
+
+            <form
+                method="POST"
+                action="{{ route('admin.orders.complete-payment', $order) }}"
+            >
+                @csrf
+
+                <div class="payment-box">
+                    <label for="paidAmount">
+                        Cash Received
+                    </label>
+
+                    <input
+                        id="paidAmount"
+                        type="number"
+                        name="paid_amount"
+                        min="{{ $order->total_amount }}"
+                        step="0.01"
+                        placeholder="Enter received amount"
+                        required
+                    >
+
+                    @error('paid_amount')
+                        <div class="error">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                    <div class="change-box">
+                        <span>Return / Change:</span>
+                        <span id="changeAmount">Rs. 0.00</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn" onclick="window.print()" style="background:#2563eb;color:white;">🖨️ Print Bill</button>
+                    <button type="submit" class="btn btn-close">
+                        ✅ Close Bill & Add Sale
+                    </button>
+
+                    <a
+                        href="{{ route('admin.orders.index', ['type' => $order->order_type]) }}"
+                        class="btn btn-back"
+                    >
+                        ← Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const paidAmount = document.getElementById('paidAmount');
+    const totalAmount = parseFloat(
+        document.getElementById('totalAmount').dataset.total
+    );
+
+    const changeAmount = document.getElementById('changeAmount');
+
+    paidAmount.addEventListener('input', function () {
+        const paid = parseFloat(this.value) || 0;
+
+        const change = paid - totalAmount;
+
+        changeAmount.textContent = 'Rs. ' +
+            Math.max(change, 0).toFixed(2);
+    });
+</script>
+
+</body>
+</html>

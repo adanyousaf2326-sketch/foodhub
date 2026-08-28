@@ -24,24 +24,82 @@
         }
 
 
-        
+        .topbar {
+            width: 100%;
+            background: #111827;
+            color: white;
 
-        
+            padding: 0 30px;
+            min-height: 70px;
 
-        
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #ff6b00;
+        }
 
 
-        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        
+        .nav a {
+            text-decoration: none;
 
-        
+            color: #d1d5db;
 
-        
+            padding: 11px 15px;
 
-        
+            border-radius: 8px;
 
-        
+            font-size: 14px;
+            font-weight: bold;
+
+            transition: .2s;
+
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            background: #ff6b00;
+            color: white;
+        }
+
+        .nav .active {
+            background: #ff6b00;
+            color: white;
+        }
+
+        .website-btn {
+            background: #16a34a !important;
+            color: white !important;
+        }
+
+        .website-btn:hover {
+            background: #15803d !important;
+        }
 
 
         .container {
@@ -271,9 +329,21 @@
 
         @media(max-width: 1000px) {
 
-            
+            .topbar {
+                flex-direction: column;
 
-            
+                padding: 15px 20px;
+
+                gap: 15px;
+            }
+
+            .nav {
+                width: 100%;
+
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
 
         }
 
@@ -287,9 +357,19 @@
                 font-size: 25px;
             }
 
-            
+            .nav {
+                justify-content: flex-start;
 
-            
+                flex-wrap: nowrap;
+
+                overflow-x: auto;
+
+                padding-bottom: 5px;
+            }
+
+            .nav a {
+                flex-shrink: 0;
+            }
 
             .card {
                 padding: 22px;
@@ -299,9 +379,13 @@
 
         @media(max-width: 500px) {
 
-            
+            .logo {
+                font-size: 19px;
+            }
 
-            
+            .topbar {
+                align-items: flex-start;
+            }
 
             .buttons {
                 flex-direction: column;
@@ -440,9 +524,21 @@
 
         @media(max-width: 1000px) {
 
-            
+            .topbar {
+                flex-direction: column;
 
-            
+                padding: 15px 20px;
+
+                gap: 15px;
+            }
+
+            .nav {
+                width: 100%;
+
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
 
         }
 
@@ -456,9 +552,19 @@
                 font-size: 25px;
             }
 
-            
+            .nav {
+                justify-content: flex-start;
 
-            
+                flex-wrap: nowrap;
+
+                overflow-x: auto;
+
+                padding-bottom: 5px;
+            }
+
+            .nav a {
+                flex-shrink: 0;
+            }
 
             .card {
                 padding: 22px;
@@ -468,9 +574,13 @@
 
         @media(max-width: 500px) {
 
-            
+            .logo {
+                font-size: 19px;
+            }
 
-            
+            .topbar {
+                align-items: flex-start;
+            }
 
             .buttons {
                 flex-direction: column;
@@ -489,10 +599,199 @@
 
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
 @include('admin.partials.topbar')
+
+<div class="container">
+
+    <div class="page-header">
+        <h1>📂 Add New Category</h1>
+        <p>Create a new food category for your FoodHub menu.</p>
+    </div>
+
+    <div class="card">
+
+        @if($errors->any())
+            <div class="error">
+                @foreach($errors->all() as $error)
+                    <div>⚠️ {{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <form action="{{ route('admin.categories.store') }}" method="POST">
+            @csrf
+            <div class="field">
+
+                <label>
+                    📂 Category Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name') }}"
+                    placeholder="e.g. Burgers"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="field">
+
+                <label>
+                    📝 Description
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Category description..."
+                >{{ old('description') }}</textarea>
+
+            </div>
+
+
+            <!-- IMAGE -->
+
+            <div class="field">
+
+                <label>
+                    🖼️ Category Image
+                </label>
+
+                <div class="image-box">
+
+                    <input
+                        type="text"
+                        name="image"
+                        id="image"
+                        value="{{ old('image') }}"
+                        placeholder="Paste image URL here..."
+                        autocomplete="off"
+                    >
+
+                    <div class="image-help">
+
+                        Paste the image link you want to use.
+                        The link will be saved exactly as entered.
+
+                        <br>
+
+                        Examples:
+                        JPG, JPEG, PNG, WEBP, GIF and other browser-supported image URLs.
+
+                    </div>
+
+
+                    <!-- PREVIEW -->
+
+                    <img
+                        id="imagePreview"
+                        class="image-preview"
+                        alt="Category Preview"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVE -->
+
+            <div class="check">
+
+                <input
+                    type="checkbox"
+                    name="is_active"
+                    value="1"
+                    id="is_active"
+                    {{ old('is_active', true) ? 'checked' : '' }}
+                >
+
+                <label for="is_active">
+                    Active Category
+                </label>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="buttons">
+
+                <button type="submit">
+                    💾 Save Category
+                </button>
+
+                <a
+                    href="{{ route('admin.categories.index') }}"
+                    class="back"
+                >
+                    ← Cancel
+                </a>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+
+const imageInput = document.getElementById('image');
+const imagePreview = document.getElementById('imagePreview');
+
+function showImagePreview() {
+
+    const url = imageInput.value.trim();
+
+    if (!url) {
+
+        imagePreview.style.display = 'none';
+
+        imagePreview.removeAttribute('src');
+
+        return;
+    }
+
+    imagePreview.src = url;
+
+    imagePreview.onload = function () {
+
+        imagePreview.style.display = 'block';
+
+    };
+
+    imagePreview.onerror = function () {
+
+        imagePreview.style.display = 'none';
+
+    };
+
+}
+
+imageInput.addEventListener('input', showImagePreview);
+
+showImagePreview();
+
+</script>
+
+
+</body>
+
+</html>

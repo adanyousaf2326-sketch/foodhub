@@ -24,32 +24,90 @@
 
 
 
-        
+        .topbar {
+            width: 100%;
+            background: #111827;
+            color: white;
+
+            padding: 0 30px;
+            min-height: 70px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
 
-        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
 
 
-        
+        .logo span {
+            color: #ff6b00;
+        }
 
 
 
-        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
 
-        
+        .nav a {
+            text-decoration: none;
+
+            color: #d1d5db;
+
+            padding: 11px 15px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            transition: .2s;
+
+            white-space: nowrap;
+        }
 
 
-        
+        .nav a:hover {
+            background: #ff6b00;
+            color: white;
+        }
 
 
-        
+        .nav .active {
+            background: #ff6b00;
+            color: white;
+        }
 
 
-        
+        .website-btn {
+            background: #16a34a !important;
+            color: white !important;
+        }
 
 
-        
+        .website-btn:hover {
+            background: #15803d !important;
+        }
 
 
 
@@ -402,10 +460,22 @@
 
         @media(max-width: 1000px) {
 
-            
+            .topbar {
+                flex-direction: column;
+
+                padding: 15px 20px;
+
+                gap: 15px;
+            }
 
 
-            
+            .nav {
+                width: 100%;
+
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
 
         }
 
@@ -440,20 +510,34 @@
             }
 
 
-            
+            .nav {
+                justify-content: flex-start;
+
+                flex-wrap: nowrap;
+
+                overflow-x: auto;
+
+                padding-bottom: 5px;
+            }
 
 
-            
+            .nav a {
+                flex-shrink: 0;
+            }
 
         }
 
 
         @media(max-width: 500px) {
 
-            
+            .logo {
+                font-size: 19px;
+            }
 
 
-            
+            .topbar {
+                align-items: flex-start;
+            }
 
 
             .item {
@@ -473,7 +557,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
@@ -482,3 +565,613 @@
 
 
 @include('admin.partials.topbar')
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="top">
+
+        <div>
+
+            <h1>
+                📦 Order #{{ $order->id }}
+            </h1>
+
+
+        </div>
+
+
+        <a
+            href="{{ route('admin.orders.index') }}"
+            class="btn back"
+        >
+            ← Back to Orders
+        </a>
+
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+
+    @if(session('success'))
+
+        <div class="success">
+
+            ✅ {{ session('success') }}
+
+        </div>
+
+    @endif
+
+
+    <div class="grid">
+
+
+
+        <div>
+
+
+            <!-- CUSTOMER -->
+
+            <div class="card">
+
+                <h2>
+                    👤 Customer Information
+                </h2>
+
+
+                <div class="info-grid">
+
+
+                    <div class="info">
+
+                        <label>
+                            Name
+                        </label>
+
+                        <strong>
+                            {{ $order->customer_name }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <label>
+                            Phone
+                        </label>
+
+                        <strong>
+                            {{ $order->phone }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <label>
+                            Address
+                        </label>
+
+                        <strong>
+                            {{ $order->address }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <label>
+                            Payment
+                        </label>
+
+                        <strong>
+                            {{ $order->payment_method }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ORDER ITEMS -->
+
+            <div class="card">
+
+                <h2>
+                    🍔 Ordered Items
+                </h2>
+
+
+                @forelse($order->items as $item)
+
+
+                    <div class="item">
+
+
+                        <div>
+
+                            <div class="item-name">
+
+                                {{ $item->food_name }}
+
+                            </div>
+
+
+                            <div class="item-details">
+
+                                Qty:
+                                {{ $item->quantity }}
+
+                                ×
+
+                                Rs.
+                                {{ number_format($item->price, 2) }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="item-total">
+
+                            Rs.
+                            {{ number_format($item->price * $item->quantity, 2) }}
+
+                        </div>
+
+
+                    </div>
+
+
+                @empty
+
+
+                    <p style="color:#777;">
+                        No items found in this order.
+                    </p>
+
+
+                @endforelse
+
+
+                <!-- TOTAL -->
+
+                <div class="total-box">
+
+                    <span>
+                        Total
+                    </span>
+
+
+                    <span class="total">
+
+                        Rs.
+                        {{ number_format($order->total_amount, 2) }}
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            @if($order->notes)
+
+
+                <div class="card">
+
+                    <h2>
+                        📝 Customer Notes
+                    </h2>
+
+
+                    <div class="notes">
+
+                        {{ $order->notes }}
+
+                    </div>
+
+                </div>
+
+
+            @endif
+
+
+        </div>
+
+
+
+        <div>
+
+
+            <!-- CURRENT STATUS -->
+
+            @php
+
+                $statusClass = strtolower($order->status);
+
+                if ($statusClass === 'out for delivery') {
+                    $statusClass = 'preparing';
+                }
+
+            @endphp
+
+
+            <div class="status-box">
+
+
+                <div class="label">
+                    CURRENT ORDER STATUS
+                </div>
+
+
+                <span class="status {{ $statusClass }}">
+
+                    {{ $order->status }}
+
+                </span>
+
+
+            </div>
+
+
+            <!-- UPDATE ORDER -->
+
+            <div class="card">
+
+
+                <h2>
+                    ⚙️ Update Order
+                </h2>
+
+
+                <form
+                    action="{{ route('admin.orders.update', $order) }}"
+                    method="POST"
+                >
+
+                    @csrf
+
+                    @method('PUT')
+
+
+                    <!-- STATUS -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Order Status
+                        </label>
+
+
+                        <select name="status">
+
+
+                            <option
+                                value="Pending"
+                                {{ $order->status == 'Pending' ? 'selected' : '' }}
+                            >
+                                Pending
+                            </option>
+
+
+                            <option
+                                value="Confirmed"
+                                {{ $order->status == 'Confirmed' ? 'selected' : '' }}
+                            >
+                                Confirmed
+                            </option>
+
+
+                            <option
+                                value="Preparing"
+                                {{ $order->status == 'Preparing' ? 'selected' : '' }}
+                            >
+                                Preparing
+                            </option>
+
+
+                            <option
+                                value="Out for Delivery"
+                                {{ $order->status == 'Out for Delivery' ? 'selected' : '' }}
+                            >
+                                Out for Delivery
+                            </option>
+
+
+                            <option
+                                value="Delivered"
+                                {{ $order->status == 'Delivered' ? 'selected' : '' }}
+                            >
+                                Delivered
+                            </option>
+
+
+                            <option
+                                value="Cancelled"
+                                {{ $order->status == 'Cancelled' ? 'selected' : '' }}
+                            >
+                                Cancelled
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- NOTES -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Notes
+                        </label>
+
+
+                        <textarea
+                            name="notes"
+                            placeholder="Add order note..."
+                        >{{ $order->notes }}</textarea>
+
+                    </div>
+
+
+                    <!-- UPDATE -->
+
+                    <button
+                        type="submit"
+                        class="btn update"
+                        style="width:100%;"
+                    >
+
+                        💾 Update Order
+
+                    </button>                </form>
+
+                @if(!in_array($order->status, ['Cancelled', 'Completed', 'Delivered']))
+                <a href="{{ route('admin.orders.admin-edit', $order) }}" style="display:block;margin-top:10px;padding:12px;border:none;border-radius:8px;background:#7c3aed;color:white;font-weight:bold;font-size:14px;text-align:center;text-decoration:none;">
+                    ✏️ Edit Order (Full Edit)
+                </a>
+                @endif
+
+
+
+
+            </div>            <!-- ORDER INFORMATION -->
+
+            <div class="card">
+
+
+                <h2>
+                    🕒 Order Information
+                </h2>
+
+
+                <div class="info">
+
+                    <label>
+                        Order Date
+                    </label>
+
+
+                    <strong>
+                        {{ $order->created_at->format('d M Y') }}
+                    </strong>
+
+                </div>
+
+                <br>
+
+
+                <div class="info">
+
+                    <label>
+                        Order Time
+                    </label>
+
+
+                    <strong>
+                        {{ $order->created_at->format('h:i A') }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- EDIT REQUESTS -->
+            @php
+                $pendingEditRequests = \App\Models\OrderEditRequest::where('order_id', $order->id)
+                    ->where('status', 'pending')
+                    ->latest()
+                    ->get();
+                $acceptedEditRequest = \App\Models\OrderEditRequest::where('order_id', $order->id)
+                    ->where('status', 'accepted')
+                    ->where('expires_at', '>', now())
+                    ->latest()
+                    ->first();
+            @endphp
+
+            @if($pendingEditRequests->count() > 0 || $acceptedEditRequest)
+                <div class="card" style="border:2px solid #f59e0b;background:#fffbeb;">
+                    <h2 style="color:#b45309;">✏️ Edit Requests</h2>
+
+                    @if($pendingEditRequests->count() > 0)
+                        @foreach($pendingEditRequests as $req)
+                            <div style="padding:14px;border:1px solid #fde68a;border-radius:10px;background:white;margin-bottom:12px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <div>
+                                        <strong style="color:#92400e;">{{ $req->customer_name }}</strong>
+                                        <span style="color:#777;font-size:12px;margin-left:8px;">{{ $req->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:bold;">PENDING</span>
+                                </div>
+                                @if($req->message)
+                                    <p style="margin-top:8px;color:#555;font-size:14px;">{{ $req->message }}</p>
+                                @endif
+                                <div style="display:flex;gap:8px;margin-top:12px;">
+                                    <form method="POST" action="{{ route('admin.orders.edit-requests.accept', [$order, $req]) }}" style="flex:1;">
+                                        @csrf
+                                        <button type="submit" style="width:100%;padding:10px;border:none;border-radius:8px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;">✅ Accept</button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.orders.edit-requests.reject', [$order, $req]) }}" style="flex:1;">
+                                        @csrf
+                                        <input type="hidden" name="admin_response" value="Request rejected by admin.">
+                                        <button type="submit" style="width:100%;padding:10px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;">❌ Reject</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+
+                    @if($acceptedEditRequest)
+                        <div style="padding:14px;border:1px solid #bbf7d0;border-radius:10px;background:white;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <strong style="color:#166534;">✅ Edit Approved</strong>
+                                <span style="color:#666;font-size:12px;">Expires: {{ $acceptedEditRequest->expires_at->format('h:i A') }}</span>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+            <!-- CHAT WITH CUSTOMER -->
+            @if(!in_array($order->status, ['Cancelled', 'Completed']))
+                <div class="card" style="padding:0;overflow:hidden;">
+                    <div style="padding:16px 20px;background:#111827;color:white;display:flex;align-items:center;gap:8px;">
+                        <h2 style="color:white;margin:0;font-size:17px;">💬 Chat with {{ $order->customer_name }}</h2>
+                    </div>
+                    <div id="adminChatMessages" style="height:280px;overflow-y:auto;padding:14px;background:#f9fafb;">
+                        <div style="text-align:center;padding:20px;color:#9ca3af;font-size:13px;">Loading messages...</div>
+                    </div>
+                    <div style="display:flex;gap:8px;padding:12px;border-top:1px solid #e5e7eb;">
+                        <input type="text" id="adminChatInput" placeholder="Type a message..." maxlength="500" style="flex:1;padding:10px 14px;border:1px solid #d1d5db;border-radius:20px;font-size:14px;outline:none;">
+                        <button onclick="sendAdminMessage()" style="padding:10px 20px;background:#ff6b00;color:white;border:none;border-radius:20px;font-weight:bold;cursor:pointer;">Send</button>
+                    </div>
+                </div>
+
+                <script>
+                (function() {
+                    var orderId = {{ $order->id }};
+                    var lastMsgId = 0;
+                    var chatBox = document.getElementById('adminChatMessages');
+
+                    function loadAdminMessages() {
+                        fetch('/track-order/' + orderId + '/messages?last_id=' + lastMsgId, {
+                            credentials: 'same-origin',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            if (data.success && data.messages.length > 0) {
+                                var isAtBottom = chatBox.scrollHeight - chatBox.clientHeight <= chatBox;
+                                data.messages.forEach(function(msg) {
+                                    appendAdminMsg(msg);
+                                    lastMsgId = msg.id;
+                                });
+                                if (isAtBottom) chatBox.scrollTop = chatBox.scrollHeight;
+                            }
+                        })
+                        .catch(function() {});
+                    }
+
+                    function appendAdminMsg(msg) {
+                        var isCustomer = msg.sender_type === 'customer';
+                        var time = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                        var div = document.createElement('div');
+                        div.style.cssText = 'margin-bottom:12px;display:flex;flex-direction:' + (isCustomer ? 'row' : 'row-reverse') + ';align-items:flex-start;gap:8px;';
+                        var bubbleBg = isCustomer ? '#e5e7eb' : '#ff6b00';
+                        var bubbleColor = isCustomer ? '#111827' : 'white';
+                        var align = isCustomer ? 'border-bottom-left-radius:4px;' : 'border-bottom-right-radius:4px;';
+                        div.innerHTML = '<div style="max-width:75%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5;background:' + bubbleBg + ';color:' + bubbleColor + ';' + align + 'word-wrap:break-word;">' + escapeHtml(msg.message) + '</div>';
+                        var meta = document.createElement('div');
+                        meta.style.cssText = 'font-size:11px;color:#9ca3af;margin-top:3px;';
+                        meta.textContent = msg.sender_name + ' \u00B7 ' + time;
+                        div.appendChild(meta);
+                        chatBox.appendChild(div);
+                    }
+
+                    function escapeHtml(t) {
+                        var d = document.createElement('div');
+                        d.appendChild(document.createTextNode(t));
+                        return d.innerHTML;
+                    }
+
+                    window.sendAdminMessage = function() {
+                        var input = document.getElementById('adminChatInput');
+                        var msg = input.value.trim();
+                        if (!msg) return;
+
+                        fetch('/admin/orders/' + orderId + '/messages', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({ message: msg })
+                        })
+                        .then(function(r) {
+                            return r.text().then(function(text) {
+                                try {
+                                    var json = JSON.parse(text);
+                                    return { ok: r.ok, json: json };
+                                } catch(e) {
+                                    return { ok: false, json: { success: false, message: 'Server error.' } };
+                                }
+                            });
+                        })
+                        .then(function(res) {
+                            if (res.ok && res.json.success) {
+                                input.value = '';
+                                loadAdminMessages();
+                            } else {
+                                var errMsg = res.json.message || 'Failed to send.';
+                                if (res.json.errors) {
+                                    var msgs = Object.values(res.json.errors).flat();
+                                    errMsg = msgs.join(', ');
+                                }
+                                alert(errMsg);
+                            }
+                        })
+                        .catch(function() { alert('Network error. Please try again.'); });
+                    };
+
+                    document.getElementById('adminChatInput').addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') sendAdminMessage();
+                    });
+
+                    loadAdminMessages();
+                    setInterval(loadAdminMessages, 5000);
+                })();
+                </script>
+            @endif
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -5,17 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements - FoodHub Admin</title>
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
     <style>
         * { box-sizing: border-box; font-family: Arial, sans-serif; }
         body { margin: 0; background: #f4f6f9; color: #222; }
-        
-        
-        
-        
-        .button { color: white; text-decoration: none; padding: 10px 13px; border-radius: 7px; font-weight: bold; font-size: 13px; }
-        .button { background: #ff6b00; }
+        .topbar { background: #111827; color: white; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: bold; }
+        .logo span { color: #ff6b00; }
+        .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav a, .button { color: white; text-decoration: none; padding: 10px 13px; border-radius: 7px; font-weight: bold; font-size: 13px; }
+        .nav a:hover, .nav .active, .button { background: #ff6b00; }
         .container { max-width: 1050px; margin: auto; padding: 30px 20px; }
         .header { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 22px; }
         h1 { margin: 0; }
@@ -32,8 +31,39 @@
         .actions a, .actions button { border: 0; border-radius: 6px; padding: 9px 12px; text-decoration: none; cursor: pointer; font-weight: bold; background: #111827; color: white; }
         .actions .delete { background: #dc2626; }
         .success { background: #dcfce7; color: #166534; padding: 12px; border-radius: 8px; margin-bottom: 18px; }
-        .empty {
+        .empty { text-align: center; color: #777; padding: 45px; background: white; border-radius: 12px; }
+        @media(max-width: 700px) { .topbar, .header, .card-head { flex-direction: column; align-items: stretch; } .nav { overflow-x: auto; flex-wrap: nowrap; } }
     </style>
 </head>
 <body>
 @include('admin.partials.topbar')
+<div class="container">
+    <div class="header">
+        <div><h1>📣 New Deals & Announcements</h1></div>
+        <a class="button" href="{{ route('admin.announcements.create') }}">＋ New Announcement</a>
+    </div>
+    @if(session('success')) <div class="success">{{ session('success') }}</div> @endif
+    @forelse($announcements as $announcement)
+        <div class="card">
+            <div class="card-head">
+                <div><h2>{{ $announcement->title }}</h2><div class="message">{{ $announcement->message }}</div></div>
+                <span class="status {{ $announcement->is_active ? '' : 'off' }}">{{ $announcement->is_active ? 'Active' : 'Hidden' }}</span>
+            </div>
+            @if($announcement->foods->count())
+                <div class="foods">@foreach($announcement->foods as $food)<span class="food">{{ $food->name }}</span>@endforeach</div>
+            @endif
+            @if($announcement->deal_total !== null)
+                <div class="meta"><strong>Complete deal total: Rs. {{ number_format($announcement->deal_total, 2) }}</strong></div>
+            @endif
+            <div class="meta">{{ $announcement->starts_at?->format('d M Y H:i') ?? 'Immediately' }} to {{ $announcement->ends_at?->format('d M Y H:i') ?? 'No expiry' }}</div>
+            <div class="actions">
+                <a href="{{ route('admin.announcements.edit', $announcement) }}">✏️ Edit</a>
+                <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" onsubmit="return confirm('Delete this announcement?')">@csrf @method('DELETE')<button class="delete">🗑️ Delete</button></form>
+            </div>
+        </div>
+    @empty
+        <div class="empty">No announcements created yet.</div>
+    @endforelse
+</div>
+</body>
+</html>

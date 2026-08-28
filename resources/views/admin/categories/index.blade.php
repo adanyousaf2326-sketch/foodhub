@@ -25,32 +25,90 @@
 
         /* ================= TOP BAR ================= */
 
-        
+        .topbar {
+            width: 100%;
+            background: #111827;
+            color: white;
+
+            min-height: 70px;
+            padding: 0 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
 
         /* ================= LOGO ================= */
 
-        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
 
-        
+            font-size: 22px;
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #ff6b00;
+        }
 
 
         /* ================= NAV ================= */
 
-        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        
+        .nav a {
+            text-decoration: none;
 
-        
+            color: #d1d5db;
 
-        
+            padding: 11px 15px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            transition: .2s;
+
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            background: #ff6b00;
+            color: white;
+        }
+
+        .nav a.active {
+            background: #ff6b00;
+            color: white;
+        }
 
 
         /* WEBSITE */
 
-        
+        .website-btn {
+            background: #16a34a !important;
+            color: white !important;
+        }
 
-        
+        .website-btn:hover {
+            background: #15803d !important;
+        }
 
 
         /* ================= BODY ================= */
@@ -379,9 +437,21 @@
 
         @media(max-width: 1000px) {
 
-            
+            .topbar {
+                flex-direction: column;
 
-            
+                padding: 15px 20px;
+
+                gap: 15px;
+            }
+
+            .nav {
+                width: 100%;
+
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
 
         }
 
@@ -414,18 +484,32 @@
                 padding: 16px;
             }
 
-            
+            .nav {
+                justify-content: flex-start;
 
-            
+                flex-wrap: nowrap;
+
+                overflow-x: auto;
+
+                padding-bottom: 5px;
+            }
+
+            .nav a {
+                flex-shrink: 0;
+            }
 
         }
 
 
         @media(max-width: 500px) {
 
-            
+            .logo {
+                font-size: 19px;
+            }
 
-            
+            .topbar {
+                align-items: flex-start;
+            }
 
             .actions {
                 flex-direction: column;
@@ -443,7 +527,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
@@ -453,3 +536,280 @@
 
 
 @include('admin.partials.topbar')
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                📂 Food Categories
+            </h1>
+
+            <p class="subtitle">
+            </p>
+
+        </div>
+
+
+        <!-- ADD CATEGORY -->
+
+        <a
+            href="{{ route('admin.categories.create') }}"
+            class="btn btn-primary"
+        >
+            + Add Category
+        </a>
+
+    </div>
+
+
+
+    @if(session('success'))
+
+        <div class="alert">
+
+            ✓ {{ session('success') }}
+
+        </div>
+
+    @endif
+
+
+
+    <div class="card">
+
+
+        <div class="card-header">
+
+            <h2>
+                All Categories
+            </h2>
+
+            <span class="count">
+
+                {{ $categories->count() }}
+
+                Categories
+
+            </span>
+
+        </div>
+        @if($categories->count())
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        @foreach($categories as $category)
+
+
+                            <tr>
+
+
+                                <!-- ID -->
+
+                                <td>
+
+                                    <strong>
+                                        {{ $loop->iteration }}
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- CATEGORY -->
+
+                                <td>
+
+                                    <div class="category-name">
+
+                                        <div class="category-icon">
+                                            🍽️
+                                        </div>
+
+                                        <strong>
+                                            {{ $category->name }}
+                                        </strong>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- DESCRIPTION -->
+
+                                <td>
+
+                                    <div class="description">
+
+                                        {{ $category->description ?: 'No description available.' }}
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    @if($category->is_active)
+
+                                        <span class="status active">
+
+                                            ● Active
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="status inactive">
+
+                                            ● Inactive
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+
+                                <td>
+
+                                    <div class="actions">
+
+
+                                        <!-- EDIT -->
+
+                                        <a
+                                            href="{{ route('admin.categories.edit', $category) }}"
+                                            class="btn btn-edit"
+                                        >
+                                            ✏️ Edit
+                                        </a>
+
+
+                                        <!-- DELETE -->
+
+                                        <form
+                                            action="{{ route('admin.categories.destroy', $category) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete {{ $category->name }}?')"
+                                        >
+
+                                            @csrf
+
+                                            @method('DELETE')
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-delete"
+                                            >
+                                                🗑️ Delete
+                                            </button>
+
+                                        </form>
+
+
+                                    </div>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        @endforeach
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        @else
+
+
+            <!-- EMPTY -->
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    📂
+                </div>
+
+                <h2>
+                    No Categories Yet
+                </h2>
+
+                <p>
+                    Start by creating your first food category.
+                </p>
+
+                <a
+                    href="{{ route('admin.categories.create') }}"
+                    class="btn btn-primary"
+                >
+                    + Add Category
+                </a>
+
+            </div>
+
+
+        @endif
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -117,10 +117,133 @@
     </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
 @include('admin.partials.topbar')
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>✏️ Edit Category</h1>
+
+        <p class="subtitle">
+            Update your food category information.
+        </p>
+
+        @if ($errors->any())
+            <div style="background:#fee2e2; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <strong>Please fix the following:</strong>
+
+                <ul style="margin-top:8px; margin-left:20px;">
+                    @foreach ($errors->all() as $error)
+                        <li class="error">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form
+            action="{{ route('admin.categories.update', $category) }}"
+            method="POST"
+        >
+
+            @csrf
+            @method('PUT')
+
+            <div class="form-group">
+
+                <label for="name">
+                    Category Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ old('name', $category->name) }}"
+                    placeholder="Enter category name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Enter category description"
+                >{{ old('description', $category->description) }}</textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="image">
+                    Image
+                </label>
+
+                <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    value="{{ old('image', $category->image) }}"
+                    placeholder="Image path or URL"
+                >
+
+            </div>
+
+
+            <div class="form-group checkbox">
+
+                <input
+                    type="checkbox"
+                    id="is_active"
+                    name="is_active"
+                    value="1"
+                    {{ old('is_active', $category->is_active) ? 'checked' : '' }}
+                >
+
+                <label for="is_active">
+                    Active Category
+                </label>
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    💾 Update Category
+                </button>
+
+                <a
+                    href="{{ route('admin.categories.index') }}"
+                    class="btn btn-secondary"
+                >
+                    ← Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -24,31 +24,89 @@
 
 
 
-        
+        .topbar {
+            width: 100%;
+            background: #111827;
+            color: white;
+
+            padding: 0 30px;
+            min-height: 70px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
 
 
-        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
 
 
-        
+        .logo span {
+            color: #ff6b00;
+        }
 
 
 
-        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
 
-        
+        .nav a {
+            text-decoration: none;
+
+            color: #d1d5db;
+
+            padding: 11px 15px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            transition: .2s;
+
+            white-space: nowrap;
+        }
 
 
-        
+        .nav a:hover {
+            background: #ff6b00;
+            color: white;
+        }
 
 
-        
-    
+        .nav .active {
+            background: #ff6b00;
+            color: white;
+        }
+    .website-btn {
+            background: #16a34a !important;
+            color: white !important;
+        }
 
 
-        
+        .website-btn:hover {
+            background: #15803d !important;
+        }
 
 
 
@@ -338,10 +396,22 @@
 
         @media(max-width: 1000px) {
 
-            
+            .topbar {
+                flex-direction: column;
+
+                padding: 15px 20px;
+
+                gap: 15px;
+            }
 
 
-            
+            .nav {
+                width: 100%;
+
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
 
         }
 
@@ -372,20 +442,34 @@
             }
 
 
-            
+            .nav {
+                justify-content: flex-start;
+
+                flex-wrap: nowrap;
+
+                overflow-x: auto;
+
+                padding-bottom: 5px;
+            }
 
 
-            
+            .nav a {
+                flex-shrink: 0;
+            }
 
         }
 
 
         @media(max-width: 500px) {
 
-            
+            .logo {
+                font-size: 19px;
+            }
 
 
-            
+            .topbar {
+                align-items: flex-start;
+            }
 
         }
 
@@ -393,7 +477,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
@@ -404,3 +487,361 @@
     
 
 @include('admin.partials.topbar')
+
+    
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+
+        <div>
+
+            <h1>
+                🍔 Food Items
+            </h1>
+
+
+        </div>
+
+
+        <!-- ADD FOOD -->
+
+        <a
+            href="{{ route('admin.food.create') }}"
+            class="btn btn-primary"
+        >
+            + Add Food
+        </a>
+
+
+    </div>
+
+
+    @if(session('success'))
+
+        <div class="alert">
+
+            ✅ {{ session('success') }}
+
+        </div>
+
+    @endif
+
+
+
+    <div class="card">
+
+
+        @if($foods->count())
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Image
+                        </th>
+
+                        <th>
+                            Food
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                @foreach($foods as $food)
+
+
+                    <tr>
+
+
+                        <!-- NUMBER -->
+
+                        <td>
+
+                            {{ $loop->iteration }}
+
+                        </td>
+
+
+                        <!-- IMAGE -->
+
+                        <td>
+
+                            <div class="food-image-wrapper">
+
+
+                                @if($food->image)
+
+                                    <img
+                                        src="{{ $food->image }}"
+                                        class="food-image"
+                                        alt="{{ $food->name }}"
+                                        loading="lazy"
+                                        onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                        "
+                                    >
+
+
+                                    <!-- FALLBACK -->
+
+                                    <div
+                                        class="food-placeholder"
+                                        style="display:none;"
+                                    >
+                                        🍔
+                                    </div>
+
+
+                                @else
+
+
+                                    <div class="food-placeholder">
+
+                                        🍔
+
+                                    </div>
+
+
+                                @endif
+
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- FOOD -->
+
+                        <td>
+
+                            <strong>
+
+                                {{ $food->name }}
+
+                            </strong>
+
+
+                            @if($food->description)
+
+                                <div
+                                    style="
+                                        color:#777;
+                                        font-size:13px;
+                                        margin-top:5px;
+                                    "
+                                >
+
+                                    {{ Str::limit($food->description, 50) }}
+
+                                </div>
+
+                            @endif
+
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td>
+
+                            {{ $food->category->name ?? 'No Category' }}
+
+                        </td>
+
+
+                        <!-- PRICE -->
+
+                        <td>
+
+                            <strong>
+
+                                Rs.
+                                {{ number_format($food->price, 2) }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+
+                            @if($food->is_available)
+
+
+                                <span class="status available">
+
+                                    Available
+
+                                </span>
+
+
+                            @else
+
+
+                                <span class="status unavailable">
+
+                                    Unavailable
+
+                                </span>
+
+
+                            @endif
+
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+
+                            <div class="actions">
+
+
+                                <!-- VIEW -->
+
+                                <a
+                                    href="{{ route('admin.food.show', $food) }}"
+                                    class="btn btn-view"
+                                >
+                                    👁 View
+                                </a>
+
+
+                                <!-- EDIT -->
+
+                                <a
+                                    href="{{ route('admin.food.edit', $food) }}"
+                                    class="btn btn-edit"
+                                >
+                                    ✏️ Edit
+                                </a>
+
+
+                                <!-- DELETE -->
+
+                                <form
+                                    action="{{ route('admin.food.destroy', $food) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this food item?')"
+                                >
+
+                                    @csrf
+
+                                    @method('DELETE')
+
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-delete"
+                                    >
+                                        🗑 Delete
+                                    </button>
+
+                                </form>
+
+
+                            </div>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                @endforeach
+
+
+                </tbody>
+
+
+            </table>
+
+
+        @else
+
+
+            <!-- EMPTY -->
+
+            <div class="empty">
+
+
+                <h2>
+                    No Food Items Yet 🍔
+                </h2>
+
+
+                <p
+                    style="
+                        margin:10px 0 20px;
+                    "
+                >
+                    Start by adding your first food item.
+                </p>
+
+
+                <a
+                    href="{{ route('admin.food.create') }}"
+                    class="btn btn-primary"
+                >
+                    + Add Food
+                </a>
+
+
+            </div>
+
+
+        @endif
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
