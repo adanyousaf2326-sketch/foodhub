@@ -186,14 +186,14 @@
 .topbar-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-decoration: none;
     color: white;
     flex-shrink: 0;
-    margin-right: 24px;
+    margin-right: 16px;
 }
 .topbar-logo-icon {
-    font-size: 26px;
+    font-size: 22px;
     transition: transform 0.3s ease;
 }
 .topbar-logo:hover .topbar-logo-icon {
@@ -201,7 +201,7 @@
 }
 .topbar-logo-text {
     font-family: 'Poppins', Arial, sans-serif;
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 800;
     letter-spacing: 0.5px;
 }
@@ -213,25 +213,28 @@
 .topbar-desktop-nav {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 .topbar-nav-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border-radius: 10px;
+    gap: 5px;
+    padding: 7px 10px;
+    border-radius: 8px;
     color: #94a3b8;
     text-decoration: none;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 600;
     white-space: nowrap;
+    flex-shrink: 0;
     transition: all 0.25s ease;
     position: relative;
 }
 .topbar-nav-link .nav-icon {
-    font-size: 15px;
+    font-size: 13px;
     transition: transform 0.25s ease;
 }
 .topbar-nav-link:hover {
@@ -260,18 +263,18 @@
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-shrink: 0;
-    margin-left: 12px;
+    margin-left: 8px;
 }
 
 /* Action buttons */
 .topbar-action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 14px;
-    height: 38px;
+    gap: 5px;
+    padding: 0 12px;
+    height: 34px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
