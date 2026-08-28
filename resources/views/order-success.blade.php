@@ -127,6 +127,16 @@
 
     <br>
 
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="{{ route('payment.page', $order) }}" class="btn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);box-shadow:0 4px 15px rgba(37,99,235,0.3);">
+            💳 Pay Online (Rs. {{ number_format($order->total_amount, 2) }})
+        </a>
+        <a href="{{ route('track.order.search', ['order_number' => $order->id]) }}" class="btn" style="background:#111827;">
+            📍 Track Your Order
+        </a>
+    </div>
+
+    <br>
 
     <a
         href="{{ route('home') }}"

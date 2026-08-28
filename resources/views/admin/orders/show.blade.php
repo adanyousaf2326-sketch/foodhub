@@ -12,6 +12,9 @@
 
     <title>Order #{{ $order->id }} - FoodHub Admin</title>
 
+    <!-- Leaflet.js CSS for Delivery Tracking Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
 
@@ -681,6 +684,66 @@
                 </div>
 
             </div>
+
+            {{-- DELIVERY TRACKING MAP (Delivery orders only) --}}
+            @if($order->order_type === 'Delivery' && $order->address)
+            <div style="background:white;border-radius:14px;overflow:hidden;border:1px solid #e5e7eb;margin-bottom:24px;">
+                <div style="padding:14px 18px;background:#111827;color:white;font-weight:bold;font-size:15px;display:flex;align-items:center;gap:8px;">
+                    🗺️ Delivery Location Map
+                    @if($order->status === 'Out for Delivery')
+                        <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#dbeafe;color:#1d4ed8;">🛵 On The Way</span>
+                    @endif
+                </div>
+                <div id="adminTrackingMap" style="height:300px;width:100%;"></div>
+                <div style="padding:12px 18px;background:#f8fafc;border-top:1px solid #e5e7eb;display:flex;gap:20px;font-size:12px;color:#6b7280;">
+                    <div style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#ff6b00;display:inline-block;"></span> Restaurant</div>
+                    <div style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#2563eb;display:inline-block;"></span> Delivery Address</div>
+                </div>
+            </div>
+
+            <script>
+            (function() {
+                var address = '{{ addslashes($order->address ?? '') }}';
+                var restaurantLat = 33.6844;
+                var restaurantLng = 73.0479;
+
+                var map = L.map('adminTrackingMap').setView([restaurantLat, restaurantLng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap',
+                    maxZoom: 18
+                }).addTo(map);
+
+                var restaurantIcon = L.divIcon({
+                    html: '<div style="background:#ff6b00;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🍔</div>',
+                    iconSize: [32, 32], iconAnchor: [16, 16], className: ''
+                });
+                L.marker([restaurantLat, restaurantLng], {icon: restaurantIcon}).addTo(map)
+                    .bindPopup('<b>FoodHub Restaurant</b>');
+
+                if (address) {
+                    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address + ', Pakistan') + '&limit=1')
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            if (data && data.length > 0) {
+                                var lat = parseFloat(data[0].lat);
+                                var lng = parseFloat(data[0].lon);
+                                var deliveryIcon = L.divIcon({
+                                    html: '<div style="background:#2563eb;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">📍</div>',
+                                    iconSize: [32, 32], iconAnchor: [16, 16], className: ''
+                                });
+                                L.marker([lat, lng], {icon: deliveryIcon}).addTo(map)
+                                    .bindPopup('<b>Delivery Address</b><br>' + address);
+                                L.polyline([[restaurantLat, restaurantLng], [lat, lng]],
+                                    {color: '#ff6b00', weight: 3, dashArray: '10, 10', opacity: 0.7}
+                                ).addTo(map);
+                                map.fitBounds(L.latLngBounds([[restaurantLat, restaurantLng], [lat, lng]]), {padding: [40, 40]});
+                            }
+                        })
+                        .catch(function() {});
+                }
+            })();
+            </script>
+            @endif
 
 
             <!-- ORDER ITEMS -->

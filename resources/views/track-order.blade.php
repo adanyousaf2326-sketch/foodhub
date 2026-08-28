@@ -509,6 +509,26 @@
     <link rel="stylesheet" href="{{ asset('css/foodhub.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    
+    <!-- Leaflet.js CSS for Delivery Tracking Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        .tracking-map-container { margin-top: 20px; background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e5e7eb; }
+        .tracking-map-header { padding: 14px 18px; background: #111827; color: white; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        #trackingMap { height: 350px; width: 100%; z-index: 1; }
+        .map-legend { padding: 12px 18px; background: #f8fafc; border-top: 1px solid #e5e7eb; display: flex; gap: 20px; font-size: 12px; color: #6b7280; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .legend-dot.restaurant { background: #ff6b00; }
+        .legend-dot.delivery { background: #2563eb; }
+        .delivery-status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+        .delivery-status-badge.on-the-way { background: #dbeafe; color: #1d4ed8; }
+        .delivery-status-badge.delivered { background: #dcfce7; color: #166534; }
+        .delivery-status-badge.preparing { background: #fef3c7; color: #92400e; }
+        @media(max-width:700px) { #trackingMap { height: 250px; } }
+    </style>
 </head>
 
 <body>
@@ -921,6 +941,102 @@
                     @endif
 
                 </div>
+
+                {{-- DELIVERY TRACKING MAP (Delivery orders only) --}}
+                @if($order->order_type === 'Delivery' && in_array($order->status, ['Preparing', 'Out for Delivery', 'Pending']))
+                <div class="tracking-map-container" id="trackingMapContainer">
+                    <div class="tracking-map-header">
+                        🗺️ Live Delivery Tracking
+                        @if($order->status === 'Out for Delivery')
+                            <span class="delivery-status-badge on-the-way">🛵 On The Way</span>
+                        @elseif($order->status === 'Preparing')
+                            <span class="delivery-status-badge preparing">👨‍🍳 Preparing</span>
+                        @else
+                            <span class="delivery-status-badge preparing">⏳ Pending</span>
+                        @endif
+                    </div>
+                    <div id="trackingMap"></div>
+                    <div class="map-legend">
+                        <div class="legend-item"><span class="legend-dot restaurant"></span> Restaurant (FoodHub)</div>
+                        <div class="legend-item"><span class="legend-dot delivery"></span> Delivery Address</div>
+                    </div>
+                </div>
+
+                <script>
+                (function() {
+                    var orderType = '{{ $order->order_type }}';
+                    if (orderType !== 'Delivery') return;
+
+                    var restaurantLat = 33.6844;
+                    var restaurantLng = 73.0479;
+                    var deliveryLat = null;
+                    var deliveryLng = null;
+
+                    // Try to get coordinates from address (simple geocoding)
+                    var address = '{{ addslashes($order->address ?? '') }}';
+                    
+                    // Initialize map centered on restaurant
+                    var map = L.map('trackingMap').setView([restaurantLat, restaurantLng], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors',
+                        maxZoom: 18
+                    }).addTo(map);
+
+                    // Restaurant marker (orange)
+                    var restaurantIcon = L.divIcon({
+                        html: '<div style="background:#ff6b00;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🍔</div>',
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18],
+                        className: ''
+                    });
+                    L.marker([restaurantLat, restaurantLng], {icon: restaurantIcon})
+                        .addTo(map)
+                        .bindPopup('<b>🍔 FoodHub Restaurant</b><br>Your food is being prepared here!');
+
+                    // Delivery address marker (blue) - if we can geocode
+                    if (address) {
+                        // Use Nominatim for geocoding (free, no API key)
+                        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address + ', Pakistan') + '&limit=1')
+                            .then(function(r) { return r.json(); })
+                            .then(function(data) {
+                                if (data && data.length > 0) {
+                                    deliveryLat = parseFloat(data[0].lat);
+                                    deliveryLng = parseFloat(data[0].lon);
+
+                                    var deliveryIcon = L.divIcon({
+                                        html: '<div style="background:#2563eb;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">📍</div>',
+                                        iconSize: [36, 36],
+                                        iconAnchor: [18, 18],
+                                        className: ''
+                                    });
+                                    L.marker([deliveryLat, deliveryLng], {icon: deliveryIcon})
+                                        .addTo(map)
+                                        .bindPopup('<b>📍 Delivery Address</b><br>' + address);
+
+                                    // Draw line between restaurant and delivery
+                                    var polyline = L.polyline(
+                                        [[restaurantLat, restaurantLng], [deliveryLat, deliveryLng]],
+                                        {color: '#ff6b00', weight: 3, dashArray: '10, 10', opacity: 0.7}
+                                    ).addTo(map);
+
+                                    // Fit map to show both markers
+                                    var bounds = L.latLngBounds(
+                                        [[restaurantLat, restaurantLng], [deliveryLat, deliveryLng]]
+                                    );
+                                    map.fitBounds(bounds, {padding: [40, 40]});
+                                }
+                            })
+                            .catch(function() {});
+                    }
+
+                    // Auto-refresh map every 30 seconds
+                    setInterval(function() {
+                        map.invalidateSize();
+                    }, 30000);
+                })();
+                </script>
+                @endif
 
                 {{-- CHAT WIDGET --}}
                 @if(!$isCancelled && !$isCompleted)

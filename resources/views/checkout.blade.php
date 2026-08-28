@@ -565,6 +565,25 @@
 
                 </div>
 
+                <!-- EMAIL (optional) -->
+
+                <div
+                    class="form-group"
+                >
+
+                    <label class="form-label">
+                        Email (optional — for order updates)
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="your@email.com"
+                    >
+
+                </div>
+
 
                 <!-- DELIVERY ADDRESS -->
 

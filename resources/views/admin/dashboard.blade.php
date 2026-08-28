@@ -627,6 +627,31 @@ setInterval(loadAnalytics, 60000);
 </script>
 
 <script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
+
+<!-- Push Notifications for Admin -->
+<script src="{{ asset('js/push-notifications.js') }}"></script>
+<script>
+    // Register service worker for push notifications
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+            console.log('Service Worker registered:', reg.scope);
+        }).catch(function(err) {
+            console.log('Service Worker registration failed:', err);
+        });
+    }
+    
+    // Request notification permission on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.PushNotification && PushNotification.isSupported && PushNotification.permission !== 'granted') {
+            // Auto-request permission after 3 seconds
+            setTimeout(function() {
+                PushNotification.requestPermission().then(function(permission) {
+                    console.log('Notification permission:', permission);
+                });
+            }, 3000);
+        }
+    });
+</script>
 </div>
     <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>

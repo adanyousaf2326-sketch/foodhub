@@ -93,6 +93,8 @@ Route::post('/order/place', function (Request $request) {
 
         'phone' => 'required|string|max:30',
 
+        'email' => 'nullable|email|max:255',
+
         'address' => 'required_if:order_type,Delivery|nullable|string',
 
         'table_id' => 'required_if:order_type,Dine In|nullable|exists:restaurant_tables,id',
@@ -176,6 +178,8 @@ Route::post('/order/place', function (Request $request) {
 
                 'phone' => $request->phone,
 
+                'email' => $request->email,
+
                 'address' => $request->order_type === 'Delivery'
                     ? $request->address
                     : null,
@@ -222,22 +226,90 @@ Route::post('/order/place', function (Request $request) {
 
                 ]);
 
-            }
-
-
-            return $order;
+            }        return $order;
 
         });
+
 
 
         session()->forget('cart');
 
 
+
+        /* SEND NOTIFICATION + EMAIL */
+
+        \App\Models\Notification::create([
+
+            'order_id' => $order->id,
+
+            'type' => 'order_placed',
+
+            'title' => 'New Order #' . $order->id,
+
+            'message' => 'New order from ' . $order->customer_name . ' — Rs. ' . number_format($order->total_amount, 2) . ' (' . $order->order_type . ')',
+
+            'email' => $order->email,
+
+            'email_sent' => false,
+
+        ]);
+
+
+
+        /* Send email if provided */
+
+        if ($order->email) {
+
+            try {
+
+                \Illuminate\Support\Facades\Mail::raw(
+
+                    "Hello {$order->customer_name},\n\n"
+
+                    . "Your order #{$order->id} has been placed successfully!\n\n"
+
+                    . "Order Type: {$order->order_type}\n"
+
+                    . "Total: Rs. " . number_format($order->total_amount, 2) . "\n"
+
+                    . "Payment: {$order->payment_method}\n\n"
+
+                    . "You can track your order at: " . route('track.order.search', ['order_number' => $order->id]) . "\n\n"
+
+                    . "Thank you for choosing FoodHub!",
+
+                    function ($message) use ($order) {
+
+                        $message->to($order->email)
+
+                            ->subject('FoodHub — Order #' . $order->id . ' Confirmed');
+
+                    }
+
+                );
+
+                $order->notifications()->where('type', 'order_placed')->update(['email_sent' => true]);
+
+            } catch (\Exception $e) {
+
+                // Email failed — log it but don't break the flow
+
+            }
+
+        }
+
+
+
         return redirect()
+
             ->route('order.success', $order)
+
             ->with(
+
                 'success',
+
                 'Your order has been placed successfully!'
+
             );
 
 
@@ -258,18 +330,27 @@ Route::get('/order/success/{order}', function (Order $order) {
 
 })->name('order.success');
 
-
-
-Route::get('/track-order', function () {
+/*
+ * ONLINE PAYMENT PAGE
+ */
+Route::get('/payment/{order}', function (Order $order) {
+    $order->load('items.food');
+    return view('payment', compact('order'));
+})->name('payment.page');Route::get('/track-order', function () {
     return view('track-order');
 })->name('track.order');
-
 
 Route::get('/track-order', [OrderController::class, 'track'])
     ->name('track.order');
 
 Route::get('/track-order/search', [OrderController::class, 'trackSearch'])
     ->name('track.order.search');
+
+/*
+ * ORDER HISTORY (Customer)
+ */
+Route::get('/order-history', [OrderController::class, 'orderHistory'])
+    ->name('order.history');
 
 
 Route::post('/cart/add/{food}', function (Food $food, Request $request) {
@@ -548,11 +629,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Notifications JSON for bell
     Route::get('/notifications-json', [DashboardController::class, 'notificationsJson'])
-        ->name('notifications-json');
+        ->name('notifications-json');    // Analytics JSON for charts
+    Route::get('/analytics-json', [DashboardController::class, 'analyticsJson'])->name('analytics-json');
 
-    // Analytics JSON for charts
-    Route::get('/analytics-json', [DashboardController::class, 'analyticsJson'])
-        ->name('analytics-json');
+    // Real-time updates (SSE + polling)
+    Route::get('/stream-updates', [DashboardController::class, 'streamUpdates'])->name('stream-updates');
+    Route::get('/latest-orders-json', [DashboardController::class, 'latestOrdersJson'])->name('latest-orders-json');
 
 });
 

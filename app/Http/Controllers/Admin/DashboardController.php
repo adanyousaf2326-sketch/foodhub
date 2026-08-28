@@ -234,4 +234,96 @@ class DashboardController extends Controller
             'total_ratings' => $totalRatings,
         ]);
     }
+
+    /*
+     * Server-Sent Events for real-time dashboard updates
+     */
+    public function streamUpdates(Request $request)
+    {
+        $request->validate([
+            'last_order_id' => 'nullable|integer',
+        ]);
+
+        $lastOrderId = $request->input('last_order_id', 0);
+
+        return response()->stream(
+            function () use ($lastOrderId) {
+                $newOrders = Order::where('id', '>', $lastOrderId)
+                    ->latest()
+                    ->get();
+
+                if ($newOrders->isNotEmpty()) {
+                    echo "data: " . json_encode([
+                        'type' => 'new_orders',
+                        'orders' => $newOrders->toArray(),
+                        'count' => $newOrders->count(),
+                        'last_id' => $newOrders->first()->id,
+                    ]) . "\n\n";
+                    ob_flush();
+                    flush();
+                }
+
+                // Also check for status changes
+                $statusChanges = Order::where('updated_at', '>', now()->subSeconds(10))
+                    ->whereColumn('updated_at', '>', 'created_at')
+                    ->where('id', '>', $lastOrderId)
+                    ->latest('updated_at')
+                    ->get();
+
+                if ($statusChanges->isNotEmpty()) {
+                    echo "data: " . json_encode([
+                        'type' => 'status_changes',
+                        'orders' => $statusChanges->toArray(),
+                    ]) . "\n\n";
+                    ob_flush();
+                    flush();
+                }
+
+                sleep(3);
+            },
+            200,
+            [
+                'Content-Type' => 'text/event-stream',
+                'Cache-Control' => 'no-cache',
+                'Connection' => 'keep-alive',
+                'X-Accel-Buffering' => 'no',
+            ]
+        );
+    }
+
+    /*
+     * API: Get latest orders for polling (alternative to SSE)
+     */
+    public function latestOrdersJson(Request $request)
+    {
+        $lastOrderId = $request->input('last_order_id', 0);
+        $lastUpdated = $request->input('last_updated');
+
+        $query = Order::query();
+
+        if ($lastOrderId > 0) {
+            $query->where('id', '>', $lastOrderId);
+        }
+
+        if ($lastUpdated) {
+            $query->orWhere('updated_at', '>', $lastUpdated);
+        }
+
+        $newOrders = $query->latest()
+            ->limit(20)
+            ->get([
+                'id', 'customer_name', 'phone', 'email', 'order_type',
+                'total_amount', 'payment_method', 'status', 'created_at', 'updated_at'
+            ]);
+
+        $pendingCount = Order::where('status', 'Pending')->count();
+        $preparingCount = Order::where('status', 'Preparing')->count();
+
+        return response()->json([
+            'orders' => $newOrders,
+            'pending_count' => $pendingCount,
+            'preparing_count' => $preparingCount,
+            'server_time' => now()->toIso8601String(),
+        ]);
+    }
 }

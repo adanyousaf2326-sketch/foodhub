@@ -84,6 +84,42 @@ class OrderController extends Controller
         return view('track-order', compact('order'));
     }
 
+    /*
+     * Customer Order History — search by phone number with filters
+     */
+    public function orderHistory(Request $request)
+    {
+        $orders = collect();
+
+        if ($request->has('phone')) {
+            $phone = trim($request->input('phone'));
+
+            $query = Order::where('phone', $phone)
+                ->with('items.food')
+                ->latest();
+
+            if ($request->filled('from_date')) {
+                $query->where('created_at', '>=', Carbon::parse($request->from_date));
+            }
+
+            if ($request->filled('to_date')) {
+                $query->where('created_at', '<=', Carbon::parse($request->to_date)->endOfDay());
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('order_type')) {
+                $query->where('order_type', $request->order_type);
+            }
+
+            $orders = $query->get();
+        }
+
+        return view('order-history', compact('orders'));
+    }
+
     public function show(Order $order)
     {
         $order->load('items.food');
@@ -279,6 +315,46 @@ class OrderController extends Controller
                 $table->update([
                     'status' => 'available',
                 ]);
+            }
+        }
+
+        /* SEND STATUS CHANGE NOTIFICATION + EMAIL */
+        $statusMessages = [
+            'Preparing' => 'Your order is now being prepared!',
+            'Out for Delivery' => 'Your order is on the way!',
+            'Delivered' => 'Your order has been delivered. Enjoy your meal!',
+            'Completed' => 'Your order is completed. Thank you!',
+            'Cancelled' => 'Your order has been cancelled.',
+        ];
+
+        $message = $statusMessages[$status] ?? "Your order status has been updated to: {$status}";
+
+        \App\Models\Notification::create([
+            'order_id' => $order->id,
+            'type' => 'status_changed',
+            'title' => 'Order #' . $order->id . ' — ' . $status,
+            'message' => $message,
+            'email' => $order->email,
+        ]);
+
+        /* Send email if customer provided email */
+        if ($order->email) {
+            try {
+                \Illuminate\Support\Facades\Mail::raw(
+                    "Hello {$order->customer_name},\n\n"
+                    . "Order #{$order->id} Status Update:\n"
+                    . "Status: {$status}\n"
+                    . "{$message}\n\n"
+                    . "Track your order: " . route('track.order.search', ['order_number' => $order->id]) . "\n\n"
+                    . "Thank you for choosing FoodHub!",
+                    function ($msg) use ($order, $status) {
+                        $msg->to($order->email)
+                            ->subject('FoodHub — Order #' . $order->id . ' is ' . $status);
+                    }
+                );
+                $order->notifications()->where('type', 'status_changed')->latest()->update(['email_sent' => true]);
+            } catch (\Exception $e) {
+                // Email failed — log it but don't break the flow
             }
         }
     }

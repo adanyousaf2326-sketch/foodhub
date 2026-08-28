@@ -9,6 +9,7 @@ class Order extends Model
    protected $fillable = [
     'customer_name',
     'phone',
+    'email',
     'address',
     'total_amount',
     'payment_method',
@@ -48,5 +49,15 @@ class Order extends Model
     public function rating()
     {
         return $this->hasOne(Rating::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function location()
+    {
+        return $this->hasOne(OrderLocation::class);
     }
 }
