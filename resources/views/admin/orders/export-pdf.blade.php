@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FoodHub Orders Report</title>
     <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background: #f4f6f9; color: #222; padding: 30px; }
         .report-header {
@@ -156,5 +157,8 @@
         🍔 FoodHub Hotel &mdash; Report auto-generated on {{ now()->format('d M Y h:i A') }}
     </div>
 
+</div>
+</div>
+    <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>
 </html>

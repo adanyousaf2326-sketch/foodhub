@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Edit Order #{{ $order->id }} - FoodHub</title>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f6f9; color: #222; padding: 0 0 50px 0; }
@@ -296,5 +297,8 @@ document.getElementById('btnAddFood').addEventListener('click', function() {
     recalcTotal();
 });
 </script>
+</div>
+</div>
+    <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>
 </html>

@@ -16,6 +16,7 @@
     </script>
 
     <link rel="stylesheet" href="{{ asset('css/foodhub.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 <style>
 .full-menu-section {
     position: fixed;
@@ -4031,6 +4032,7 @@ document.addEventListener(
             if (hamburger) hamburger.classList.remove("active");
         }
     });</script>
+    <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>
 
 </html>

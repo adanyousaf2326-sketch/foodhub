@@ -508,6 +508,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/foodhub.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>

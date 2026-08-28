@@ -525,3 +525,7 @@
         display: none !important;
     }
 }
+
+@media (max-width: 1024px) {
+    .mobile-header { display: flex !important; }
+}

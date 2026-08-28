@@ -83,6 +83,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
 </head>
+    <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 
 <body>
 

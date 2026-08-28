@@ -276,16 +276,19 @@
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
 <body>
 
-@include('admin.partials.topbar')
+@include('admin.partials.sidebar')
 
+<div class="admin-layout">
+<div class="admin-main">
 <div class="container">
 
-    <div class="header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-        <h1>🍔 FoodHub Hotel</h1>
+    <div class="header fade-in" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:linear-gradient(135deg,#0f172a,#1e293b);padding:24px;border-radius:16px;color:white;margin-bottom:24px;">
+        <h1 style="font-family:var(--font-display);font-size:24px;color:white;">🍔 FoodHub Hotel</h1>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:#16a34a;">
                 <span>🔔</span> Auto-Refresh: ON
@@ -628,5 +631,9 @@ setInterval(loadAnalytics, 60000);
 </script>
 
 <script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
+</div>
+</div>
+</div>
+    <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>
 </html>
