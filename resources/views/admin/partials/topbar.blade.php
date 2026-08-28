@@ -1,5 +1,5 @@
-<div class="topbar" style="display:flex;align-items:center;padding:0 24px;background:#0f172a;color:white;position:sticky;top:0;z-index:100;height:60px;gap:12px;">
-    <a href="{{ route('admin.dashboard') }}" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:white;margin-right:12px;">
+<div class="topbar" style="display:flex;align-items:center;padding:0 24px;background:#0f172a;color:white;position:sticky;top:0;z-index:100;height:60px;gap:12px;flex-wrap:nowrap;">
+    <a href="{{ route('admin.dashboard') }}" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:white;margin-right:12px;flex-shrink:0;">
         <span style="font-size:24px;">🍔</span>
         <span style="font-family:var(--font-display);font-size:17px;font-weight:800;">Food<span style="color:var(--primary);">Hub</span></span>
     </a>
@@ -10,7 +10,7 @@
         <span></span>
     </button>
 
-    <nav class="nav" id="adminNav" style="display:flex;align-items:center;gap:4px;flex:1;">
+    <nav class="nav" id="adminNav">
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <span>📊</span> Dashboard
         </a>
@@ -33,20 +33,20 @@
             <span>🌐</span> Website
         </a>
 
-        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+        <div class="topbar-actions">
             {{-- Chat Button --}}
-            <div style="position:relative;">
-                <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" style="display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:36px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:white;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;position:relative;">
+            <div class="chat-wrapper">
+                <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" class="chat-btn">
                     💬 Chat
-                    <span id="chatTotalBadge" style="position:absolute;top:-5px;right:-5px;background:#ef4444;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #0f172a;"></span>
+                    <span id="chatTotalBadge" class="chat-badge"></span>
                 </button>
 
                 <div id="chatDropdown" class="chat-dropdown">
-                    <div style="padding:14px 16px;background:linear-gradient(135deg,#1e40af,#7c3aed);color:white;display:flex;justify-content:space-between;align-items:center;border-radius:12px 12px 0 0;">
-                        <strong style="font-size:15px;">💬 Chat</strong>
-                        <button onclick="closeChatDropdown()" style="background:none;border:none;color:#c7d2fe;cursor:pointer;font-size:20px;padding:4px;">✕</button>
+                    <div class="chat-dropdown-header">
+                        <strong>💬 Chat</strong>
+                        <button onclick="closeChatDropdown()" class="chat-close-btn">✕</button>
                     </div>
-                    <div style="display:flex;border-bottom:2px solid #e5e7eb;background:#f9fafb;">
+                    <div class="chat-tabs">
                         <button onclick="switchChatTab('editReqs')" id="tabEditReqs" class="chat-tab active-tab" data-color="#f59e0b">
                             ✏️ <span class="tab-label">Requests</span> <span id="tabEditReqsCount" class="tab-badge" style="display:none;background:#f59e0b;"></span>
                         </button>
@@ -70,14 +70,14 @@
             </div>
 
             {{-- Theme Toggle --}}
-            <button type="button" onclick="toggleTheme()" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:white;cursor:pointer;font-size:16px;transition:all .2s;" title="Toggle Dark/Light Mode">
+            <button type="button" onclick="toggleTheme()" class="topbar-icon-btn" title="Toggle Dark/Light Mode">
                 <span class="theme-icon">🌙</span>
             </button>
 
             {{-- Logout --}}
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" style="display:inline-flex;align-items:center;gap:4px;padding:0 12px;height:36px;border-radius:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;">
+                <button type="submit" class="topbar-logout-btn">
                     ↪ Logout
                 </button>
             </form>
@@ -86,7 +86,13 @@
 </div>
 
 <style>
-/* Topbar nav links */
+/* ========== TOPBAR NAV LINKS ========== */
+.topbar .nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
 .topbar .nav a {
     display: inline-flex;
     align-items: center;
@@ -103,7 +109,47 @@
 .topbar .nav a:hover { color: white; background: rgba(255,255,255,.06); }
 .topbar .nav a.active { color: white; background: rgba(255,107,0,.2); }
 
-/* Hamburger */
+/* ========== TOPBAR ACTIONS (right side) ========== */
+.topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.topbar-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all .2s;
+}
+
+.topbar-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 12px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(239,68,68,.1);
+    border: 1px solid rgba(239,68,68,.2);
+    color: #fca5a5;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .2s;
+}
+
+/* ========== HAMBURGER BUTTON ========== */
 .hamburger-btn {
     display: none;
     flex-direction: column;
@@ -117,6 +163,7 @@
     cursor: pointer;
     padding: 8px;
     gap: 4px;
+    flex-shrink: 0;
 }
 .hamburger-btn span {
     display: block;
@@ -130,7 +177,43 @@
 .hamburger-btn.active span:nth-child(2) { opacity: 0; }
 .hamburger-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
 
-/* Chat dropdown */
+/* ========== CHAT BUTTON ========== */
+.chat-wrapper { position: relative; }
+.chat-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .2s;
+    position: relative;
+}
+.chat-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid #0f172a;
+}
+
+/* ========== CHAT DROPDOWN ========== */
 .chat-dropdown {
     display: none;
     position: absolute;
@@ -149,7 +232,28 @@ body.dark-theme .chat-dropdown {
     background: #1e293b;
     border-color: #334155;
 }
-
+.chat-dropdown-header {
+    padding: 14px 16px;
+    background: linear-gradient(135deg,#1e40af,#7c3aed);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px 12px 0 0;
+}
+.chat-close-btn {
+    background: none;
+    border: none;
+    color: #c7d2fe;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 4px;
+}
+.chat-tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+    background: #f9fafb;
+}
 .chat-tab {
     flex: 1;
     padding: 10px 8px;
@@ -168,7 +272,6 @@ body.dark-theme .chat-dropdown {
     transition: all 0.2s;
 }
 .chat-tab.active-tab { color: #f59e0b; border-bottom-color: #f59e0b; }
-
 .tab-badge {
     color: white;
     font-size: 9px;
@@ -176,55 +279,113 @@ body.dark-theme .chat-dropdown {
     border-radius: 8px;
     font-weight: bold;
 }
-
 .chat-panel { max-height: 380px; overflow-y: auto; }
 .chat-empty { text-align: center; padding: 30px; color: #9ca3af; font-size: 13px; }
 
-/* Mobile responsive */
+/* ================= TABLET (max 1024px) ================= */
 @media (max-width: 1024px) {
-    .hamburger-btn { display: flex !important; }
-    .topbar .nav {
-        display: none;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background: #0f172a;
-        flex-direction: column;
-        padding: 12px;
-        border-top: 1px solid rgba(255,255,255,.08);
-        z-index: 99;
-        box-shadow: 0 10px 30px rgba(0,0,0,.3);
-    }
-    .topbar .nav.open { display: flex; }
-    .topbar .nav a {
-        width: 100%;
-        padding: 12px 16px;
-        font-size: 14px;
-    }
-    .topbar .nav > div {
-        margin-left: 0 !important;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid rgba(255,255,255,.08);
-        display: flex;
-        gap: 8px;
+    .topbar {
+        padding: 10px 16px;
+        height: auto;
+        min-height: 50px;
         flex-wrap: wrap;
     }
-    .chat-dropdown {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: auto;
+
+    .hamburger-btn { display: flex !important; }
+
+    /* Hide nav by default on mobile */
+    .topbar .nav {
+        display: none;
         width: 100%;
-        max-height: 70vh;
-        border-radius: 16px 16px 0 0;
-        transform: translateY(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,.08);
+        margin-top: 8px;
     }
-    .chat-dropdown.open { transform: translateY(0); }
-    .chat-panel { max-height: 55vh; }
+
+    .topbar .nav.open { display: flex; }
+
+    .topbar .nav a {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    /* Actions row on mobile */
+    .topbar-actions {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,.08);
+        justify-content: flex-end;
+    }
+
+    .container { padding: 20px 16px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .header h1 { font-size: 22px; }
+    .cards, .stats { grid-template-columns: repeat(2, 1fr); }
+    .quick-actions { grid-template-columns: repeat(2, 1fr); }
+    .order-filter { flex-direction: column; align-items: stretch; }
+    .order-filter input, .order-filter select, .order-filter div { width: 100%; min-width: 0; }
+    .table-wrapper, .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 700px; }
+    .grid, .info-grid { grid-template-columns: 1fr; }
+    .card-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+    /* Chat dropdown on mobile — bottom sheet */
+    .chat-dropdown {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        width: 100% !important;
+        max-height: 75vh;
+        border-radius: 16px 16px 0 0;
+    }
+    .chat-panel { max-height: 60vh; }
+}
+
+/* ================= MOBILE (max 768px) ================= */
+@media (max-width: 768px) {
+    .container { padding: 12px 10px; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 17px; }
+    .cards, .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .stat-number { font-size: 20px; }
+    .quick-actions { grid-template-columns: 1fr; }
+    table { min-width: 600px; font-size: 13px; }
+    th, td { padding: 10px 8px; }
+    .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .btn, .action-btn { padding: 10px 14px; font-size: 13px; }
+    .actions { gap: 6px; }
+    .status, .order-type { padding: 4px 8px; font-size: 11px; }
+    .bill-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .info-grid { grid-template-columns: 1fr; gap: 10px; }
+    .total-row { font-size: 18px; padding: 14px; }
+}
+
+/* ================= SMALL MOBILE (max 480px) ================= */
+@media (max-width: 480px) {
+    .container { padding: 10px 8px; }
+    .cards, .stats { grid-template-columns: 1fr; gap: 8px; }
+    .stat-number { font-size: 18px; }
+    h1 { font-size: 18px; }
+    .header .btn, .header a { width: 100%; text-align: center; padding: 12px; }
+    table { min-width: 550px; font-size: 12px; }
+    .actions { flex-direction: column; width: 100%; }
+    .actions .btn, .actions form { width: 100%; }
+    .actions .btn { text-align: center; display: block; }
+}
+
+/* ================= PRINT ================= */
+@media print {
+    .hamburger-btn { display: none !important; }
+    .topbar .nav { display: none !important; }
 }
 </style>
 
@@ -239,7 +400,7 @@ function toggleMobileMenu() {
     }
 }
 
-// Close on link click (mobile)
+// Close nav on link click (mobile)
 document.querySelectorAll('#adminNav a').forEach(function(link) {
     link.addEventListener('click', function() {
         if (window.innerWidth <= 1024) {
@@ -249,6 +410,17 @@ document.querySelectorAll('#adminNav a').forEach(function(link) {
             if (btn) btn.classList.remove('active');
         }
     });
+});
+
+// Close nav on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        var nav = document.getElementById('adminNav');
+        var btn = document.querySelector('.hamburger-btn');
+        if (nav) nav.classList.remove('open');
+        if (btn) btn.classList.remove('active');
+        closeChatDropdown();
+    }
 });
 
 // Theme toggle
@@ -279,13 +451,19 @@ document.addEventListener('DOMContentLoaded', function() {
 var activeTab = 'editReqs';
 function closeChatDropdown() {
     var dd = document.getElementById('chatDropdown');
+    if (!dd) return;
     dd.classList.remove('open');
     dd.style.display = 'none';
 }
 function toggleChatDropdown() {
     var dd = document.getElementById('chatDropdown');
-    if (dd.style.display === 'block') { closeChatDropdown(); }
-    else { dd.style.display = 'block'; setTimeout(function(){ dd.classList.add('open'); }, 10); loadChatNotifications(); }
+    if (dd.style.display === 'block') {
+        closeChatDropdown();
+    } else {
+        dd.style.display = 'block';
+        setTimeout(function(){ dd.classList.add('open'); }, 10);
+        loadChatNotifications();
+    }
 }
 function switchChatTab(tab) {
     activeTab = tab;
@@ -354,6 +532,7 @@ function loadChatNotifications() {
 setInterval(loadChatNotifications,8000);
 loadChatNotifications();
 
+// Close chat dropdown when clicking outside
 document.addEventListener('click',function(e){
     var dd=document.getElementById('chatDropdown'),btn=document.getElementById('chatToggleBtn');
     if(dd&&dd.style.display==='block'&&!dd.contains(e.target)&&!btn.contains(e.target)){closeChatDropdown();}

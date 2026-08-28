@@ -275,7 +275,7 @@
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin-responsive.css') }}">
+    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
 </head>
 
@@ -291,7 +291,6 @@
             <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:#16a34a;">
                 <span>🔔</span> Auto-Refresh: ON
             </button>
-            <a href="{{ route("admin.orders.export.csv", request()->query()) }}" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#16a34a;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📥 CSV</a>
             <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#dc2626;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📄 PDF</a>
         </div>
     </div>

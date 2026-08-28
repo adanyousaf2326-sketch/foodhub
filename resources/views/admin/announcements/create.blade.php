@@ -6,7 +6,7 @@
     <title>{{ isset($announcement) ? 'Edit' : 'Create' }} Announcement - FoodHub</title>
     <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin-responsive.css') }}">
+    
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
     <style>
         * { box-sizing: border-box; font-family: Arial, sans-serif; }
