@@ -609,28 +609,8 @@ label {
 @media (max-width: 768px) {
     .hide-mobile { display: none !important; }
     .show-mobile { display: block !important; }
-    
-    .admin-sidebar {
-        transform: translateX(-100%);
-    }
-    
-    .admin-sidebar.open {
-        transform: translateX(0);
-        box-shadow: var(--shadow-xl);
-    }
-    
-    .admin-main {
-        margin-left: 0;
-    }
-    
-    .stat-number {
-        font-size: 22px;
-    }
-    
-    .toast {
-        min-width: 260px;
-        max-width: calc(100vw - 40px);
-    }
+    .stat-number { font-size: 22px; }
+    .toast { min-width: 260px; max-width: calc(100vw - 40px); }
 }
 
 /* ============================================
@@ -758,7 +738,8 @@ body.dark-theme .glass-card {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 99;
+    z-index: 9998;
+    backdrop-filter: blur(4px);
 }
 
 .mobile-menu-overlay.active {
