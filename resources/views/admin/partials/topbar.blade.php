@@ -38,53 +38,42 @@
             <span class="theme-icon">🌙</span>
         </button>
 
-        {{-- EDIT REQUESTS BUTTON --}}
+        {{-- COMBINED CHAT BUTTON --}}
         <div style="position:relative;display:inline-flex;">
-            <button type="button" onclick="toggleEditReqDropdown()" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:18px;transition:all .25s ease;position:relative;" title="Edit Requests">
-                ✏️
-                <span id="editReqBadge" style="position:absolute;top:-4px;right:-4px;background:#f59e0b;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e293b;"></span>
+            <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" style="display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:14px;font-weight:600;transition:all .25s ease;position:relative;" title="Chat">
+                💬 Chat
+                <span id="chatTotalBadge" style="position:absolute;top:-6px;right:-6px;background:#ef4444;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e293b;"></span>
             </button>
-            <div id="editReqDropdown" style="display:none;position:absolute;top:50px;right:0;width:380px;max-height:500px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:10001;overflow:hidden;border:1px solid #e5e7eb;">
-                <div style="padding:14px 16px;background:#92400e;color:white;display:flex;justify-content:space-between;align-items:center;">
-                    <strong style="font-size:15px;">✏️ Edit Requests</strong>
-                    <button onclick="closeAllDropdowns()" style="background:none;border:none;color:#fde68a;cursor:pointer;font-size:18px;">✕</button>
-                </div>
-                <div id="editReqList" style="max-height:430px;overflow-y:auto;">
-                    <div style="text-align:center;padding:30px;color:#777;">No pending requests</div>
-                </div>
-            </div>
-        </div>
 
-        {{-- MESSAGES BUTTON --}}
-        <div style="position:relative;display:inline-flex;">
-            <button type="button" onclick="toggleMsgDropdown()" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:18px;transition:all .25s ease;position:relative;" title="Messages">
-                💬
-                <span id="msgBadge" style="position:absolute;top:-4px;right:-4px;background:#3b82f6;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e293b;"></span>
-            </button>
-            <div id="msgDropdown" style="display:none;position:absolute;top:50px;right:0;width:380px;max-height:500px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:10001;overflow:hidden;border:1px solid #e5e7eb;">
-                <div style="padding:14px 16px;background:#1e40af;color:white;display:flex;justify-content:space-between;align-items:center;">
-                    <strong style="font-size:15px;">💬 Messages</strong>
-                    <button onclick="closeAllDropdowns()" style="background:none;border:none;color:#bfdbfe;cursor:pointer;font-size:18px;">✕</button>
+            <div id="chatDropdown" style="display:none;position:absolute;top:50px;right:0;width:400px;max-height:550px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:10001;overflow:hidden;border:1px solid #e5e7eb;">
+                {{-- Header --}}
+                <div style="padding:12px 16px;background:linear-gradient(135deg,#1e40af,#7c3aed);color:white;display:flex;justify-content:space-between;align-items:center;">
+                    <strong style="font-size:15px;">💬 Chat</strong>
+                    <button onclick="closeChatDropdown()" style="background:none;border:none;color:#c7d2fe;cursor:pointer;font-size:18px;">✕</button>
                 </div>
-                <div id="msgList" style="max-height:430px;overflow-y:auto;">
-                    <div style="text-align:center;padding:30px;color:#777;">No unread messages</div>
-                </div>
-            </div>
-        </div>
 
-        {{-- BELL NOTIFICATION BUTTON --}}
-        <div style="position:relative;display:inline-flex;">
-            <button type="button" onclick="toggleBellDropdown()" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:18px;transition:all .25s ease;position:relative;" title="Order Updates">
-                🔔
-                <span id="bellBadge" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e293b;"></span>
-            </button>
-            <div id="bellDropdown" style="display:none;position:absolute;top:50px;right:0;width:380px;max-height:500px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:10001;overflow:hidden;border:1px solid #e5e7eb;">
-                <div style="padding:14px 16px;background:#991b1b;color:white;display:flex;justify-content:space-between;align-items:center;">
-                    <strong style="font-size:15px;">🔔 Order Updates</strong>
-                    <button onclick="closeAllDropdowns()" style="background:none;border:none;color:#fecaca;cursor:pointer;font-size:18px;">✕</button>
+                {{-- Tabs --}}
+                <div style="display:flex;border-bottom:2px solid #f3f4f6;background:#fafafa;">
+                    <button onclick="switchChatTab('editReqs')" id="tabEditReqs" style="flex:1;padding:10px 8px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:#92400e;border-bottom:2px solid #f59e0b;margin-bottom:-2px;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        ✏️ Edit Requests <span id="tabEditReqsCount" style="display:none;background:#f59e0b;color:white;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:bold;"></span>
+                    </button>
+                    <button onclick="switchChatTab('messages')" id="tabMessages" style="flex:1;padding:10px 8px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        💬 Messages <span id="tabMessagesCount" style="display:none;background:#3b82f6;color:white;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:bold;"></span>
+                    </button>
+                    <button onclick="switchChatTab('updates')" id="tabUpdates" style="flex:1;padding:10px 8px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        🔄 Updates <span id="tabUpdatesCount" style="display:none;background:#ef4444;color:white;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:bold;"></span>
+                    </button>
                 </div>
-                <div id="bellList" style="max-height:430px;overflow-y:auto;">
-                    <div style="text-align:center;padding:30px;color:#777;">No order updates</div>
+
+                {{-- Tab Contents --}}
+                <div id="chatEditReqsPanel" style="max-height:400px;overflow-y:auto;">
+                    <div style="text-align:center;padding:30px;color:#999;font-size:13px;">No pending requests</div>
+                </div>
+                <div id="chatMessagesPanel" style="max-height:400px;overflow-y:auto;display:none;">
+                    <div style="text-align:center;padding:30px;color:#999;font-size:13px;">No unread messages</div>
+                </div>
+                <div id="chatUpdatesPanel" style="max-height:400px;overflow-y:auto;display:none;">
+                    <div style="text-align:center;padding:30px;color:#999;font-size:13px;">No order updates</div>
                 </div>
             </div>
         </div>
@@ -151,77 +140,74 @@
         }
     });
 
-    // === DROPDOWN MANAGEMENT ===
-    function closeAllDropdowns() {
-        document.getElementById('editReqDropdown').style.display = 'none';
-        document.getElementById('msgDropdown').style.display = 'none';
-        document.getElementById('bellDropdown').style.display = 'none';
+    // === CHAT DROPDOWN ===
+    var activeTab = 'editReqs';
+
+    function closeChatDropdown() {
+        document.getElementById('chatDropdown').style.display = 'none';
     }
 
-    function toggleEditReqDropdown() {
-        var dd = document.getElementById('editReqDropdown');
-        var isOpen = dd.style.display === 'block';
-        closeAllDropdowns();
-        if (!isOpen) {
+    function toggleChatDropdown() {
+        var dd = document.getElementById('chatDropdown');
+        if (dd.style.display === 'block') {
+            dd.style.display = 'none';
+        } else {
             dd.style.display = 'block';
-            loadNotifications();
+            loadChatNotifications();
         }
     }
 
-    function toggleMsgDropdown() {
-        var dd = document.getElementById('msgDropdown');
-        var isOpen = dd.style.display === 'block';
-        closeAllDropdowns();
-        if (!isOpen) {
-            dd.style.display = 'block';
-            loadNotifications();
-        }
-    }
-
-    function toggleBellDropdown() {
-        var dd = document.getElementById('bellDropdown');
-        var isOpen = dd.style.display === 'block';
-        closeAllDropdowns();
-        if (!isOpen) {
-            dd.style.display = 'block';
-            loadNotifications();
-        }
-    }
-
-    // Close dropdowns when clicking outside
+    // Close on outside click
     document.addEventListener('click', function(e) {
-        var isInsideAny = false;
-        ['editReqDropdown', 'msgDropdown', 'bellDropdown'].forEach(function(id) {
-            var dd = document.getElementById(id);
-            if (dd && dd.style.display === 'block' && dd.contains(e.target)) {
-                isInsideAny = true;
-            }
-        });
-        // Check if clicked on any toggle button
-        if (!isInsideAny && !e.target.closest('[onclick*="toggleEditReq"], [onclick*="toggleMsg"], [onclick*="toggleBell"]')) {
-            closeAllDropdowns();
+        var dd = document.getElementById('chatDropdown');
+        var btn = document.getElementById('chatToggleBtn');
+        if (dd && dd.style.display === 'block' && !dd.contains(e.target) && !btn.contains(e.target)) {
+            dd.style.display = 'none';
         }
     });
 
-    // === NOTIFICATIONS ===
+    // Tab switching
+    function switchChatTab(tab) {
+        activeTab = tab;
+        var panels = { editReqs: 'chatEditReqsPanel', messages: 'chatMessagesPanel', updates: 'chatUpdatesPanel' };
+        var tabs = { editReqs: 'tabEditReqs', messages: 'tabMessages', updates: 'tabUpdates' };
+        var colors = { editReqs: '#f59e0b', messages: '#3b82f6', updates: '#ef4444' };
+        var textColors = { editReqs: '#92400e', messages: '#1e40af', updates: '#991b1b' };
+
+        Object.keys(panels).forEach(function(key) {
+            document.getElementById(panels[key]).style.display = key === tab ? 'block' : 'none';
+            var tabBtn = document.getElementById(tabs[key]);
+            if (key === tab) {
+                tabBtn.style.color = textColors[key];
+                tabBtn.style.borderBottom = '2px solid ' + colors[key];
+                tabBtn.style.background = 'white';
+            } else {
+                tabBtn.style.color = '#6b7280';
+                tabBtn.style.borderBottom = '2px solid transparent';
+                tabBtn.style.background = 'transparent';
+            }
+        });
+    }
+
+    // === RENDERING ===
     var editReqCount = 0;
     var msgCount = 0;
-    var bellCount = 0;
+    var updateCount = 0;
 
-    function renderEditRequests(reqs) {
-        var list = document.getElementById('editReqList');
-        var badge = document.getElementById('editReqBadge');
+    function renderChatEditRequests(reqs) {
+        var panel = document.getElementById('chatEditReqsPanel');
+        var countBadge = document.getElementById('tabEditReqsCount');
 
         if (reqs.length === 0) {
-            list.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">No pending requests</div>';
-            badge.style.display = 'none';
+            panel.innerHTML = '<div style="text-align:center;padding:30px;color:#999;font-size:13px;">No pending requests</div>';
+            countBadge.style.display = 'none';
             editReqCount = 0;
             return;
         }
 
         editReqCount = reqs.length;
-        badge.textContent = editReqCount;
-        badge.style.display = 'flex';
+        countBadge.textContent = editReqCount;
+        countBadge.style.display = 'inline';
 
         var html = '';
         reqs.forEach(function(req) {
@@ -247,23 +233,23 @@
             html += '</div>';
         });
 
-        list.innerHTML = html;
+        panel.innerHTML = html;
     }
 
-    function renderMessages(msgs) {
-        var list = document.getElementById('msgList');
-        var badge = document.getElementById('msgBadge');
+    function renderChatMessages(msgs) {
+        var panel = document.getElementById('chatMessagesPanel');
+        var countBadge = document.getElementById('tabMessagesCount');
 
         if (msgs.length === 0) {
-            list.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">No unread messages</div>';
-            badge.style.display = 'none';
+            panel.innerHTML = '<div style="text-align:center;padding:30px;color:#999;font-size:13px;">No unread messages</div>';
+            countBadge.style.display = 'none';
             msgCount = 0;
             return;
         }
 
         msgCount = msgs.length;
-        badge.textContent = msgCount;
-        badge.style.display = 'flex';
+        countBadge.textContent = msgCount;
+        countBadge.style.display = 'inline';
 
         var html = '';
         msgs.forEach(function(msg) {
@@ -279,29 +265,29 @@
             html += '</a>';
         });
 
-        list.innerHTML = html;
+        panel.innerHTML = html;
     }
 
-    function renderBell(updates) {
-        var list = document.getElementById('bellList');
-        var badge = document.getElementById('bellBadge');
+    function renderChatUpdates(updates) {
+        var panel = document.getElementById('chatUpdatesPanel');
+        var countBadge = document.getElementById('tabUpdatesCount');
 
         if (updates.length === 0) {
-            list.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">No order updates</div>';
-            badge.style.display = 'none';
-            bellCount = 0;
+            panel.innerHTML = '<div style="text-align:center;padding:30px;color:#999;font-size:13px;">No order updates</div>';
+            countBadge.style.display = 'none';
+            updateCount = 0;
             return;
         }
 
-        bellCount = updates.length;
-        badge.textContent = bellCount;
-        badge.style.display = 'flex';
+        updateCount = updates.length;
+        countBadge.textContent = updateCount;
+        countBadge.style.display = 'inline';
 
         var html = '';
         updates.forEach(function(ord) {
             html += '<a href="/admin/orders/' + ord.id + '" style="display:block;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#fffbeb\';" onmouseout="this.style.background=\'white\';">';
             html += '<div style="display:flex;align-items:flex-start;gap:10px;">';
-            html += '<div style="width:36px;height:36px;border-radius:10px;background:#fffbeb;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">✏️</div>';
+            html += '<div style="width:36px;height:36px;border-radius:10px;background:#fffbeb;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔄</div>';
             html += '<div style="flex:1;min-width:0;">';
             html += '<div style="font-weight:bold;font-size:13px;color:#b45309;margin-bottom:2px;">Order #' + ord.id + ' Updated</div>';
             html += '<div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (ord.customer_name || 'Customer') + ' edited order - Rs. ' + parseFloat(ord.total_amount).toFixed(2) + '</div>';
@@ -310,7 +296,18 @@
             html += '</a>';
         });
 
-        list.innerHTML = html;
+        panel.innerHTML = html;
+    }
+
+    function updateChatTotalBadge() {
+        var total = editReqCount + msgCount + updateCount;
+        var badge = document.getElementById('chatTotalBadge');
+        if (total > 0) {
+            badge.textContent = total;
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
     }
 
     function timeAgo(dateStr) {
@@ -323,7 +320,7 @@
         return Math.floor(diff / 86400) + 'd ago';
     }
 
-    function loadNotifications() {
+    function loadChatNotifications() {
         fetch('/admin/notifications-json', {
             credentials: 'same-origin',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -335,14 +332,15 @@
         .then(function(data) {
             if (!data) return;
 
-            renderEditRequests(data.edit_requests || []);
-            renderMessages(data.unread_messages || []);
-            renderBell(data.recently_updated_orders || []);
+            renderChatEditRequests(data.edit_requests || []);
+            renderChatMessages(data.unread_messages || []);
+            renderChatUpdates(data.recently_updated_orders || []);
+            updateChatTotalBadge();
         })
         .catch(function() {});
     }
 
     // Poll every 8 seconds
-    setInterval(loadNotifications, 8000);
-    loadNotifications();
+    setInterval(loadChatNotifications, 8000);
+    loadChatNotifications();
 </script>
