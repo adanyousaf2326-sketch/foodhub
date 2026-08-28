@@ -166,4 +166,113 @@ class DashboardController extends Controller
             'recently_updated_orders' => $recentlyUpdated,
         ]);
     }
+
+    /*
+     * Analytics JSON for Chart.js dashboard charts
+     */
+    public function analyticsJson(Request $request)
+    {
+        $range = $request->query('range', '7days'); // 7days, 30days, 12months
+
+        // --- Revenue Trend (line chart) ---
+        if ($range === '12months') {
+            $revenueData = Order::whereIn('status', ['Completed', 'Delivered'])
+                ->where('created_at', '>=', now()->subMonths(12))
+                ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as label, SUM(total_amount) as total, COUNT(*) as count')
+                ->groupBy('label')
+                ->orderBy('label')
+                ->get();
+        } elseif ($range === '30days') {
+            $revenueData = Order::whereIn('status', ['Completed', 'Delivered'])
+                ->where('created_at', '>=', now()->subDays(30))
+                ->selectRaw('DATE(created_at) as label, SUM(total_amount) as total, COUNT(*) as count')
+                ->groupBy('label')
+                ->orderBy('label')
+                ->get();
+        } else {
+            $revenueData = Order::whereIn('status', ['Completed', 'Delivered'])
+                ->where('created_at', '>=', now()->subDays(7))
+                ->selectRaw('DATE(created_at) as label, SUM(total_amount) as total, COUNT(*) as count')
+                ->groupBy('label')
+                ->orderBy('label')
+                ->get();
+        }
+
+        // --- Order Status Distribution (doughnut chart) ---
+        $statusData = Order::where('created_at', '>=', now()->subDays($range === '12months' ? 365 : ($range === '30days' ? 30 : 7)))
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+
+        // --- Top Selling Items ---
+        $topSelling = \App\Models\OrderItem::query()
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->whereIn('orders.status', ['Completed', 'Delivered'])
+            ->where('orders.created_at', '>=', now()->subDays($range === '12months' ? 365 : ($range === '30days' ? 30 : 7)))
+            ->selectRaw('order_items.food_name, SUM(order_items.quantity) as total_qty, SUM(order_items.subtotal) as total_revenue')
+            ->groupBy('order_items.food_name')
+            ->orderByDesc('total_qty')
+            ->limit(10)
+            ->get();
+
+        // --- Order Type Distribution (pie chart) ---
+        $typeData = Order::where('created_at', '>=', now()->subDays($range === '12months' ? 365 : ($range === '30days' ? 30 : 7)))
+            ->selectRaw('order_type, COUNT(*) as count')
+            ->groupBy('order_type')
+            ->get();
+
+        // --- Average Rating ---
+        $avgRating = \App\Models\Rating::avg('stars');
+        $totalRatings = \App\Models\Rating::count();
+
+        // --- Inventory Alerts ---
+        $lowStockItems = \App\Models\Inventory::where('track_stock', true)
+            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+            ->where('stock_quantity', '>', 0)
+            ->with('food')
+            ->get();
+
+        $outOfStockItems = \App\Models\Inventory::where('track_stock', true)
+            ->where('stock_quantity', '<=', 0)
+            ->with('food')
+            ->get();
+
+        return response()->json([
+            'revenue_trend' => $revenueData,
+            'status_distribution' => $statusData,
+            'top_selling' => $topSelling,
+            'type_distribution' => $typeData,
+            'avg_rating' => round($avgRating ?? 0, 1),
+            'total_ratings' => $totalRatings,
+            'low_stock_count' => $lowStockItems->count(),
+            'out_of_stock_count' => $outOfStockItems->count(),
+            'low_stock_items' => $lowStockItems,
+            'out_of_stock_items' => $outOfStockItems,
+        ]);
+    }
+
+    /*
+     * Kitchen Display System - pending orders with timers
+     */
+    public function kds()
+    {
+        $pendingOrders = Order::whereIn('status', ['Pending', 'Preparing'])
+            ->with('items.food')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('admin.kds', compact('pendingOrders'));
+    }
+
+    public function kdsJson()
+    {
+        $pendingOrders = Order::whereIn('status', ['Pending', 'Preparing'])
+            ->with('items.food')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return response()->json([
+            'orders' => $pendingOrders,
+        ]);
+    }
 }

@@ -396,6 +396,55 @@
         Selected period / search result: <strong>{{ $filteredOrdersCount }}</strong> orders
     </p>
 
+    {{-- ANALYTICS CHARTS SECTION --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));gap:20px;margin-bottom:30px;">
+        {{-- Revenue Trend --}}
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h3 style="margin:0;font-size:16px;color:#1f2937;">📈 Revenue Trend</h3>
+                <select id="analyticsRange" onchange="loadAnalytics()" style="padding:5px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;">
+                    <option value="7days">Last 7 Days</option>
+                    <option value="30days">Last 30 Days</option>
+                    <option value="12months">Last 12 Months</option>
+                </select>
+            </div>
+            <canvas id="revenueChart" height="180"></canvas>
+        </div>
+
+        {{-- Order Status --}}
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
+            <h3 style="margin:0 0 15px;font-size:16px;color:#1f2937;">🍩 Order Status</h3>
+            <canvas id="statusChart" height="180"></canvas>
+        </div>
+
+        {{-- Order Type --}}
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
+            <h3 style="margin:0 0 15px;font-size:16px;color:#1f2937;">🍕 Order Types</h3>
+            <canvas id="typeChart" height="180"></canvas>
+        </div>
+
+        {{-- Top Selling Items + Inventory Alerts --}}
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f0f0f0;">
+            <h3 style="margin:0 0 15px;font-size:16px;color:#1f2937;">🏆 Top Selling Items</h3>
+            <div id="topSellingList" style="max-height:200px;overflow-y:auto;">
+                <div style="text-align:center;color:#999;padding:20px;">Loading...</div>
+            </div>
+            <div id="inventoryAlerts" style="margin-top:15px;"></div>
+        </div>
+    </div>
+
+    {{-- RATING SUMMARY --}}
+    <div id="ratingSummary" style="display:none;background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:12px;padding:16px 24px;margin-bottom:20px;color:white;box-shadow:0 4px 12px rgba(245,158,11,.3);">
+        <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;">
+            <span style="font-size:28px;">⭐</span>
+            <div>
+                <div style="font-size:22px;font-weight:bold;">Average Rating: <span id="avgRatingVal">0</span> / 5</div>
+                <div style="font-size:13px;opacity:.9;"><span id="totalRatingsVal">0</span> total ratings</div>
+            </div>
+        </div>
+    </div>
+
     <div class="table-card">
         <div class="table-header">
             <h2>Recent Orders</h2>
@@ -482,6 +531,153 @@
     window.__dashboardCompletedCount = {{ $completedOrders }};
     window.__dashboardCancelledCount = 0;
     window.__dashboardPreparingCount = 0;</script>
+
+<script>
+var revenueChartInstance = null;
+var statusChartInstance = null;
+var typeChartInstance = null;
+
+function loadAnalytics() {
+    var range = document.getElementById('analyticsRange').value;
+    fetch('/admin/analytics-json?range=' + range, {
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        renderRevenueChart(data.revenue_trend);
+        renderStatusChart(data.status_distribution);
+        renderTypeChart(data.type_distribution);
+        renderTopSelling(data.top_selling);
+        renderInventoryAlerts(data);
+
+        if (data.total_ratings > 0) {
+            document.getElementById('ratingSummary').style.display = 'block';
+            document.getElementById('avgRatingVal').textContent = data.avg_rating;
+            document.getElementById('totalRatingsVal').textContent = data.total_ratings;
+        }
+    })
+    .catch(function() {});
+}
+
+function renderRevenueChart(data) {
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    if (revenueChartInstance) revenueChartInstance.destroy();
+    revenueChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(function(d) { return d.label; }),
+            datasets: [{
+                label: 'Revenue (Rs.)',
+                data: data.map(function(d) { return parseFloat(d.total); }),
+                borderColor: '#ff6b00',
+                backgroundColor: 'rgba(255,107,0,0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#ff6b00'
+            }, {
+                label: 'Orders',
+                data: data.map(function(d) { return parseInt(d.count); }),
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59,130,246,0.1)',
+                fill: false,
+                tension: 0.4,
+                pointRadius: 4,
+                yAxisID: 'y1'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+            scales: {
+                y: { beginAtZero: true, ticks: { callback: function(v) { return 'Rs.' + v; } } },
+                y1: { position: 'right', beginAtZero: true, grid: { display: false } }
+            }
+        }
+    });
+}
+
+function renderStatusChart(data) {
+    var ctx = document.getElementById('statusChart').getContext('2d');
+    if (statusChartInstance) statusChartInstance.destroy();
+    var colors = { 'Pending': '#f59e0b', 'Preparing': '#3b82f6', 'Completed': '#10b981', 'Delivered': '#16a34a', 'Cancelled': '#ef4444', 'Out for Delivery': '#8b5cf6' };
+    statusChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: data.map(function(d) { return d.status; }),
+            datasets: [{
+                data: data.map(function(d) { return d.count; }),
+                backgroundColor: data.map(function(d) { return colors[d.status] || '#6b7280'; })
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+        }
+    });
+}
+
+function renderTypeChart(data) {
+    var ctx = document.getElementById('typeChart').getContext('2d');
+    if (typeChartInstance) typeChartInstance.destroy();
+    var colors = { 'Dine In': '#ff6b00', 'Delivery': '#3b82f6', 'Takeaway': '#10b981', 'Take Away': '#10b981', 'TakeAway': '#10b981' };
+    typeChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: data.map(function(d) { return d.order_type; }),
+            datasets: [{
+                data: data.map(function(d) { return d.count; }),
+                backgroundColor: data.map(function(d) { return colors[d.order_type] || '#6b7280'; })
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+        }
+    });
+}
+
+function renderTopSelling(items) {
+    var el = document.getElementById('topSellingList');
+    if (!items || items.length === 0) {
+        el.innerHTML = '<div style="text-align:center;color:#999;padding:15px;">No sales data yet</div>';
+        return;
+    }
+    var html = '';
+    items.forEach(function(item, i) {
+        var medals = ['🥇','🥈','🥉'];
+        var medal = i < 3 ? medals[i] : '<span style="color:#999;font-size:12px;">#' + (i+1) + '</span>';
+        html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;">';
+        html += '<span style="font-size:16px;width:28px;text-align:center;">' + medal + '</span>';
+        html += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#1f2937;">' + item.food_name + '</div>';
+        html += '<div style="font-size:11px;color:#6b7280;">' + item.total_qty + ' sold</div></div>';
+        html += '<div style="font-weight:600;font-size:13px;color:#16a34a;">Rs. ' + parseFloat(item.total_revenue).toFixed(0) + '</div>';
+        html += '</div>';
+    });
+    el.innerHTML = html;
+}
+
+function renderInventoryAlerts(data) {
+    var el = document.getElementById('inventoryAlerts');
+    var html = '';
+    if (data.out_of_stock_count > 0) {
+        html += '<div style="padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:8px;font-size:12px;color:#991b1b;">';
+        html += '🚫 <strong>' + data.out_of_stock_count + '</strong> item(s) out of stock';
+        html += '</div>';
+    }
+    if (data.low_stock_count > 0) {
+        html += '<div style="padding:8px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:12px;color:#92400e;">';
+        html += '⚠️ <strong>' + data.low_stock_count + '</strong> item(s) low stock';
+        html += '</div>';
+    }
+    if (html) el.innerHTML = html;
+}
+
+loadAnalytics();
+setInterval(loadAnalytics, 60000);
+</script>
+
 <script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
 </body>
 </html>

@@ -648,6 +648,26 @@
 
             </div>
 
+            <!-- INVENTORY / STOCK -->
+            <div style="border:2px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:20px;background:#f9fafb;">
+                <h4 style="margin:0 0 12px;font-size:14px;color:#374151;">📦 Inventory / Stock</h4>
+                <div class="form-group checkbox" style="margin-bottom:12px;">
+                    <input type="checkbox" name="track_stock" value="1" id="track_stock"
+                        {{ old('track_stock') ? 'checked' : '' }}
+                        onchange="document.getElementById('stockFields').style.display = this.checked ? 'block' : 'none';">
+                    <label for="track_stock">Track Stock Quantity</label>
+                </div>
+                <div id="stockFields" style="display:{{ old('track_stock') ? 'block' : 'none' }};">
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label>Stock Quantity</label>
+                        <input type="number" name="stock_quantity" value="{{ old('stock_quantity', 0) }}" min="0" style="width:100%;padding:10px;border:2px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Low Stock Alert Threshold</label>
+                        <input type="number" name="low_stock_threshold" value="{{ old('low_stock_threshold', 5) }}" min="1" style="width:100%;padding:10px;border:2px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                </div>
+            </div>
 
             <!-- BUTTONS -->
 

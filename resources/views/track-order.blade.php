@@ -720,6 +720,49 @@
                             You can no longer update or cancel this order.
                         </div>
 
+                        {{-- RATING FORM --}}
+                        @if(!$order->rating)
+                        <div id="ratingBox" style="margin-top:20px;background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:16px;padding:24px;text-align:center;max-width:450px;margin-left:auto;margin-right:auto;">
+                            <h3 style="margin:0 0 8px;color:#92400e;font-size:18px;">⭐ Rate Your Order</h3>
+                            <p style="margin:0 0 16px;color:#a16207;font-size:13px;">How was your experience?</p>
+                            <form method="POST" action="{{ route('track.order.rate', $order) }}" id="ratingForm">
+                                @csrf
+                                <div id="starPicker" style="display:flex;justify-content:center;gap:8px;margin-bottom:16px;">
+                                    @for($i = 1; $i <= 5; $i++)
+                                    <button type="button" class="star-btn" data-star="{{ $i }}" onclick="pickStar({{ $i }})" style="font-size:32px;background:none;border:none;cursor:pointer;color:#d1d5db;transition:color .2s;">☆</button>
+                                    @endfor
+                                </div>
+                                <input type="hidden" name="stars" id="ratingStars" value="0">
+                                <textarea name="review" placeholder="Write a review (optional)..." style="width:100%;padding:10px;border:2px solid #f59e0b;border-radius:10px;font-size:13px;resize:vertical;min-height:60px;box-sizing:border-box;margin-bottom:12px;font-family:inherit;"></textarea>
+                                <button type="submit" id="submitRatingBtn" disabled style="padding:10px 30px;border:none;border-radius:10px;background:#f59e0b;color:white;font-weight:bold;font-size:14px;cursor:not-allowed;opacity:.5;transition:all .3s;">Submit Rating</button>
+                            </form>
+                        </div>
+                        @else
+                        <div style="margin-top:20px;background:#f0fdf4;border:2px solid #86efac;border-radius:16px;padding:20px;text-align:center;max-width:450px;margin-left:auto;margin-right:auto;">
+                            <h3 style="margin:0 0 8px;color:#166534;font-size:18px;">⭐ Your Rating</h3>
+                            <div style="font-size:28px;margin-bottom:8px;">{{ str_repeat('⭐', $order->rating->stars) }}{{ str_repeat('☆', 5 - $order->rating->stars) }}</div>
+                            @if($order->rating->review)
+                            <p style="margin:0;color:#166534;font-size:13px;">"{{ $order->rating->review }}"</p>
+                            @endif
+                        </div>
+                        @endif
+
+                        <script>
+                        function pickStar(n) {
+                            document.getElementById('ratingStars').value = n;
+                            var btns = document.querySelectorAll('.star-btn');
+                            btns.forEach(function(btn) {
+                                var star = parseInt(btn.getAttribute('data-star'));
+                                btn.textContent = star <= n ? '★' : '☆';
+                                btn.style.color = star <= n ? '#f59e0b' : '#d1d5db';
+                            });
+                            var submitBtn = document.getElementById('submitRatingBtn');
+                            submitBtn.disabled = false;
+                            submitBtn.style.opacity = '1';
+                            submitBtn.style.cursor = 'pointer';
+                        }
+                        </script>
+
                     @elseif($isCompleted)
 
                         <div class="cancel-expired">

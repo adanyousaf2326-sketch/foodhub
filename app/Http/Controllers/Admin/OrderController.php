@@ -794,4 +794,61 @@ class OrderController extends Controller
             'rejected' => $rejected !== null && !$pending && !$approved,
         ]);
     }
+
+    /*
+     * CUSTOMER: Rate Order
+     */
+    public function rateOrder(Request $request, Order $order)
+    {
+        if ($order->status !== 'Delivered') {
+            return back()->with('error', 'You can only rate delivered orders.');
+        }
+
+        $existing = \App\Models\Rating::where('order_id', $order->id)->exists();
+        if ($existing) {
+            return back()->with('error', 'You have already rated this order.');
+        }
+
+        $request->validate([
+            'stars' => 'required|integer|between:1,5',
+            'review' => 'nullable|string|max:500',
+        ]);
+
+        \App\Models\Rating::create([
+            'order_id' => $order->id,
+            'customer_name' => $order->customer_name,
+            'stars' => $request->stars,
+            'review' => $request->review,
+        ]);
+
+        return back()->with('success', 'Thank you for your rating!');
+    }
+
+    /*
+     * ADMIN: Mark Order as Preparing + Deduct Stock
+     */
+    public function markPreparing(Order $order)
+    {
+        $this->changeStatus($order, 'Preparing');
+
+        // Deduct inventory if tracking
+        foreach ($order->items as $item) {
+            if ($item->food_id) {
+                $inventory = \App\Models\Inventory::where('food_id', $item->food_id)
+                    ->where('track_stock', true)
+                    ->first();
+
+                if ($inventory) {
+                    $inventory->decrement('stock_quantity', $item->quantity);
+
+                    // Auto-disable food if out of stock
+                    if ($inventory->stock_quantity <= 0) {
+                        Food::where('id', $item->food_id)->update(['is_available' => false]);
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', 'Order marked as Preparing. Stock deducted.');
+    }
 }

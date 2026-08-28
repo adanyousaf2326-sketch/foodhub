@@ -225,6 +225,14 @@ Route::post('/order/place', function (Request $request) {
             }
 
 
+            // Auto-send confirmation message
+            \App\Models\Message::create([
+                'order_id' => $order->id,
+                'sender_type' => 'admin',
+                'sender_name' => 'FoodHub System',
+                'message' => '✅ Your order #' . $order->id . ' has been received! Total: Rs. ' . number_format($order->total_amount, 2) . '. We will start preparing it shortly.',
+            ]);
+
             return $order;
 
         });
@@ -546,6 +554,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/notifications-json', [DashboardController::class, 'notificationsJson'])
         ->name('notifications-json');
 
+    // Analytics JSON for charts
+    Route::get('/analytics-json', [DashboardController::class, 'analyticsJson'])
+        ->name('analytics-json');
+
+    // Kitchen Display System
+    Route::get('/kds', [DashboardController::class, 'kds'])->name('kds');
+    Route::get('/kds-json', [DashboardController::class, 'kdsJson'])->name('kds-json');
+
+    // Inventory management
+    Route::post('/orders/{order}/mark-preparing', [OrderController::class, 'markPreparing'])->name('orders.mark-preparing');
+
 });
 
 Route::post(
@@ -588,3 +607,11 @@ Route::get(
     '/track-order/{order}/edit-status',
     [\App\Http\Controllers\Admin\OrderController::class, 'editStatus']
 )->name('track.order.edit-status');
+
+/*
+ * CUSTOMER RATING
+ */
+Route::post(
+    '/track-order/{order}/rate',
+    [\App\Http\Controllers\Admin\OrderController::class, 'rateOrder']
+)->name('track.order.rate');
