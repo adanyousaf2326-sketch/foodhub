@@ -208,7 +208,6 @@
     }
 </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin-topbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
