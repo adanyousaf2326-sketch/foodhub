@@ -736,10 +736,13 @@ class OrderController extends Controller
     public function adminSendMessage(Request $request, Order $order)
     {
         if (in_array($order->status, ['Cancelled', 'Completed'])) {
-            return back()->with('error', 'Cannot send messages for this order.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot send messages for this order.',
+            ], 422);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'message' => 'required|string|max:500',
         ]);
 
@@ -756,7 +759,10 @@ class OrderController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        return back()->with('success', 'Message sent!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Message sent!',
+        ]);
     }
 
     /*

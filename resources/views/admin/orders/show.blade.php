@@ -1123,16 +1123,30 @@
                             credentials: 'same-origin',
                             body: JSON.stringify({ message: msg })
                         })
-                        .then(function(r) { return r.json(); })
-                        .then(function(data) {
-                            if (data.success) {
+                        .then(function(r) {
+                            return r.text().then(function(text) {
+                                try {
+                                    var json = JSON.parse(text);
+                                    return { ok: r.ok, json: json };
+                                } catch(e) {
+                                    return { ok: false, json: { success: false, message: 'Server error.' } };
+                                }
+                            });
+                        })
+                        .then(function(res) {
+                            if (res.ok && res.json.success) {
                                 input.value = '';
                                 loadAdminMessages();
                             } else {
-                                alert(data.message || 'Failed to send.');
+                                var errMsg = res.json.message || 'Failed to send.';
+                                if (res.json.errors) {
+                                    var msgs = Object.values(res.json.errors).flat();
+                                    errMsg = msgs.join(', ');
+                                }
+                                alert(errMsg);
                             }
                         })
-                        .catch(function() { alert('Failed to send message.'); });
+                        .catch(function() { alert('Network error. Please try again.'); });
                     };
 
                     document.getElementById('adminChatInput').addEventListener('keypress', function(e) {
