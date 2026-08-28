@@ -166,34 +166,38 @@
 
 <style>
 /* ============================================
-   TOPBAR — Modern Design (matches customer side)
+   TOPBAR — Compact Single-Line Design
    ============================================ */
 .admin-topbar {
     display: flex;
     align-items: center;
     gap: 0;
-    padding: 0 20px;
-    height: 62px;
+    padding: 0 16px;
+    height: 52px;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: white;
     position: sticky;
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
+.admin-topbar::-webkit-scrollbar { display: none; }
 
 /* Logo */
 .topbar-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     text-decoration: none;
     color: white;
     flex-shrink: 0;
-    margin-right: 16px;
+    margin-right: 12px;
 }
 .topbar-logo-icon {
-    font-size: 22px;
+    font-size: 20px;
     transition: transform 0.3s ease;
 }
 .topbar-logo:hover .topbar-logo-icon {
@@ -201,7 +205,7 @@
 }
 .topbar-logo-text {
     font-family: 'Poppins', Arial, sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     letter-spacing: 0.5px;
 }
@@ -213,57 +217,48 @@
 .topbar-desktop-nav {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
     flex: 1;
     min-width: 0;
-    overflow: hidden;
+    flex-shrink: 1;
 }
 .topbar-nav-link {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 7px 10px;
-    border-radius: 8px;
+    gap: 4px;
+    padding: 6px 8px;
+    border-radius: 6px;
     color: #94a3b8;
     text-decoration: none;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
     flex-shrink: 0;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     position: relative;
 }
 .topbar-nav-link .nav-icon {
-    font-size: 13px;
-    transition: transform 0.25s ease;
+    font-size: 12px;
 }
 .topbar-nav-link:hover {
     color: white;
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-1px);
-}
-.topbar-nav-link:hover .nav-icon {
-    transform: scale(1.15);
 }
 .topbar-nav-link.active {
     color: white;
-    background: linear-gradient(135deg, rgba(255, 107, 0, 0.2) 0%, rgba(255, 107, 0, 0.1) 100%);
+    background: rgba(255, 107, 0, 0.2);
     box-shadow: inset 0 -2px 0 #ff6b00;
 }
 .topbar-nav-link.website-link {
     background: rgba(22, 163, 74, 0.15);
     color: #4ade80;
 }
-.topbar-nav-link.website-link:hover {
-    background: rgba(22, 163, 74, 0.25);
-    color: #22c55e;
-}
 
 /* Right side */
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     flex-shrink: 0;
     margin-left: 8px;
 }
@@ -272,24 +267,23 @@
 .topbar-action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 0 12px;
-    height: 34px;
-    border-radius: 10px;
+    gap: 4px;
+    padding: 0 10px;
+    height: 32px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #e2e8f0;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     position: relative;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 .topbar-action-btn:hover {
     background: rgba(255, 255, 255, 0.14);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Chat button */
@@ -312,7 +306,6 @@
 }
 .topbar-logout:hover {
     background: rgba(239, 68, 68, 0.25) !important;
-    border-color: rgba(239, 68, 68, 0.4) !important;
     color: #f87171 !important;
 }
 .topbar-logout-form {
@@ -323,27 +316,20 @@
 /* Badge */
 .topbar-badge {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
     color: white;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: bold;
-    min-width: 20px;
-    height: 20px;
-    border-radius: 10px;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 0 5px;
+    padding: 0 4px;
     border: 2px solid #0f172a;
-    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
-    animation: badgePulse 2s ease-in-out infinite;
-}
-
-@keyframes badgePulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
 }
 
 /* Hamburger */
@@ -352,14 +338,15 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     cursor: pointer;
-    padding: 10px;
-    gap: 5px;
+    padding: 9px;
+    gap: 4px;
+    flex-shrink: 0;
     transition: all 0.25s ease;
 }
 .topbar-hamburger:hover {
@@ -367,7 +354,7 @@
 }
 .topbar-hamburger span {
     display: block;
-    width: 20px;
+    width: 18px;
     height: 2px;
     background: white;
     border-radius: 2px;
@@ -391,7 +378,7 @@
 .admin-mobile-menu {
     display: none;
     position: sticky;
-    top: 62px;
+    top: 50px;
     z-index: 999;
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -650,37 +637,14 @@ body.dark-theme .chat-tab:hover {
    MOBILE (max 1024px)
    ============================================ */
 @media (max-width: 1024px) {
-    /* Hide desktop nav */
     .topbar-desktop-nav { display: none !important; }
-
-    /* Show hamburger */
     .topbar-hamburger { display: flex !important; }
-
-    /* Hide text labels on small buttons */
     .hide-mobile-text { display: none; }
+    .admin-topbar { padding: 0 12px; height: 50px; }
+    .topbar-logo { margin-right: auto; }
+    .topbar-logo-text { font-size: 15px; }
+    .topbar-action-btn { padding: 0 9px; height: 32px; font-size: 11px; }
 
-    /* Make topbar fit mobile */
-    .admin-topbar {
-        padding: 0 14px;
-        height: 56px;
-    }
-
-    .topbar-logo {
-        margin-right: auto;
-    }
-    .topbar-logo-text {
-        font-size: 17px;
-    }
-
-    /* Action buttons smaller on mobile */
-    .topbar-action-btn {
-        padding: 0 11px;
-        height: 36px;
-        font-size: 12px;
-        border-radius: 9px;
-    }
-
-    /* Chat dropdown → bottom sheet on mobile */
     .topbar-chat-dropdown {
         position: fixed !important;
         bottom: 0 !important;
@@ -690,40 +654,20 @@ body.dark-theme .chat-tab:hover {
         width: 100% !important;
         max-height: 78vh;
         border-radius: 20px 20px 0 0;
-        animation: sheetSlideUp 0.3s ease;
     }
-
-    @keyframes sheetSlideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-    }
-
     .chat-panel { max-height: 58vh; }
-
-    .admin-mobile-menu {
-        top: 56px;
-        border-radius: 0;
-    }
+    .admin-mobile-menu { top: 50px; border-radius: 0; }
 }
 
 @media (max-width: 480px) {
-    .admin-topbar {
-        padding: 0 10px;
-        height: 52px;
-    }
-    .topbar-logo-text { font-size: 15px; }
-    .topbar-logo-icon { font-size: 22px; }
-    .topbar-action-btn {
-        padding: 0 9px;
-        height: 34px;
-        font-size: 12px;
-        gap: 4px;
-    }
-    .topbar-hamburger {
-        width: 38px;
-        height: 38px;
-    }
+    .admin-topbar { padding: 0 8px; height: 48px; }
+    .topbar-logo-text { font-size: 13px; }
+    .topbar-logo-icon { font-size: 18px; }
+    .topbar-logo { gap: 4px; margin-right: 8px; }
+    .topbar-action-btn { padding: 0 8px; height: 30px; font-size: 11px; gap: 3px; }
+    .topbar-hamburger { width: 34px; height: 34px; }
     .action-label { display: none; }
+    .nav-text { display: none; }
 }
 </style>
 
