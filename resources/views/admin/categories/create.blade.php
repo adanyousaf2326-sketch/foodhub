@@ -24,24 +24,6 @@
         }
 
 
-        .topbar {
-            width: 100%;
-            background: #111827;
-            color: white;
-
-            padding: 0 30px;
-            min-height: 70px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            box-shadow: 0 4px 20px rgba(0,0,0,.15);
-
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
 
         .logo {
             display: flex;
@@ -59,38 +41,13 @@
         }
 
 
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
 
-        .nav a {
-            text-decoration: none;
-
-            color: #d1d5db;
-
-            padding: 11px 15px;
-
-            border-radius: 8px;
-
-            font-size: 14px;
-            font-weight: bold;
-
-            transition: .2s;
-
-            white-space: nowrap;
-        }
 
         .nav a:hover {
             background: #ff6b00;
             color: white;
         }
 
-        .nav .active {
-            background: #ff6b00;
-            color: white;
-        }
 
         .website-btn {
             background: #16a34a !important;
@@ -329,21 +286,7 @@
 
         @media(max-width: 1000px) {
 
-            .topbar {
-                flex-direction: column;
 
-                padding: 15px 20px;
-
-                gap: 15px;
-            }
-
-            .nav {
-                width: 100%;
-
-                justify-content: center;
-
-                flex-wrap: wrap;
-            }
 
         }
 
@@ -357,19 +300,7 @@
                 font-size: 25px;
             }
 
-            .nav {
-                justify-content: flex-start;
 
-                flex-wrap: nowrap;
-
-                overflow-x: auto;
-
-                padding-bottom: 5px;
-            }
-
-            .nav a {
-                flex-shrink: 0;
-            }
 
             .card {
                 padding: 22px;
@@ -383,9 +314,6 @@
                 font-size: 19px;
             }
 
-            .topbar {
-                align-items: flex-start;
-            }
 
             .buttons {
                 flex-direction: column;
@@ -524,21 +452,7 @@
 
         @media(max-width: 1000px) {
 
-            .topbar {
-                flex-direction: column;
 
-                padding: 15px 20px;
-
-                gap: 15px;
-            }
-
-            .nav {
-                width: 100%;
-
-                justify-content: center;
-
-                flex-wrap: wrap;
-            }
 
         }
 
@@ -552,19 +466,7 @@
                 font-size: 25px;
             }
 
-            .nav {
-                justify-content: flex-start;
 
-                flex-wrap: nowrap;
-
-                overflow-x: auto;
-
-                padding-bottom: 5px;
-            }
-
-            .nav a {
-                flex-shrink: 0;
-            }
 
             .card {
                 padding: 22px;
@@ -578,9 +480,6 @@
                 font-size: 19px;
             }
 
-            .topbar {
-                align-items: flex-start;
-            }
 
             .buttons {
                 flex-direction: column;
