@@ -1,341 +1,218 @@
 /* ==========================================================================
-   FoodHub Admin - Responsive CSS (Sidebar-based layout)
+   FoodHub Admin - Responsive CSS (Topbar layout)
    ========================================================================== */
 
-/* ================= MOBILE HEADER (hamburger) ================= */
-.mobile-header {
-    display: none !important;
-    background: #0f172a !important;
-    padding: 12px 16px !important;
-    align-items: center !important;
-    gap: 12px !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 50 !important;
-}
-
-.mobile-header button {
-    background: rgba(255,255,255,.1) !important;
-    border: none !important;
-    color: white !important;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 10px !important;
-    font-size: 20px !important;
-    cursor: pointer !important;
-    flex-shrink: 0 !important;
-}
-
-.mobile-header span {
-    color: white !important;
-    font-weight: 700 !important;
-    font-size: 16px !important;
-}
-
-/* ================= TABLET & MOBILE (max 1024px) ================= */
+/* ================= TABLET (max 1024px) ================= */
 @media (max-width: 1024px) {
-    /* Show mobile header */
-    .mobile-header {
+    .topbar {
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        height: auto;
+    }
+
+    .topbar .nav {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,.08);
+        margin-top: 8px;
+    }
+
+    .topbar .nav.open {
+        display: flex;
+    }
+
+    .topbar .nav a {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .hamburger-btn {
         display: flex !important;
     }
 
-    /* Hide sidebar off-screen */
-    .admin-sidebar {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
-        width: 280px !important;
-        transform: translateX(-100%) !important;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        z-index: 9999 !important;
-        box-shadow: none !important;
-    }
-
-    /* Sidebar open state */
-    .admin-sidebar.open {
-        transform: translateX(0) !important;
-        box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* Main content full width */
-    .admin-main {
-        margin-left: 0 !important;
-    }
-
-    /* Chat dropdown on mobile - full width bottom panel */
-    .sidebar-bottom #chatDropdown {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        top: auto !important;
-        width: 100% !important;
-        max-height: 70vh !important;
-        border-radius: 16px 16px 0 0 !important;
-        z-index: 10000 !important;
-        animation: slideUp 0.3s ease !important;
-    }
-
-    @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-    }
-
-    /* Chat dropdown tabs - bigger touch targets */
-    .sidebar-bottom #chatDropdown button {
-        padding: 12px 8px !important;
-        font-size: 13px !important;
-    }
-
-    /* Container responsive */
     .container {
-        padding: 16px 12px !important;
-        max-width: 100% !important;
+        padding: 20px 16px;
     }
 
-    /* Header responsive */
     .header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 12px !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
     .header h1 {
-        font-size: 22px !important;
+        font-size: 22px;
     }
 
-    /* Stats cards 2 columns */
     .cards,
     .stats {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .card {
-        padding: 16px !important;
-    }
-
-    .stat-number {
-        font-size: 22px !important;
-    }
-
-    /* Quick actions */
     .quick-actions {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    /* Filter form */
     .order-filter {
-        flex-direction: column !important;
-        align-items: stretch !important;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .order-filter input,
     .order-filter select,
     .order-filter div {
-        width: 100% !important;
-        min-width: 0 !important;
+        width: 100%;
+        min-width: 0;
     }
 
-    /* Tables - horizontal scroll */
     .table-wrapper,
     .table-card {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     table {
-        min-width: 700px !important;
+        min-width: 700px;
     }
 
-    /* Order show page grid */
     .grid,
     .info-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr;
     }
 
     .card-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 10px !important;
-    }
-
-    /* Chart containers */
-    .chart-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    /* Toast notifications */
-    .toast {
-        left: 12px !important;
-        right: 12px !important;
-        min-width: auto !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 }
 
 /* ================= MOBILE (max 768px) ================= */
 @media (max-width: 768px) {
     .container {
-        padding: 12px 10px !important;
+        padding: 12px 10px;
     }
 
-    h1 {
-        font-size: 20px !important;
-    }
-
-    h2 {
-        font-size: 17px !important;
-    }
+    h1 { font-size: 20px; }
+    h2 { font-size: 17px; }
 
     .cards,
     .stats {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 
     .stat-number {
-        font-size: 20px !important;
+        font-size: 20px;
     }
 
     .quick-actions {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr;
     }
 
-    /* Tables */
     table {
-        min-width: 600px !important;
-        font-size: 13px !important;
+        min-width: 600px;
+        font-size: 13px;
     }
 
     th, td {
-        padding: 10px 8px !important;
+        padding: 10px 8px;
     }
 
     .table-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 8px !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 
-    /* Buttons */
     .btn,
-    .action-btn,
-    .back-btn,
-    .add-btn {
-        padding: 10px 14px !important;
-        font-size: 13px !important;
+    .action-btn {
+        padding: 10px 14px;
+        font-size: 13px;
     }
 
     .actions {
-        gap: 6px !important;
+        gap: 6px;
     }
 
-    /* Status badges */
     .status,
     .order-type {
-        padding: 4px 8px !important;
-        font-size: 11px !important;
+        padding: 4px 8px;
+        font-size: 11px;
     }
 
-    /* Bill page */
     .bill-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 12px !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
     .info-grid {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .total-row {
-        font-size: 18px !important;
-        padding: 14px !important;
-    }
-
-    /* Order show page */
-    .top {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-    }
-
-    .item {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 8px !important;
-    }
-
-    /* Export buttons row */
-    .header > div:last-child {
-        flex-wrap: wrap !important;
-        gap: 6px !important;
+        font-size: 18px;
+        padding: 14px;
     }
 }
 
 /* ================= SMALL MOBILE (max 480px) ================= */
 @media (max-width: 480px) {
     .container {
-        padding: 10px 8px !important;
+        padding: 10px 8px;
     }
 
     .cards,
     .stats {
-        grid-template-columns: 1fr !important;
-        gap: 8px !important;
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
     .stat-number {
-        font-size: 18px !important;
+        font-size: 18px;
     }
 
-    h1 {
-        font-size: 18px !important;
-    }
+    h1 { font-size: 18px; }
 
     .header .btn,
     .header a {
-        width: 100% !important;
-        text-align: center !important;
-        padding: 12px !important;
+        width: 100%;
+        text-align: center;
+        padding: 12px;
     }
 
     table {
-        min-width: 550px !important;
-        font-size: 12px !important;
+        min-width: 550px;
+        font-size: 12px;
     }
 
     .actions {
-        flex-direction: column !important;
-        width: 100% !important;
+        flex-direction: column;
+        width: 100%;
     }
 
     .actions .btn,
     .actions form {
-        width: 100% !important;
+        width: 100%;
     }
 
     .actions .btn {
-        text-align: center !important;
-        display: block !important;
+        text-align: center;
+        display: block;
     }
 }
 
-/* ================= SCROLLBAR HIDE FOR MOBILE SIDEBAR ================= */
-@media (max-width: 1024px) {
-    .admin-sidebar::-webkit-scrollbar {
-        display: none !important;
-    }
-    .admin-sidebar {
-        scrollbar-width: none !important;
-    }
-}
-
-/* ================= PRINT - HIDE MOBILE ELEMENTS ================= */
+/* ================= PRINT ================= */
 @media print {
-    .mobile-header { display: none !important; }
-    .admin-sidebar { display: none !important; }
-    .admin-main { margin-left: 0 !important; }
-    .mobile-menu-overlay { display: none !important; }
+    .hamburger-btn { display: none !important; }
+    .topbar .nav { display: none !important; }
 }

@@ -281,10 +281,8 @@
 
 <body>
 
-@include('admin.partials.sidebar')
+@include('admin.partials.topbar')
 
-<div class="admin-layout">
-<div class="admin-main">
 <div class="container">
 
     <div class="header fade-in" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:linear-gradient(135deg,#0f172a,#1e293b);padding:24px;border-radius:16px;color:white;margin-bottom:24px;">
@@ -631,8 +629,6 @@ setInterval(loadAnalytics, 60000);
 </script>
 
 <script src="{{ asset('js/dashboard-auto-refresh.js') }}"></script>
-</div>
-</div>
 </div>
     <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>

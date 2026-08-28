@@ -1,8 +1,7 @@
-<div class="topbar">
-    <a href="{{ route('admin.dashboard') }}" class="logo">
-        <span class="logo-icon">🍔</span>
-        <span class="brand-name">Food<span class="brand-accent">Hub</span> Hotel</span>
-        <span class="badge-admin">Admin</span>
+<div class="topbar" style="display:flex;align-items:center;padding:0 24px;background:#0f172a;color:white;position:sticky;top:0;z-index:100;height:60px;gap:12px;">
+    <a href="{{ route('admin.dashboard') }}" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:white;margin-right:12px;">
+        <span style="font-size:24px;">🍔</span>
+        <span style="font-family:var(--font-display);font-size:17px;font-weight:800;">Food<span style="color:var(--primary);">Hub</span></span>
     </a>
 
     <button type="button" class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -11,336 +10,352 @@
         <span></span>
     </button>
 
-    <nav class="nav" id="adminNav" aria-label="Admin navigation">
+    <nav class="nav" id="adminNav" style="display:flex;align-items:center;gap:4px;flex:1;">
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-            <span>🏠</span> Dashboard
-        </a>
-        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-            <span>📂</span> Categories
-        </a>
-        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
-            <span>🍔</span> Food Items
-        </a>
-        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
-            <span>📣</span> New Deals
+            <span>📊</span> Dashboard
         </a>
         <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
             <span>🛒</span> Orders
         </a>
+        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
+            <span>🍔</span> Food
+        </a>
+        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+            <span>📂</span> Categories
+        </a>
+        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+            <span>📣</span> Deals
+        </a>
         <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
             <span>👥</span> Users
         </a>
-        <a href="{{ url('/') }}" class="website-btn" target="_blank" rel="noopener">
-            <span>🌐</span> View Website
+        <a href="{{ url('/') }}" target="_blank" rel="noopener" style="opacity:.7;">
+            <span>🌐</span> Website
         </a>
 
-        <button type="button" class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-            <span class="theme-icon">🌙</span>
-        </button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            {{-- Chat Button --}}
+            <div style="position:relative;">
+                <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" style="display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:36px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:white;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;position:relative;">
+                    💬 Chat
+                    <span id="chatTotalBadge" style="position:absolute;top:-5px;right:-5px;background:#ef4444;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #0f172a;"></span>
+                </button>
 
-        {{-- COMBINED CHAT BUTTON --}}
-        <div style="position:relative;display:inline-flex;">
-            <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" style="display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:14px;font-weight:600;transition:all .25s ease;position:relative;" title="Chat">
-                💬 Chat
-                <span id="chatTotalBadge" style="position:absolute;top:-6px;right:-6px;background:#ef4444;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e293b;"></span>
-            </button>
-
-            <div id="chatDropdown" style="display:none;position:absolute;top:50px;right:0;width:400px;max-height:550px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);z-index:10001;overflow:hidden;border:1px solid #e5e7eb;">
-                {{-- Header --}}
-                <div style="padding:12px 16px;background:linear-gradient(135deg,#1e40af,#7c3aed);color:white;display:flex;justify-content:space-between;align-items:center;">
-                    <strong style="font-size:15px;">💬 Chat</strong>
-                    <button onclick="closeChatDropdown()" style="background:none;border:none;color:#c7d2fe;cursor:pointer;font-size:18px;">✕</button>
-                </div>
-
-                {{-- Tabs --}}
-                <div style="display:flex;border-bottom:2px solid #f3f4f6;background:#fafafa;">
-                    <button onclick="switchChatTab('editReqs')" id="tabEditReqs" style="flex:1;padding:10px 8px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:#92400e;border-bottom:2px solid #f59e0b;margin-bottom:-2px;display:flex;align-items:center;justify-content:center;gap:4px;">
-                        ✏️ Edit Requests <span id="tabEditReqsCount" style="display:none;background:#f59e0b;color:white;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:bold;"></span>
-                    </button>
-                    <button onclick="switchChatTab('messages')" id="tabMessages" style="flex:1;padding:10px 8px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;justify-content:center;gap:4px;">
-                        💬 Messages <span id="tabMessagesCount" style="display:none;background:#3b82f6;color:white;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:bold;"></span>
-                    </button>
-                    <button onclick="switchChatTab('updates')" id="tabUpdates" style="flex:1;padding:10px 8px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;justify-content:center;gap:4px;">
-                        🔄 Updates <span id="tabUpdatesCount" style="display:none;background:#ef4444;color:white;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:bold;"></span>
-                    </button>
-                </div>
-
-                {{-- Tab Contents --}}
-                <div id="chatEditReqsPanel" style="max-height:400px;overflow-y:auto;">
-                    <div style="text-align:center;padding:30px;color:#999;font-size:13px;">No pending requests</div>
-                </div>
-                <div id="chatMessagesPanel" style="max-height:400px;overflow-y:auto;display:none;">
-                    <div style="text-align:center;padding:30px;color:#999;font-size:13px;">No unread messages</div>
-                </div>
-                <div id="chatUpdatesPanel" style="max-height:400px;overflow-y:auto;display:none;">
-                    <div style="text-align:center;padding:30px;color:#999;font-size:13px;">No order updates</div>
+                <div id="chatDropdown" class="chat-dropdown">
+                    <div style="padding:14px 16px;background:linear-gradient(135deg,#1e40af,#7c3aed);color:white;display:flex;justify-content:space-between;align-items:center;border-radius:12px 12px 0 0;">
+                        <strong style="font-size:15px;">💬 Chat</strong>
+                        <button onclick="closeChatDropdown()" style="background:none;border:none;color:#c7d2fe;cursor:pointer;font-size:20px;padding:4px;">✕</button>
+                    </div>
+                    <div style="display:flex;border-bottom:2px solid #e5e7eb;background:#f9fafb;">
+                        <button onclick="switchChatTab('editReqs')" id="tabEditReqs" class="chat-tab active-tab" data-color="#f59e0b">
+                            ✏️ <span class="tab-label">Requests</span> <span id="tabEditReqsCount" class="tab-badge" style="display:none;background:#f59e0b;"></span>
+                        </button>
+                        <button onclick="switchChatTab('messages')" id="tabMessages" class="chat-tab" data-color="#3b82f6">
+                            💬 <span class="tab-label">Messages</span> <span id="tabMessagesCount" class="tab-badge" style="display:none;background:#3b82f6;"></span>
+                        </button>
+                        <button onclick="switchChatTab('updates')" id="tabUpdates" class="chat-tab" data-color="#ef4444">
+                            🔄 <span class="tab-label">Updates</span> <span id="tabUpdatesCount" class="tab-badge" style="display:none;background:#ef4444;"></span>
+                        </button>
+                    </div>
+                    <div id="chatEditReqsPanel" class="chat-panel">
+                        <div class="chat-empty">No pending requests</div>
+                    </div>
+                    <div id="chatMessagesPanel" class="chat-panel" style="display:none;">
+                        <div class="chat-empty">No unread messages</div>
+                    </div>
+                    <div id="chatUpdatesPanel" class="chat-panel" style="display:none;">
+                        <div class="chat-empty">No order updates</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <form method="POST" action="{{ route('logout') }}" class="logout-form">
-            @csrf
-            <button type="submit" class="logout-btn">
-                <span>↪</span> Logout
+            {{-- Theme Toggle --}}
+            <button type="button" onclick="toggleTheme()" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:white;cursor:pointer;font-size:16px;transition:all .2s;" title="Toggle Dark/Light Mode">
+                <span class="theme-icon">🌙</span>
             </button>
-        </form>
+
+            {{-- Logout --}}
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" style="display:inline-flex;align-items:center;gap:4px;padding:0 12px;height:36px;border-radius:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;">
+                    ↪ Logout
+                </button>
+            </form>
+        </div>
     </nav>
 </div>
 
-<script>
-    // Mobile menu toggle
-    function toggleMobileMenu() {
-        var nav = document.getElementById('adminNav');
-        var btn = document.querySelector('.hamburger-btn');
-        if (nav && btn) {
-            nav.classList.toggle('open');
-            btn.classList.toggle('active');
-        }
-    }
+<style>
+/* Topbar nav links */
+.topbar .nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.topbar .nav a:hover { color: white; background: rgba(255,255,255,.06); }
+.topbar .nav a.active { color: white; background: rgba(255,107,0,.2); }
 
-    document.querySelectorAll('#adminNav a').forEach(function(link) {
-        link.addEventListener('click', function() {
+/* Hamburger */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    cursor: pointer;
+    padding: 8px;
+    gap: 4px;
+}
+.hamburger-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+.hamburger-btn.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+.hamburger-btn.active span:nth-child(2) { opacity: 0; }
+.hamburger-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+
+/* Chat dropdown */
+.chat-dropdown {
+    display: none;
+    position: absolute;
+    top: 44px;
+    right: 0;
+    width: 400px;
+    max-height: 500px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+    z-index: 10001;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+body.dark-theme .chat-dropdown {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.chat-tab {
+    flex: 1;
+    padding: 10px 8px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #6b7280;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+.chat-tab.active-tab { color: #f59e0b; border-bottom-color: #f59e0b; }
+
+.tab-badge {
+    color: white;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.chat-panel { max-height: 380px; overflow-y: auto; }
+.chat-empty { text-align: center; padding: 30px; color: #9ca3af; font-size: 13px; }
+
+/* Mobile responsive */
+@media (max-width: 1024px) {
+    .hamburger-btn { display: flex !important; }
+    .topbar .nav {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: #0f172a;
+        flex-direction: column;
+        padding: 12px;
+        border-top: 1px solid rgba(255,255,255,.08);
+        z-index: 99;
+        box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+    .topbar .nav.open { display: flex; }
+    .topbar .nav a {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+    .topbar .nav > div {
+        margin-left: 0 !important;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,.08);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .chat-dropdown {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        width: 100%;
+        max-height: 70vh;
+        border-radius: 16px 16px 0 0;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .chat-dropdown.open { transform: translateY(0); }
+    .chat-panel { max-height: 55vh; }
+}
+</style>
+
+<script>
+// Mobile menu toggle
+function toggleMobileMenu() {
+    var nav = document.getElementById('adminNav');
+    var btn = document.querySelector('.hamburger-btn');
+    if (nav && btn) {
+        nav.classList.toggle('open');
+        btn.classList.toggle('active');
+    }
+}
+
+// Close on link click (mobile)
+document.querySelectorAll('#adminNav a').forEach(function(link) {
+    link.addEventListener('click', function() {
+        if (window.innerWidth <= 1024) {
             var nav = document.getElementById('adminNav');
             var btn = document.querySelector('.hamburger-btn');
             if (nav) nav.classList.remove('open');
             if (btn) btn.classList.remove('active');
-        });
-    });
-
-    document.addEventListener('click', function(e) {
-        var nav = document.getElementById('adminNav');
-        var btn = document.querySelector('.hamburger-btn');
-        if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
-            nav.classList.remove('open');
-            btn.classList.remove('active');
         }
     });
+});
 
-    // Theme Toggle
-    function toggleTheme() {
-        var body = document.body;
-        var icon = document.querySelector('.theme-icon');
-        if (body.classList.contains('dark-theme')) {
-            body.classList.remove('dark-theme');
-            icon.textContent = '\u{1F319}';
-            localStorage.setItem('theme', 'light');
-        } else {
-            body.classList.add('dark-theme');
-            icon.textContent = '\u2600\uFE0F';
-            localStorage.setItem('theme', 'dark');
-        }
+// Theme toggle
+function toggleTheme() {
+    var body = document.body;
+    var icon = document.querySelector('.theme-icon');
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        icon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        icon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
     }
+}
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var savedTheme = localStorage.getItem('theme');
-        var icon = document.querySelector('.theme-icon');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-            if (icon) icon.textContent = '\u2600\uFE0F';
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    var savedTheme = localStorage.getItem('theme');
+    var icon = document.querySelector('.theme-icon');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (icon) icon.textContent = '☀️';
+    }
+});
+
+// Chat dropdown
+var activeTab = 'editReqs';
+function closeChatDropdown() {
+    var dd = document.getElementById('chatDropdown');
+    dd.classList.remove('open');
+    dd.style.display = 'none';
+}
+function toggleChatDropdown() {
+    var dd = document.getElementById('chatDropdown');
+    if (dd.style.display === 'block') { closeChatDropdown(); }
+    else { dd.style.display = 'block'; setTimeout(function(){ dd.classList.add('open'); }, 10); loadChatNotifications(); }
+}
+function switchChatTab(tab) {
+    activeTab = tab;
+    var panels = { editReqs:'chatEditReqsPanel', messages:'chatMessagesPanel', updates:'chatUpdatesPanel' };
+    var tabs = { editReqs:'tabEditReqs', messages:'tabMessages', updates:'tabUpdates' };
+    var colors = { editReqs:'#f59e0b', messages:'#3b82f6', updates:'#ef4444' };
+    Object.keys(panels).forEach(function(k) {
+        document.getElementById(panels[k]).style.display = k===tab ? 'block' : 'none';
+        var t = document.getElementById(tabs[k]);
+        if (k === tab) { t.classList.add('active-tab'); t.style.color = colors[k]; t.style.borderBottomColor = colors[k]; }
+        else { t.classList.remove('active-tab'); t.style.color = '#6b7280'; t.style.borderBottomColor = 'transparent'; }
     });
+}
 
-    // === CHAT DROPDOWN ===
-    var activeTab = 'editReqs';
+var editReqCount=0, msgCount=0, updateCount=0;
 
-    function closeChatDropdown() {
-        document.getElementById('chatDropdown').style.display = 'none';
-    }
-
-    function toggleChatDropdown() {
-        var dd = document.getElementById('chatDropdown');
-        if (dd.style.display === 'block') {
-            dd.style.display = 'none';
-        } else {
-            dd.style.display = 'block';
-            loadChatNotifications();
-        }
-    }
-
-    // Close on outside click
-    document.addEventListener('click', function(e) {
-        var dd = document.getElementById('chatDropdown');
-        var btn = document.getElementById('chatToggleBtn');
-        if (dd && dd.style.display === 'block' && !dd.contains(e.target) && !btn.contains(e.target)) {
-            dd.style.display = 'none';
-        }
+function renderChatEditRequests(reqs) {
+    var panel = document.getElementById('chatEditReqsPanel');
+    var badge = document.getElementById('tabEditReqsCount');
+    if (reqs.length===0) { panel.innerHTML='<div class="chat-empty">No pending requests</div>'; badge.style.display='none'; editReqCount=0; return; }
+    editReqCount=reqs.length; badge.textContent=editReqCount; badge.style.display='inline';
+    var html='';
+    reqs.forEach(function(r) {
+        html+='<div style="padding:12px 16px;border-bottom:1px solid #f3f4f6;background:#fffbeb;">';
+        html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="color:#92400e;font-size:13px;">✏️ Order #'+r.order_id+'</strong><span style="font-size:11px;color:#a16207;">'+timeAgo(r.created_at)+'</span></div>';
+        html+='<div style="font-size:12px;color:#78716c;margin-bottom:8px;">'+(r.customer_name||'Customer')+': '+(r.message||'Wants to edit')+'</div>';
+        html+='<div style="display:flex;gap:6px;">';
+        html+='<form method="POST" action="/admin/orders/'+r.order_id+'/edit-requests/'+r.id+'/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;">✅ Accept</button></form>';
+        html+='<form method="POST" action="/admin/orders/'+r.order_id+'/edit-requests/'+r.id+'/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected."><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;">❌ Reject</button></form>';
+        html+='</div></div>';
     });
+    panel.innerHTML=html;
+}
 
-    // Tab switching
-    function switchChatTab(tab) {
-        activeTab = tab;
-        var panels = { editReqs: 'chatEditReqsPanel', messages: 'chatMessagesPanel', updates: 'chatUpdatesPanel' };
-        var tabs = { editReqs: 'tabEditReqs', messages: 'tabMessages', updates: 'tabUpdates' };
-        var colors = { editReqs: '#f59e0b', messages: '#3b82f6', updates: '#ef4444' };
-        var textColors = { editReqs: '#92400e', messages: '#1e40af', updates: '#991b1b' };
+function renderChatMessages(msgs) {
+    var panel=document.getElementById('chatMessagesPanel'), badge=document.getElementById('tabMessagesCount');
+    if(msgs.length===0){panel.innerHTML='<div class="chat-empty">No unread messages</div>';badge.style.display='none';msgCount=0;return;}
+    msgCount=msgs.length;badge.textContent=msgCount;badge.style.display='inline';
+    var html='';
+    msgs.forEach(function(m){html+='<a href="/admin/orders/'+m.order_id+'" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#eff6ff\';" onmouseout="this.style.background=\'transparent\';"><div style="width:34px;height:34px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💬</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#1d4ed8;margin-bottom:2px;">Order #'+m.order_id+'</div><div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(m.sender_name||'Customer')+': '+m.message+'</div></div></a>';});
+    panel.innerHTML=html;
+}
 
-        Object.keys(panels).forEach(function(key) {
-            document.getElementById(panels[key]).style.display = key === tab ? 'block' : 'none';
-            var tabBtn = document.getElementById(tabs[key]);
-            if (key === tab) {
-                tabBtn.style.color = textColors[key];
-                tabBtn.style.borderBottom = '2px solid ' + colors[key];
-                tabBtn.style.background = 'white';
-            } else {
-                tabBtn.style.color = '#6b7280';
-                tabBtn.style.borderBottom = '2px solid transparent';
-                tabBtn.style.background = 'transparent';
-            }
-        });
-    }
+function renderChatUpdates(updates) {
+    var panel=document.getElementById('chatUpdatesPanel'),badge=document.getElementById('tabUpdatesCount');
+    if(updates.length===0){panel.innerHTML='<div class="chat-empty">No order updates</div>';badge.style.display='none';updateCount=0;return;}
+    updateCount=updates.length;badge.textContent=updateCount;badge.style.display='inline';
+    var html='';
+    updates.forEach(function(o){html+='<a href="/admin/orders/'+o.id+'" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#fffbeb\';" onmouseout="this.style.background=\'transparent\';"><div style="width:34px;height:34px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔄</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#b45309;margin-bottom:2px;">Order #'+o.id+' Updated</div><div style="font-size:12px;color:#6b7280;">'+(o.customer_name||'Customer')+' - Rs. '+parseFloat(o.total_amount).toFixed(2)+'</div></div></a>';});
+    panel.innerHTML=html;
+}
 
-    // === RENDERING ===
-    var editReqCount = 0;
-    var msgCount = 0;
-    var updateCount = 0;
+function updateChatTotalBadge() {
+    var t=editReqCount+msgCount+updateCount, b=document.getElementById('chatTotalBadge');
+    if(t>0){b.textContent=t;b.style.display='flex';}else{b.style.display='none';}
+}
 
-    function renderChatEditRequests(reqs) {
-        var panel = document.getElementById('chatEditReqsPanel');
-        var countBadge = document.getElementById('tabEditReqsCount');
+function timeAgo(d){var n=new Date(),t=new Date(d),s=Math.floor((n-t)/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
 
-        if (reqs.length === 0) {
-            panel.innerHTML = '<div style="text-align:center;padding:30px;color:#999;font-size:13px;">No pending requests</div>';
-            countBadge.style.display = 'none';
-            editReqCount = 0;
-            return;
-        }
+function loadChatNotifications() {
+    fetch('/admin/notifications-json',{credentials:'same-origin',headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(function(r){if(r.status===401||r.redirected)return null;return r.json();})
+    .then(function(d){if(!d)return;renderChatEditRequests(d.edit_requests||[]);renderChatMessages(d.unread_messages||[]);renderChatUpdates(d.recently_updated_orders||[]);updateChatTotalBadge();})
+    .catch(function(){});
+}
+setInterval(loadChatNotifications,8000);
+loadChatNotifications();
 
-        editReqCount = reqs.length;
-        countBadge.textContent = editReqCount;
-        countBadge.style.display = 'inline';
-
-        var html = '';
-        reqs.forEach(function(req) {
-            var orderId = req.order_id;
-            html += '<div style="padding:12px 16px;border-bottom:1px solid #f3f4f6;background:#fffbeb;">';
-            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
-            html += '<strong style="color:#92400e;font-size:13px;">✏️ Order #' + orderId + '</strong>';
-            html += '<span style="font-size:11px;color:#a16207;">' + timeAgo(req.created_at) + '</span>';
-            html += '</div>';
-            html += '<div style="font-size:12px;color:#78716c;margin-bottom:8px;">' + (req.customer_name || 'Customer') + ': ' + (req.message || 'Wants to edit order') + '</div>';
-            html += '<div style="display:flex;gap:6px;">';
-            html += '<form method="POST" action="/admin/orders/' + orderId + '/edit-requests/' + req.id + '/accept" style="flex:1;">';
-            html += '<input type="hidden" name="_token" value="{{ csrf_token() }}">';
-            html += '<button type="submit" style="width:100%;padding:7px;border:none;border-radius:6px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;">✅ Accept</button>';
-            html += '</form>';
-            html += '<form method="POST" action="/admin/orders/' + orderId + '/edit-requests/' + req.id + '/reject" style="flex:1;">';
-            html += '<input type="hidden" name="_token" value="{{ csrf_token() }}">';
-            html += '<input type="hidden" name="admin_response" value="Request rejected.">';
-            html += '<button type="submit" style="width:100%;padding:7px;border:none;border-radius:6px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;">❌ Reject</button>';
-            html += '</form>';
-            html += '</div>';
-            html += '<a href="/admin/orders/' + orderId + '" style="display:block;text-align:center;margin-top:6px;font-size:11px;color:#2563eb;text-decoration:none;">View Order →</a>';
-            html += '</div>';
-        });
-
-        panel.innerHTML = html;
-    }
-
-    function renderChatMessages(msgs) {
-        var panel = document.getElementById('chatMessagesPanel');
-        var countBadge = document.getElementById('tabMessagesCount');
-
-        if (msgs.length === 0) {
-            panel.innerHTML = '<div style="text-align:center;padding:30px;color:#999;font-size:13px;">No unread messages</div>';
-            countBadge.style.display = 'none';
-            msgCount = 0;
-            return;
-        }
-
-        msgCount = msgs.length;
-        countBadge.textContent = msgCount;
-        countBadge.style.display = 'inline';
-
-        var html = '';
-        msgs.forEach(function(msg) {
-            var orderId = msg.order_id;
-            html += '<a href="/admin/orders/' + orderId + '" style="display:block;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#eff6ff\';" onmouseout="this.style.background=\'white\';">';
-            html += '<div style="display:flex;align-items:flex-start;gap:10px;">';
-            html += '<div style="width:36px;height:36px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💬</div>';
-            html += '<div style="flex:1;min-width:0;">';
-            html += '<div style="font-weight:bold;font-size:13px;color:#1d4ed8;margin-bottom:2px;">Order #' + orderId + '</div>';
-            html += '<div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (msg.sender_name || 'Customer') + ': ' + msg.message + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</a>';
-        });
-
-        panel.innerHTML = html;
-    }
-
-    function renderChatUpdates(updates) {
-        var panel = document.getElementById('chatUpdatesPanel');
-        var countBadge = document.getElementById('tabUpdatesCount');
-
-        if (updates.length === 0) {
-            panel.innerHTML = '<div style="text-align:center;padding:30px;color:#999;font-size:13px;">No order updates</div>';
-            countBadge.style.display = 'none';
-            updateCount = 0;
-            return;
-        }
-
-        updateCount = updates.length;
-        countBadge.textContent = updateCount;
-        countBadge.style.display = 'inline';
-
-        var html = '';
-        updates.forEach(function(ord) {
-            html += '<a href="/admin/orders/' + ord.id + '" style="display:block;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#fffbeb\';" onmouseout="this.style.background=\'white\';">';
-            html += '<div style="display:flex;align-items:flex-start;gap:10px;">';
-            html += '<div style="width:36px;height:36px;border-radius:10px;background:#fffbeb;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔄</div>';
-            html += '<div style="flex:1;min-width:0;">';
-            html += '<div style="font-weight:bold;font-size:13px;color:#b45309;margin-bottom:2px;">Order #' + ord.id + ' Updated</div>';
-            html += '<div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (ord.customer_name || 'Customer') + ' edited order - Rs. ' + parseFloat(ord.total_amount).toFixed(2) + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</a>';
-        });
-
-        panel.innerHTML = html;
-    }
-
-    function updateChatTotalBadge() {
-        var total = editReqCount + msgCount + updateCount;
-        var badge = document.getElementById('chatTotalBadge');
-        if (total > 0) {
-            badge.textContent = total;
-            badge.style.display = 'flex';
-        } else {
-            badge.style.display = 'none';
-        }
-    }
-
-    function timeAgo(dateStr) {
-        var now = new Date();
-        var then = new Date(dateStr);
-        var diff = Math.floor((now - then) / 1000);
-        if (diff < 60) return 'just now';
-        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-        return Math.floor(diff / 86400) + 'd ago';
-    }
-
-    function loadChatNotifications() {
-        fetch('/admin/notifications-json', {
-            credentials: 'same-origin',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(function(res) {
-            if (res.status === 401 || res.redirected) return null;
-            return res.json();
-        })
-        .then(function(data) {
-            if (!data) return;
-
-            renderChatEditRequests(data.edit_requests || []);
-            renderChatMessages(data.unread_messages || []);
-            renderChatUpdates(data.recently_updated_orders || []);
-            updateChatTotalBadge();
-        })
-        .catch(function() {});
-    }
-
-    // Poll every 8 seconds
-    setInterval(loadChatNotifications, 8000);
-    loadChatNotifications();
+document.addEventListener('click',function(e){
+    var dd=document.getElementById('chatDropdown'),btn=document.getElementById('chatToggleBtn');
+    if(dd&&dd.style.display==='block'&&!dd.contains(e.target)&&!btn.contains(e.target)){closeChatDropdown();}
+});
 </script>

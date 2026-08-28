@@ -38,43 +38,4 @@
     </style>
 </head>
 <body>
-@include('admin.partials.sidebar')
-n<div class="admin-layout">
-<div class="admin-main">
-    <div class="mobile-header no-print" style="display:none;background:#0f172a;padding:12px 16px;align-items:center;gap:12px;position:sticky;top:0;z-index:50;">
-        <button onclick="openSidebar()" style="background:rgba(255,255,255,.1);border:none;color:white;width:40px;height:40px;border-radius:10px;font-size:20px;cursor:pointer;">☰</button>
-        <span style="color:white;font-weight:700;font-size:16px;">🍔 FoodHub</span>
-    </div>
-<div class="container">
-    <div class="header">
-        <div><h1>📣 New Deals & Announcements</h1></div>
-        <a class="button" href="{{ route('admin.announcements.create') }}">＋ New Announcement</a>
-    </div>
-    @if(session('success')) <div class="success">{{ session('success') }}</div> @endif
-    @forelse($announcements as $announcement)
-        <div class="card">
-            <div class="card-head">
-                <div><h2>{{ $announcement->title }}</h2><div class="message">{{ $announcement->message }}</div></div>
-                <span class="status {{ $announcement->is_active ? '' : 'off' }}">{{ $announcement->is_active ? 'Active' : 'Hidden' }}</span>
-            </div>
-            @if($announcement->foods->count())
-                <div class="foods">@foreach($announcement->foods as $food)<span class="food">{{ $food->name }}</span>@endforeach</div>
-            @endif
-            @if($announcement->deal_total !== null)
-                <div class="meta"><strong>Complete deal total: Rs. {{ number_format($announcement->deal_total, 2) }}</strong></div>
-            @endif
-            <div class="meta">{{ $announcement->starts_at?->format('d M Y H:i') ?? 'Immediately' }} to {{ $announcement->ends_at?->format('d M Y H:i') ?? 'No expiry' }}</div>
-            <div class="actions">
-                <a href="{{ route('admin.announcements.edit', $announcement) }}">✏️ Edit</a>
-                <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" onsubmit="return confirm('Delete this announcement?')">@csrf @method('DELETE')<button class="delete">🗑️ Delete</button></form>
-            </div>
-        </div>
-    @empty
-        <div class="empty">No announcements created yet.</div>
-    @endforelse
-</div>
-</div>
-</div>
-    <script src="{{ asset('js/scroll-animations.js') }}"></script>
-</body>
-</html>
+@include('admin.partials.topbar')

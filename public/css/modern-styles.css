@@ -344,94 +344,7 @@ label {
    MODERN SIDEBAR (Admin)
    ============================================ */
 
-.admin-layout {
-    display: flex;
-    min-height: 100vh;
-}
-
-.admin-sidebar {
-    width: 260px;
-    background: var(--bg-sidebar);
-    color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    transition: var(--transition);
-    overflow-y: auto;
-}
-
-.sidebar-logo {
-    padding: 24px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.sidebar-logo .logo-icon {
-    font-size: 28px;
-}
-
-.sidebar-logo .brand {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.sidebar-logo .brand-accent {
-    color: var(--primary);
-}
-
-.sidebar-nav {
-    flex: 1;
-    padding: 16px 12px;
-}
-
-.sidebar-nav a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: var(--radius-md);
-    color: #94a3b8;
-    font-size: 14px;
-    font-weight: 500;
-    transition: var(--transition);
-    margin-bottom: 4px;
-}
-
-.sidebar-nav a:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: white;
-}
-
-.sidebar-nav a.active {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    box-shadow: 0 4px 15px var(--primary-glow);
-}
-
-.sidebar-nav a .nav-icon {
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-}
-
-.sidebar-bottom {
-    padding: 16px 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.admin-main {
-    flex: 1;
-    margin-left: 260px;
-    min-height: 100vh;
-    background: var(--bg);
-}
+/* Sidebar rules removed */
 
 /* ============================================
    TOAST NOTIFICATIONS
@@ -730,17 +643,7 @@ body.dark-theme .glass-card {
    MOBILE NAV TOGGLE
    ============================================ */
 
-.mobile-menu-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 9998;
-    backdrop-filter: blur(4px);
-}
+/* Overlay rules removed */
 
 .mobile-menu-overlay.active {
     display: block;
