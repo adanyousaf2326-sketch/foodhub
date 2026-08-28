@@ -22,11 +22,13 @@ body {
 
 /* Touch-friendly tap targets - minimum 44px */
 button,
-a,
 input,
 select,
 textarea {
     min-height: 44px;
+}
+a {
+    min-height: auto;
 }
 
 @media (max-width: 768px) {
