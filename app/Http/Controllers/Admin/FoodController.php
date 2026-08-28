@@ -37,7 +37,7 @@ class FoodController extends Controller
         'is_available' => 'nullable|boolean',
     ]);
 
-    $food = Food::create([
+    Food::create([
         'category_id' => $request->category_id,
         'name' => $request->name,
         'description' => $request->description,
@@ -46,18 +46,6 @@ class FoodController extends Controller
         'image' => $request->image,
         'is_available' => $request->has('is_available'),
     ]);
-
-    // Save inventory if tracking is enabled
-    if ($request->has('track_stock')) {
-        \App\Models\Inventory::updateOrCreate(
-            ['food_id' => $food->id],
-            [
-                'stock_quantity' => (int) $request->input('stock_quantity', 0),
-                'low_stock_threshold' => (int) $request->input('low_stock_threshold', 5),
-                'track_stock' => true,
-            ]
-        );
-    }
 
     return redirect()
         ->route('admin.food.index')
@@ -97,20 +85,6 @@ class FoodController extends Controller
         $validated['is_available'] = $request->has('is_available');
 
         $food->update($validated);
-
-        // Update inventory
-        if ($request->has('track_stock')) {
-            \App\Models\Inventory::updateOrCreate(
-                ['food_id' => $food->id],
-                [
-                    'stock_quantity' => (int) $request->input('stock_quantity', 0),
-                    'low_stock_threshold' => (int) $request->input('low_stock_threshold', 5),
-                    'track_stock' => true,
-                ]
-            );
-        } else {
-            \App\Models\Inventory::where('food_id', $food->id)->update(['track_stock' => false]);
-        }
 
         return redirect()
             ->route('admin.food.index')

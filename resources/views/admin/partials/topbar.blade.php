@@ -30,9 +30,6 @@
         <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
             <span>👥</span> Users
         </a>
-        <a href="{{ route('admin.kds') }}" class="{{ request()->routeIs('admin.kds') ? 'active' : '' }}">
-            <span>👨‍🍳</span> Kitchen
-        </a>
         <a href="{{ url('/') }}" class="website-btn" target="_blank" rel="noopener">
             <span>🌐</span> View Website
         </a>

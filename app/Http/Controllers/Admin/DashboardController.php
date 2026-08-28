@@ -225,18 +225,6 @@ class DashboardController extends Controller
         $avgRating = \App\Models\Rating::avg('stars');
         $totalRatings = \App\Models\Rating::count();
 
-        // --- Inventory Alerts ---
-        $lowStockItems = \App\Models\Inventory::where('track_stock', true)
-            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
-            ->where('stock_quantity', '>', 0)
-            ->with('food')
-            ->get();
-
-        $outOfStockItems = \App\Models\Inventory::where('track_stock', true)
-            ->where('stock_quantity', '<=', 0)
-            ->with('food')
-            ->get();
-
         return response()->json([
             'revenue_trend' => $revenueData,
             'status_distribution' => $statusData,
@@ -244,35 +232,6 @@ class DashboardController extends Controller
             'type_distribution' => $typeData,
             'avg_rating' => round($avgRating ?? 0, 1),
             'total_ratings' => $totalRatings,
-            'low_stock_count' => $lowStockItems->count(),
-            'out_of_stock_count' => $outOfStockItems->count(),
-            'low_stock_items' => $lowStockItems,
-            'out_of_stock_items' => $outOfStockItems,
-        ]);
-    }
-
-    /*
-     * Kitchen Display System - pending orders with timers
-     */
-    public function kds()
-    {
-        $pendingOrders = Order::whereIn('status', ['Pending', 'Preparing'])
-            ->with('items.food')
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        return view('admin.kds', compact('pendingOrders'));
-    }
-
-    public function kdsJson()
-    {
-        $pendingOrders = Order::whereIn('status', ['Pending', 'Preparing'])
-            ->with('items.food')
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        return response()->json([
-            'orders' => $pendingOrders,
         ]);
     }
 }

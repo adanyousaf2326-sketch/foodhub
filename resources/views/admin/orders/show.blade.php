@@ -941,19 +941,10 @@
 
                         💾 Update Order
 
-                    </button>
+                    </button>                </form>
 
 
-                </form>
 
-                @if($order->status === 'Pending')
-                <form method="POST" action="{{ route('admin.orders.mark-preparing', $order) }}" style="margin-top:10px;">
-                    @csrf
-                    <button type="submit" style="width:100%;padding:12px;border:none;border-radius:8px;background:#2563eb;color:white;font-weight:bold;font-size:14px;cursor:pointer;" onclick="return confirm('Start preparing? This will deduct stock from inventory.')">
-                        👨‍🍳 Start Preparing (Deduct Stock)
-                    </button>
-                </form>
-                @endif
 
             </div>            <!-- ORDER INFORMATION -->
 

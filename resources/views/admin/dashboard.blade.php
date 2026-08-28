@@ -430,7 +430,6 @@
             <div id="topSellingList" style="max-height:200px;overflow-y:auto;">
                 <div style="text-align:center;color:#999;padding:20px;">Loading...</div>
             </div>
-            <div id="inventoryAlerts" style="margin-top:15px;"></div>
         </div>
     </div>
 
@@ -549,7 +548,6 @@ function loadAnalytics() {
         renderStatusChart(data.status_distribution);
         renderTypeChart(data.type_distribution);
         renderTopSelling(data.top_selling);
-        renderInventoryAlerts(data);
 
         if (data.total_ratings > 0) {
             document.getElementById('ratingSummary').style.display = 'block';
@@ -656,22 +654,6 @@ function renderTopSelling(items) {
         html += '</div>';
     });
     el.innerHTML = html;
-}
-
-function renderInventoryAlerts(data) {
-    var el = document.getElementById('inventoryAlerts');
-    var html = '';
-    if (data.out_of_stock_count > 0) {
-        html += '<div style="padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:8px;font-size:12px;color:#991b1b;">';
-        html += '🚫 <strong>' + data.out_of_stock_count + '</strong> item(s) out of stock';
-        html += '</div>';
-    }
-    if (data.low_stock_count > 0) {
-        html += '<div style="padding:8px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:12px;color:#92400e;">';
-        html += '⚠️ <strong>' + data.low_stock_count + '</strong> item(s) low stock';
-        html += '</div>';
-    }
-    if (html) el.innerHTML = html;
 }
 
 loadAnalytics();

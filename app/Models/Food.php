@@ -46,9 +46,4 @@ class Food extends Model
     {
         return (float) $this->discount_percentage > 0;
     }
-
-    public function inventory()
-    {
-        return $this->hasOne(Inventory::class);
-    }
 }

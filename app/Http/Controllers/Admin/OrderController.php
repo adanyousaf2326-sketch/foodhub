@@ -824,31 +824,4 @@ class OrderController extends Controller
         return back()->with('success', 'Thank you for your rating!');
     }
 
-    /*
-     * ADMIN: Mark Order as Preparing + Deduct Stock
-     */
-    public function markPreparing(Order $order)
-    {
-        $this->changeStatus($order, 'Preparing');
-
-        // Deduct inventory if tracking
-        foreach ($order->items as $item) {
-            if ($item->food_id) {
-                $inventory = \App\Models\Inventory::where('food_id', $item->food_id)
-                    ->where('track_stock', true)
-                    ->first();
-
-                if ($inventory) {
-                    $inventory->decrement('stock_quantity', $item->quantity);
-
-                    // Auto-disable food if out of stock
-                    if ($inventory->stock_quantity <= 0) {
-                        Food::where('id', $item->food_id)->update(['is_available' => false]);
-                    }
-                }
-            }
-        }
-
-        return back()->with('success', 'Order marked as Preparing. Stock deducted.');
-    }
 }
