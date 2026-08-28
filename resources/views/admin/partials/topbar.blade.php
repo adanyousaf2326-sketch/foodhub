@@ -1,33 +1,40 @@
-{{-- ===== TOPBAR BAR (always visible) ===== --}}
+{{-- ===== TOPBAR BAR (always visible) ===== }}
 <div class="admin-topbar">
     {{-- Logo --}}
     <a href="{{ route('admin.dashboard') }}" class="topbar-logo">
-        <span style="font-size:22px;">🍔</span>
+        <span class="topbar-logo-icon">🍔</span>
         <span class="topbar-logo-text">Food<span class="topbar-logo-accent">Hub</span></span>
     </a>
 
     {{-- Desktop nav links (hidden on mobile) --}}
     <nav class="topbar-desktop-nav" id="desktopNav">
-        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-            📊 Dashboard
+        <a href="{{ route('admin.dashboard') }}" class="topbar-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">Dashboard</span>
         </a>
-        <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-            🛒 Orders
+        <a href="{{ route('admin.orders.index') }}" class="topbar-nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+            <span class="nav-icon">🛒</span>
+            <span class="nav-text">Orders</span>
         </a>
-        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
-            🍔 Food
+        <a href="{{ route('admin.food.index') }}" class="topbar-nav-link {{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
+            <span class="nav-icon">🍔</span>
+            <span class="nav-text">Food</span>
         </a>
-        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-            📂 Categories
+        <a href="{{ route('admin.categories.index') }}" class="topbar-nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+            <span class="nav-icon">📂</span>
+            <span class="nav-text">Categories</span>
         </a>
-        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
-            📣 Deals
+        <a href="{{ route('admin.announcements.index') }}" class="topbar-nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+            <span class="nav-icon">📣</span>
+            <span class="nav-text">Deals</span>
         </a>
-        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-            👥 Users
+        <a href="{{ route('admin.users.index') }}" class="topbar-nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">Users</span>
         </a>
         <a href="{{ url('/') }}" target="_blank" rel="noopener" class="topbar-nav-link website-link">
-            🌐 Website
+            <span class="nav-icon">🌐</span>
+            <span class="nav-text">Website</span>
         </a>
     </nav>
 
@@ -42,13 +49,16 @@
 
         {{-- Chat --}}
         <div class="topbar-chat-wrap">
-            <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" class="topbar-action-btn">
-                💬 <span class="topbar-action-label hide-mobile-text">Chat</span>
+            <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" class="topbar-action-btn chat-btn">
+                💬 <span class="action-label hide-mobile-text">Chat</span>
                 <span id="chatTotalBadge" class="topbar-badge"></span>
             </button>
             <div id="chatDropdown" class="topbar-chat-dropdown">
                 <div class="chat-dropdown-header">
-                    <strong>💬 Chat</strong>
+                    <div class="chat-dropdown-title">
+                        <span class="chat-dropdown-icon">💬</span>
+                        <strong>Chat Center</strong>
+                    </div>
                     <button onclick="closeChatDropdown()" class="chat-close-btn">✕</button>
                 </div>
                 <div class="chat-tabs-bar">
@@ -63,55 +73,92 @@
                     </button>
                 </div>
                 <div id="chatEditReqsPanel" class="chat-panel">
-                    <div class="chat-empty">No pending requests</div>
+                    <div class="chat-empty">
+                        <span class="chat-empty-icon">📭</span>
+                        <p>No pending requests</p>
+                    </div>
                 </div>
                 <div id="chatMessagesPanel" class="chat-panel" style="display:none;">
-                    <div class="chat-empty">No unread messages</div>
+                    <div class="chat-empty">
+                        <span class="chat-empty-icon">💬</span>
+                        <p>No unread messages</p>
+                    </div>
                 </div>
                 <div id="chatUpdatesPanel" class="chat-panel" style="display:none;">
-                    <div class="chat-empty">No order updates</div>
+                    <div class="chat-empty">
+                        <span class="chat-empty-icon">🔄</span>
+                        <p>No order updates</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- Theme Toggle --}}
-        <button type="button" onclick="toggleTheme()" class="topbar-action-btn" title="Toggle Dark/Light Mode">
+        <button type="button" onclick="toggleTheme()" class="topbar-action-btn theme-btn" title="Toggle Dark/Light Mode">
             <span class="theme-icon">🌙</span>
         </button>
 
         {{-- Logout --}}
         <form method="POST" action="{{ route('logout') }}" class="topbar-logout-form">
             @csrf
-            <button type="submit" class="topbar-action-btn topbar-logout">
-                ↪ <span class="hide-mobile-text">Logout</span>
+            <button type="submit" class="topbar-action-btn topbar-logout" title="Logout">
+                <span class="logout-icon">↪</span> <span class="hide-mobile-text">Logout</span>
             </button>
         </form>
     </div>
 </div>
 
-{{-- ===== MOBILE MENU (separate panel, slides down) ===== --}}
+{{-- ===== MOBILE MENU (separate panel, slides down) ===== }}
 <div class="admin-mobile-menu" id="adminMobileMenu">
-    <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-        📊 Dashboard
-    </a>
-    <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-        🛒 Orders
-    </a>
-    <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
-        🍔 Food
-    </a>
-    <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-        📂 Categories
-    </a>
-    <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
-        📣 Deals
-    </a>
-    <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-        👥 Users
-    </a>
-    <a href="{{ url('/') }}" target="_blank" rel="noopener">
-        🌐 Website
-    </a>
+    <div class="mobile-menu-header">
+        <span class="mobile-menu-logo">🍔</span>
+        <span class="mobile-menu-brand">Food<span style="color:#ff6b00;">Hub</span> Admin</span>
+    </div>
+    <div class="mobile-menu-links">
+        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <span class="mobile-link-icon">📊</span>
+            <span class="mobile-link-text">Dashboard</span>
+            <span class="mobile-link-arrow">›</span>
+        </a>
+        <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+            <span class="mobile-link-icon">🛒</span>
+            <span class="mobile-link-text">Orders</span>
+            <span class="mobile-link-arrow">›</span>
+        </a>
+        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
+            <span class="mobile-link-icon">🍔</span>
+            <span class="mobile-link-text">Food</span>
+            <span class="mobile-link-arrow">›</span>
+        </a>
+        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+            <span class="mobile-link-icon">📂</span>
+            <span class="mobile-link-text">Categories</span>
+            <span class="mobile-link-arrow">›</span>
+        </a>
+        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+            <span class="mobile-link-icon">📣</span>
+            <span class="mobile-link-text">Deals</span>
+            <span class="mobile-link-arrow">›</span>
+        </a>
+        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <span class="mobile-link-icon">👥</span>
+            <span class="mobile-link-text">Users</span>
+            <span class="mobile-link-arrow">›</span>
+        </a>
+        <a href="{{ url('/') }}" target="_blank" rel="noopener">
+            <span class="mobile-link-icon">🌐</span>
+            <span class="mobile-link-text">View Website</span>
+            <span class="mobile-link-arrow">↗</span>
+        </a>
+    </div>
+    <div class="mobile-menu-footer">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="mobile-logout-btn">
+                ↪ Logout
+            </button>
+        </form>
+    </div>
 </div>
 
 {{-- ===== BACKDROP ===== --}}
@@ -119,34 +166,44 @@
 
 <style>
 /* ============================================
-   TOPBAR BAR
+   TOPBAR — Modern Design (matches customer side)
    ============================================ */
 .admin-topbar {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0;
     padding: 0 20px;
-    height: 56px;
-    background: #0f172a;
+    height: 62px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: white;
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Logo */
 .topbar-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     text-decoration: none;
     color: white;
     flex-shrink: 0;
+    margin-right: 24px;
+}
+.topbar-logo-icon {
+    font-size: 26px;
+    transition: transform 0.3s ease;
+}
+.topbar-logo:hover .topbar-logo-icon {
+    transform: rotate(-10deg) scale(1.1);
 }
 .topbar-logo-text {
-    font-family: var(--font-display, 'Poppins', sans-serif);
-    font-size: 17px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 19px;
     font-weight: 800;
+    letter-spacing: 0.5px;
 }
 .topbar-logo-accent {
     color: #ff6b00;
@@ -156,67 +213,105 @@
 .topbar-desktop-nav {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     flex: 1;
 }
-.topbar-desktop-nav a {
+.topbar-nav-link {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 7px 12px;
-    border-radius: 6px;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
     color: #94a3b8;
     text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
     white-space: nowrap;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
+    position: relative;
 }
-.topbar-desktop-nav a:hover {
-    color: white;
-    background: rgba(255,255,255,.06);
+.topbar-nav-link .nav-icon {
+    font-size: 15px;
+    transition: transform 0.25s ease;
 }
-.topbar-desktop-nav a.active {
+.topbar-nav-link:hover {
     color: white;
-    background: rgba(255,107,0,.2);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+.topbar-nav-link:hover .nav-icon {
+    transform: scale(1.15);
+}
+.topbar-nav-link.active {
+    color: white;
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.2) 0%, rgba(255, 107, 0, 0.1) 100%);
+    box-shadow: inset 0 -2px 0 #ff6b00;
+}
+.topbar-nav-link.website-link {
+    background: rgba(22, 163, 74, 0.15);
+    color: #4ade80;
+}
+.topbar-nav-link.website-link:hover {
+    background: rgba(22, 163, 74, 0.25);
+    color: #22c55e;
 }
 
 /* Right side */
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-shrink: 0;
+    margin-left: 12px;
 }
 
 /* Action buttons */
 .topbar-action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 0 12px;
-    height: 34px;
-    border-radius: 8px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.1);
-    color: white;
+    gap: 6px;
+    padding: 0 14px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    transition: all .2s;
+    transition: all 0.25s ease;
     position: relative;
     white-space: nowrap;
 }
 .topbar-action-btn:hover {
-    background: rgba(255,255,255,.15);
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Chat button */
+.chat-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Theme button */
+.theme-btn:hover {
+    background: rgba(250, 204, 21, 0.15);
+    border-color: rgba(250, 204, 21, 0.3);
+}
+
+/* Logout button */
 .topbar-logout {
-    background: rgba(239,68,68,.1);
-    border-color: rgba(239,68,68,.2);
-    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
 }
-
+.topbar-logout:hover {
+    background: rgba(239, 68, 68, 0.25) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: #f87171 !important;
+}
 .topbar-logout-form {
     margin: 0;
     display: inline-flex;
@@ -225,20 +320,27 @@
 /* Badge */
 .topbar-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ef4444;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
     font-size: 10px;
     font-weight: bold;
-    min-width: 18px;
-    height: 18px;
-    border-radius: 9px;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 0 4px;
+    padding: 0 5px;
     border: 2px solid #0f172a;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
 }
 
 /* Hamburger */
@@ -247,63 +349,141 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     cursor: pointer;
-    padding: 8px;
-    gap: 4px;
+    padding: 10px;
+    gap: 5px;
+    transition: all 0.25s ease;
+}
+.topbar-hamburger:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 .topbar-hamburger span {
     display: block;
-    width: 18px;
+    width: 20px;
     height: 2px;
     background: white;
     border-radius: 2px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    transform-origin: center;
 }
-.topbar-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
-.topbar-hamburger.active span:nth-child(2) { opacity: 0; }
-.topbar-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+.topbar-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+.topbar-hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+.topbar-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
 
 /* ============================================
-   MOBILE MENU (separate drop-down panel)
+   MOBILE MENU — Beautiful Slide-Down Panel
    ============================================ */
 .admin-mobile-menu {
     display: none;
     position: sticky;
-    top: 56px;
+    top: 62px;
     z-index: 999;
-    background: #1e293b;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    box-shadow: 0 10px 30px rgba(0,0,0,.3);
-    padding: 8px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+    animation: slideDown 0.3s ease;
 }
 .admin-mobile-menu.show {
     display: block;
 }
-.admin-mobile-menu a {
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-menu-header {
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mobile-menu-logo {
+    font-size: 24px;
+}
+.mobile-menu-brand {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+}
+
+.mobile-menu-links {
+    padding: 8px;
+}
+.mobile-menu-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 14px 16px;
-    border-radius: 8px;
+    border-radius: 12px;
     color: #94a3b8;
     text-decoration: none;
     font-size: 15px;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
 }
-.admin-mobile-menu a:hover,
-.admin-mobile-menu a:active {
+.mobile-menu-links a:hover,
+.mobile-menu-links a:active {
     color: white;
-    background: rgba(255,255,255,.06);
+    background: rgba(255, 255, 255, 0.06);
 }
-.admin-mobile-menu a.active {
+.mobile-menu-links a.active {
     color: white;
-    background: rgba(255,107,0,.25);
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.25) 0%, rgba(255, 107, 0, 0.1) 100%);
+    border-left: 3px solid #ff6b00;
+}
+.mobile-link-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+.mobile-link-text {
+    flex: 1;
+}
+.mobile-link-arrow {
+    font-size: 18px;
+    color: #475569;
+    font-weight: bold;
+}
+.mobile-menu-links a.active .mobile-link-arrow {
+    color: #ff6b00;
+}
+
+.mobile-menu-footer {
+    padding: 12px 16px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mobile-logout-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.mobile-logout-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    color: #f87171;
 }
 
 /* Backdrop */
@@ -314,85 +494,154 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 998;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
 }
 .admin-mobile-backdrop.show {
     display: block;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* ============================================
-   CHAT DROPDOWN
+   CHAT DROPDOWN — Modern Card Design
    ============================================ */
 .topbar-chat-wrap { position: relative; }
 
 .topbar-chat-dropdown {
     display: none;
     position: absolute;
-    top: 42px;
+    top: 48px;
     right: 0;
-    width: 400px;
-    max-height: 500px;
+    width: 420px;
+    max-height: 520px;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
     z-index: 10001;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    animation: dropdownSlide 0.25s ease;
 }
+
+@keyframes dropdownSlide {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 body.dark-theme .topbar-chat-dropdown {
     background: #1e293b;
-    border-color: #334155;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+
 .chat-dropdown-header {
-    padding: 14px 16px;
-    background: linear-gradient(135deg,#1e40af,#7c3aed);
+    padding: 16px 18px;
+    background: linear-gradient(135deg, #1e40af, #7c3aed);
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.chat-close-btn {
-    background: none;
-    border: none;
-    color: #c7d2fe;
-    cursor: pointer;
-    font-size: 20px;
-    padding: 4px;
+.chat-dropdown-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+.chat-dropdown-icon {
+    font-size: 18px;
+}
+.chat-close-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+.chat-close-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
 .chat-tabs-bar {
     display: flex;
-    border-bottom: 2px solid #e5e7eb;
+    border-bottom: 2px solid #f3f4f6;
     background: #f9fafb;
+}
+body.dark-theme .chat-tabs-bar {
+    background: #1a2332;
+    border-color: #334155;
 }
 .chat-tab {
     flex: 1;
-    padding: 10px 6px;
+    padding: 12px 8px;
     border: none;
     background: transparent;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
     cursor: pointer;
     color: #6b7280;
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     margin-bottom: -2px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    transition: all 0.2s;
+    gap: 4px;
+    transition: all 0.25s ease;
 }
-.chat-tab.active-tab { color: #f59e0b; border-bottom-color: #f59e0b; }
+.chat-tab:hover {
+    color: #374151;
+    background: rgba(0, 0, 0, 0.02);
+}
+body.dark-theme .chat-tab:hover {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.03);
+}
+.chat-tab.active-tab {
+    color: #f59e0b;
+    border-bottom-color: #f59e0b;
+}
 .tab-badge {
     color: white;
     font-size: 9px;
-    padding: 1px 5px;
+    padding: 1px 6px;
     border-radius: 8px;
     font-weight: bold;
 }
-.chat-panel { max-height: 380px; overflow-y: auto; }
-.chat-empty { text-align: center; padding: 30px; color: #9ca3af; font-size: 13px; }
+.chat-panel {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.chat-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.chat-panel::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+.chat-empty {
+    text-align: center;
+    padding: 35px 20px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+.chat-empty-icon {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 8px;
+}
+.chat-empty p {
+    margin: 0;
+}
 
 /* ============================================
    MOBILE (max 1024px)
@@ -409,11 +658,26 @@ body.dark-theme .topbar-chat-dropdown {
 
     /* Make topbar fit mobile */
     .admin-topbar {
-        padding: 0 12px;
-        height: 52px;
+        padding: 0 14px;
+        height: 56px;
     }
 
-    /* Chat dropdown → bottom sheet */
+    .topbar-logo {
+        margin-right: auto;
+    }
+    .topbar-logo-text {
+        font-size: 17px;
+    }
+
+    /* Action buttons smaller on mobile */
+    .topbar-action-btn {
+        padding: 0 11px;
+        height: 36px;
+        font-size: 12px;
+        border-radius: 9px;
+    }
+
+    /* Chat dropdown → bottom sheet on mobile */
     .topbar-chat-dropdown {
         position: fixed !important;
         bottom: 0 !important;
@@ -421,19 +685,42 @@ body.dark-theme .topbar-chat-dropdown {
         right: 0 !important;
         top: auto !important;
         width: 100% !important;
-        max-height: 75vh;
-        border-radius: 16px 16px 0 0;
+        max-height: 78vh;
+        border-radius: 20px 20px 0 0;
+        animation: sheetSlideUp 0.3s ease;
     }
-    .chat-panel { max-height: 55vh; }
+
+    @keyframes sheetSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .chat-panel { max-height: 58vh; }
+
+    .admin-mobile-menu {
+        top: 56px;
+        border-radius: 0;
+    }
 }
 
 @media (max-width: 480px) {
     .admin-topbar {
         padding: 0 10px;
-        height: 50px;
+        height: 52px;
     }
     .topbar-logo-text { font-size: 15px; }
-    .topbar-action-btn { padding: 0 10px; height: 32px; font-size: 12px; }
+    .topbar-logo-icon { font-size: 22px; }
+    .topbar-action-btn {
+        padding: 0 9px;
+        height: 34px;
+        font-size: 12px;
+        gap: 4px;
+    }
+    .topbar-hamburger {
+        width: 38px;
+        height: 38px;
+    }
+    .action-label { display: none; }
 }
 </style>
 
@@ -463,7 +750,7 @@ function closeMobileMenu() {
 }
 
 // Close mobile menu on link click
-document.querySelectorAll('.admin-mobile-menu a').forEach(function(link) {
+document.querySelectorAll('.admin-mobile-menu .mobile-menu-links a').forEach(function(link) {
     link.addEventListener('click', closeMobileMenu);
 });
 
@@ -533,16 +820,16 @@ var editReqCount=0, msgCount=0, updateCount=0;
 function renderChatEditRequests(reqs) {
     var panel = document.getElementById('chatEditReqsPanel');
     var badge = document.getElementById('tabEditReqsCount');
-    if (reqs.length===0) { panel.innerHTML='<div class="chat-empty">No pending requests</div>'; badge.style.display='none'; editReqCount=0; return; }
+    if (reqs.length===0) { panel.innerHTML='<div class="chat-empty"><span class="chat-empty-icon">📭</span><p>No pending requests</p></div>'; badge.style.display='none'; editReqCount=0; return; }
     editReqCount=reqs.length; badge.textContent=editReqCount; badge.style.display='inline';
     var html='';
     reqs.forEach(function(r) {
-        html+='<div style="padding:12px 16px;border-bottom:1px solid #f3f4f6;background:#fffbeb;">';
+        html+='<div style="padding:14px 16px;border-bottom:1px solid #f3f4f6;background:#fffbeb;">';
         html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="color:#92400e;font-size:13px;">✏️ Order #'+r.order_id+'</strong><span style="font-size:11px;color:#a16207;">'+timeAgo(r.created_at)+'</span></div>';
-        html+='<div style="font-size:12px;color:#78716c;margin-bottom:8px;">'+(r.customer_name||'Customer')+': '+(r.message||'Wants to edit')+'</div>';
-        html+='<div style="display:flex;gap:6px;">';
-        html+='<form method="POST" action="/admin/orders/'+r.order_id+'/edit-requests/'+r.id+'/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;">✅ Accept</button></form>';
-        html+='<form method="POST" action="/admin/orders/'+r.order_id+'/edit-requests/'+r.id+'/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected."><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;">❌ Reject</button></form>';
+        html+='<div style="font-size:12px;color:#78716c;margin-bottom:10px;">'+(r.customer_name||'Customer')+': '+(r.message||'Wants to edit')+'</div>';
+        html+='<div style="display:flex;gap:8px;">';
+        html+='<form method="POST" action="/admin/orders/'+r.order_id+'/edit-requests/'+r.id+'/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:9px;border:none;border-radius:8px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;transition:all .2s;">✅ Accept</button></form>';
+        html+='<form method="POST" action="/admin/orders/'+r.order_id+'/edit-requests/'+r.id+'/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected."><button type="submit" style="width:100%;padding:9px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;transition:all .2s;">❌ Reject</button></form>';
         html+='</div></div>';
     });
     panel.innerHTML=html;
@@ -550,19 +837,19 @@ function renderChatEditRequests(reqs) {
 
 function renderChatMessages(msgs) {
     var panel=document.getElementById('chatMessagesPanel'), badge=document.getElementById('tabMessagesCount');
-    if(msgs.length===0){panel.innerHTML='<div class="chat-empty">No unread messages</div>';badge.style.display='none';msgCount=0;return;}
+    if(msgs.length===0){panel.innerHTML='<div class="chat-empty"><span class="chat-empty-icon">💬</span><p>No unread messages</p></div>';badge.style.display='none';msgCount=0;return;}
     msgCount=msgs.length;badge.textContent=msgCount;badge.style.display='inline';
     var html='';
-    msgs.forEach(function(m){html+='<a href="/admin/orders/'+m.order_id+'" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;"><div style="width:34px;height:34px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💬</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#1d4ed8;margin-bottom:2px;">Order #'+m.order_id+'</div><div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(m.sender_name||'Customer')+': '+m.message+'</div></div></a>';});
+    msgs.forEach(function(m){html+='<a href="/admin/orders/'+m.order_id+'" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .2s;"><div style="width:38px;height:38px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">💬</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#1d4ed8;margin-bottom:3px;">Order #'+m.order_id+'</div><div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(m.sender_name||'Customer')+': '+m.message+'</div></div></a>';});
     panel.innerHTML=html;
 }
 
 function renderChatUpdates(updates) {
     var panel=document.getElementById('chatUpdatesPanel'),badge=document.getElementById('tabUpdatesCount');
-    if(updates.length===0){panel.innerHTML='<div class="chat-empty">No order updates</div>';badge.style.display='none';updateCount=0;return;}
+    if(updates.length===0){panel.innerHTML='<div class="chat-empty"><span class="chat-empty-icon">🔄</span><p>No order updates</p></div>';badge.style.display='none';updateCount=0;return;}
     updateCount=updates.length;badge.textContent=updateCount;badge.style.display='inline';
     var html='';
-    updates.forEach(function(o){html+='<a href="/admin/orders/'+o.id+'" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;"><div style="width:34px;height:34px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔄</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#b45309;margin-bottom:2px;">Order #'+o.id+' Updated</div><div style="font-size:12px;color:#6b7280;">'+(o.customer_name||'Customer')+' - Rs. '+parseFloat(o.total_amount).toFixed(2)+'</div></div></a>';});
+    updates.forEach(function(o){html+='<a href="/admin/orders/'+o.id+'" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;transition:background .2s;"><div style="width:38px;height:38px;border-radius:10px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🔄</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#b45309;margin-bottom:3px;">Order #'+o.id+' Updated</div><div style="font-size:12px;color:#6b7280;">'+(o.customer_name||'Customer')+' — Rs. '+parseFloat(o.total_amount).toLocaleString('en-PK',{minimumFractionDigits:2})+'</div></div></a>';});
     panel.innerHTML=html;
 }
 
