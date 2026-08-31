@@ -7,6 +7,21 @@ body.dark-theme {
     color: #e2e8f0 !important;
 }
 
+/* Global text fixes - override inline color:#222 etc */
+body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, body.dark-theme h4,
+body.dark-theme strong, body.dark-theme label, body.dark-theme span {
+    color: #f1f5f9 !important;
+}
+body.dark-theme p, body.dark-theme small {
+    color: #94a3b8 !important;
+}
+body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+body.dark-theme label { color: #f1f5f9 !important; }
+
 /* Nav - already dark, keep it */
 
 /* Hero */

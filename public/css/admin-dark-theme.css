@@ -19,6 +19,21 @@ body.dark-theme {
     color: var(--text-primary) !important;
 }
 
+/* Global text fixes - override inline color:#222 etc */
+body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, body.dark-theme h4,
+body.dark-theme strong, body.dark-theme label, body.dark-theme span {
+    color: var(--text-primary) !important;
+}
+body.dark-theme p, body.dark-theme small, body.dark-theme .subtitle {
+    color: var(--text-secondary) !important;
+}
+body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+body.dark-theme label { color: var(--text-primary) !important; }
+
 /* Topbar - Already dark, no changes needed */
 
 /* Container */
