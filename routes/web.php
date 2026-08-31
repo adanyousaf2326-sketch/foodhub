@@ -334,11 +334,6 @@ Route::get('/order/success/{order}', function (Order $order) {
 
 })->name('order.success');
 
-/*
-Route::get('/track-order', function () {
-    return view('track-order');
-})->name('track.order');
-
 Route::get('/track-order', [OrderController::class, 'track'])
     ->name('track.order');
 
