@@ -3401,8 +3401,10 @@ function closeCart() {
 function addToCart(foodId, announcementId, sizeId) {
     if (typeof announcementId === 'undefined') announcementId = null;
     if (typeof sizeId === 'undefined') sizeId = null;
+    console.log('ADD TO CART:', foodId, announcementId, sizeId);
     var body = { announcement_id: announcementId };
     if (sizeId) body.size_id = sizeId;
+    console.log('BODY:', JSON.stringify(body));
     fetch('/cart/add/' + foodId, {
         method: 'POST',
         headers: {
