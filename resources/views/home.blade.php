@@ -2821,13 +2821,7 @@
                                         @endif
                                     </div>
                                     <button type="button" class="order-btn size-add-btn"
-                                        data-food-id="{{ $food->id }}"
-                                        data-size-id="{{ $size->id }}"
-                                        data-size-name="{{ $size->name }}"
-                                        data-size-price="{{ $sizePrice }}"
-                                        data-food-name="{{ $food->name }}"
-                                        data-food-image="{{ $food->image ?? '' }}"
-                                        onclick="addSizeToCart(this)">
+                                        onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }}, {{ $size->id }}, {{ $sizePrice }})">
                                         + Add
                                     </button>
                                 </div>
@@ -3408,42 +3402,12 @@ function closeCart() {
 
     
 
-function addSizeToCart(btn) {
-    var foodId = btn.getAttribute('data-food-id');
-    var sizeId = btn.getAttribute('data-size-id');
-    var sizeName = btn.getAttribute('data-size-name');
-    var sizePrice = btn.getAttribute('data-size-price');
-    var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-    fetch('/cart/add/' + foodId, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': token,
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({ size_id: sizeId, size_price: sizePrice })
-    })
-    .then(function(r) {
-        if (!r.ok) throw new Error('Failed');
-        return r.json();
-    })
-    .then(function(data) {
-        cart = data.cart;
-        updateCartUI();
-        setTimeout(function() { openCart(); }, 150);
-        showToast('\u2705 Added to cart!');
-    })
-    .catch(function(e) {
-        console.error(e);
-        showToast('\u274c Could not add item.');
-    });
-}
-
-function addToCart(foodId, announcementId, sizeId) {
+function addToCart(foodId, announcementId, sizeId, sizePrice) {
     if (typeof announcementId === 'undefined' || announcementId === 'null' || announcementId === 'undefined') announcementId = null;
     if (typeof sizeId === 'undefined' || sizeId === 'null' || sizeId === 'undefined') sizeId = null;
     var body = { announcement_id: announcementId };
     if (sizeId !== null && sizeId !== undefined && sizeId !== '') body.size_id = parseInt(sizeId);
+    if (sizePrice) body.size_price = sizePrice;
     fetch('/cart/add/' + foodId, {
         method: 'POST',
         headers: {
