@@ -2821,8 +2821,10 @@
                                         @endif
                                     </div>
                                     <button type="button" class="order-btn size-add-btn"
+                                        data-fid="{{ $food->id }}"
+                                        data-sid="{{ $size->id }}"
                                         data-sp="{{ $sizePrice }}"
-                                        onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }}, {{ $size->id }}, this.getAttribute('data-sp'))">
+                                        onclick="addToCart(this.dataset.fid, null, this.dataset.sid, this.dataset.sp)">
                                         + Add
                                     </button>
                                 </div>
@@ -3404,12 +3406,14 @@ function closeCart() {
     
 
 function addToCart(foodId, announcementId, sizeId, sizePrice) {
+    console.log('addToCart args:', foodId, announcementId, sizeId, sizePrice);
     if (typeof announcementId === 'undefined' || announcementId === 'null') announcementId = null;
     if (typeof sizeId === 'undefined' || sizeId === 'null') sizeId = null;
-    if (typeof sizePrice === 'undefined') sizePrice = null;
+    if (typeof sizePrice === 'undefined' || sizePrice === '') sizePrice = null;
     var body = { announcement_id: announcementId };
     if (sizeId) body.size_id = parseInt(sizeId);
     if (sizePrice) body.size_price = parseFloat(sizePrice);
+    console.log('addToCart body:', JSON.stringify(body));
     var headers = {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
