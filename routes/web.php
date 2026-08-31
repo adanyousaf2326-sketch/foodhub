@@ -398,13 +398,7 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
         $cartPrice = $food->discounted_price;
     }
 
-    \Log::info('CART DEBUG', [
-        'food_id' => $food->id,
-        'size_id_sent' => $request->size_id,
-        'foodSize_found' => $foodSize ? $foodSize->name . ' @ ' . $foodSize->price : 'NONE',
-        'sizeName' => $sizeName,
-        'cartPrice' => $cartPrice,
-    ]);
+
 
     if (isset($cart[$cartKey])) {
         $cart[$cartKey]['quantity']++;
