@@ -2320,6 +2320,126 @@
         }
 
     }
+
+    /* ============================================
+       DARK MODE — Overrides inline light colors
+       ============================================ */
+    body.dark-theme { background: #0f172a; color: #e2e8f0; }
+
+    /* Text */
+    body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, body.dark-theme h4,
+    body.dark-theme strong, body.dark-theme label, body.dark-theme span { color: #f1f5f9; }
+    body.dark-theme p, body.dark-theme small { color: #94a3b8; }
+    body.dark-theme a { color: #60a5fa; }
+
+    /* Nav */
+    body.dark-theme nav { background: #0f172a; }
+
+    /* Hero */
+    body.dark-theme .hero { background: linear-gradient(90deg, rgba(15,23,42,.95), rgba(15,23,42,.6)); }
+    body.dark-theme .hero h1 { color: #f1f5f9; }
+    body.dark-theme .hero p { color: #94a3b8; }
+
+    /* Sections */
+    body.dark-theme .section-title h2 { color: #f1f5f9; }
+    body.dark-theme .section-title p { color: #94a3b8; }
+
+    /* Categories */
+    body.dark-theme .category { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+    body.dark-theme .category:hover { border-color: #ff6b00; }
+    body.dark-theme .category h3 { color: #f1f5f9; }
+    body.dark-theme .category p { color: #94a3b8; }
+    body.dark-theme .category-icon { background: #1e293b; }
+
+    /* Food Cards */
+    body.dark-theme .food-card { background: #1e293b; border-color: #334155; }
+    body.dark-theme .food-info h3 { color: #f1f5f9; }
+    body.dark-theme .food-info p { color: #94a3b8; }
+    body.dark-theme .food-category { background: rgba(255,107,0,.15); color: #ff8c38; }
+    body.dark-theme .food-bottom { border-top-color: #334155; }
+    body.dark-theme .price { color: #f1f5f9; }
+    body.dark-theme .price-old { color: #64748b; }
+    body.dark-theme .discount-badge { background: rgba(220,38,38,.15); color: #f87171; }
+    body.dark-theme .deal-badge { background: rgba(22,101,52,.2); color: #4ade80; }
+
+    /* Menu Top */
+    body.dark-theme .menu-top { color: #94a3b8; }
+    body.dark-theme .all-food-btn { background: #334155; color: #e2e8f0; }
+    body.dark-theme .selected-category { color: #ff6b00; }
+
+    /* Poster */
+    body.dark-theme .menu-poster { background: #1e293b; border-color: #334155; }
+    body.dark-theme .poster-header { background: #0f172a; }
+    body.dark-theme .poster-header h2 { color: #f1f5f9; }
+    body.dark-theme .poster-header p { color: #94a3b8; }
+    body.dark-theme .poster-logo { color: #f1f5f9; }
+    body.dark-theme .poster-subtitle { color: #94a3b8; }
+    body.dark-theme .poster-category-title { color: #f1f5f9; border-bottom-color: #ff6b00; }
+    body.dark-theme .poster-item { border-bottom-color: #334155; }
+    body.dark-theme .poster-item-left strong { color: #e2e8f0; }
+    body.dark-theme .poster-item-left small { color: #94a3b8; }
+    body.dark-theme .poster-price { color: #ff6b00; }
+    body.dark-theme .poster-old-price { color: #64748b; }
+    body.dark-theme .poster-footer { background: #0f172a; color: #94a3b8; }
+    body.dark-theme .poster-deal { background: rgba(22,101,52,.1); border-color: rgba(22,101,52,.4); }
+    body.dark-theme .poster-deal-info h3 { color: #4ade80; }
+    body.dark-theme .poster-deal-info strong { color: #e2e8f0; }
+    body.dark-theme .poster-deal-info p { color: #94a3b8; }
+    body.dark-theme .poster-deal-item { background: rgba(22,101,52,.2); color: #4ade80; }
+
+    /* Cart */
+    body.dark-theme .side-cart { background: #1e293b; border-color: #334155; }
+    body.dark-theme .cart-header { background: #0f172a; }
+    body.dark-theme .cart-header h3 { color: #f1f5f9; }
+    body.dark-theme .side-cart-info h4 { color: #f1f5f9; }
+    body.dark-theme .side-cart-info p { color: #94a3b8; }
+    body.dark-theme .qty-number { color: #e2e8f0; }
+    body.dark-theme .cart-footer { background: #1e293b; border-top-color: #334155; }
+    body.dark-theme .cart-total-row { color: #e2e8f0; }
+    body.dark-theme .continue-btn { background: #334155; color: #e2e8f0; }
+    body.dark-theme .continue-btn:hover { background: #ff6b00; }
+
+    /* Announcement */
+    body.dark-theme .announcement-overlay { background: rgba(0,0,0,.75); }
+    body.dark-theme .announcement-panel { background: #1e293b; }
+    body.dark-theme .announcement-panel h2 { color: #f1f5f9; }
+    body.dark-theme .announcement-kicker { color: #4ade80; }
+    body.dark-theme .announcement-message { color: #94a3b8; }
+    body.dark-theme .announcement-food { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+    body.dark-theme .announcement-food small { color: #94a3b8; }
+    body.dark-theme .announcement-close { background: #334155; color: #e2e8f0; }
+    body.dark-theme .bundle-total { color: #4ade80; }
+
+    /* Deals */
+    body.dark-theme .menu-deal-card { background: rgba(22,101,52,.15); border-color: rgba(22,101,52,.4); }
+    body.dark-theme .menu-deal-info h3 { color: #4ade80; }
+    body.dark-theme .menu-deal-info p { color: #94a3b8; }
+
+    /* Track Order */
+    body.dark-theme .track-card { background: #1e293b; border-color: #334155; }
+    body.dark-theme .track-card h2 { color: #f1f5f9; }
+    body.dark-theme .track-info { color: #94a3b8; }
+
+    /* Forms & Inputs */
+    body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+        background: #1e293b; color: #e2e8f0; border-color: #334155;
+    }
+    body.dark-theme input::placeholder, body.dark-theme textarea::placeholder { color: #64748b; }
+
+    /* Toast & Empty */
+    body.dark-theme .toast { background: #334155; color: #e2e8f0; }
+    body.dark-theme .empty { color: #94a3b8; }
+    body.dark-theme .empty h3 { color: #f1f5f9; }
+
+    /* Footer */
+    body.dark-theme footer { background: #0f172a; color: #94a3b8; }
+
+    /* Full Menu */
+    body.dark-theme .full-menu-section { background: rgba(0,0,0,.8); }
+
+    /* Theme Toggle */
+    body.dark-theme .theme-toggle-customer { background: rgba(255,200,60,.15); border-color: rgba(255,200,60,.3); }
+
 </style>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customer-dark-theme.css') }}">
