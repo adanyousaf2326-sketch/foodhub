@@ -3412,27 +3412,31 @@ function addSizeToCart(btn) {
     var foodId = btn.getAttribute('data-food-id');
     var sizeId = btn.getAttribute('data-size-id');
     var sizeName = btn.getAttribute('data-size-name');
-    var sizePrice = parseFloat(btn.getAttribute('data-size-price'));
-    var foodName = btn.getAttribute('data-food-name');
-    var foodImage = btn.getAttribute('data-food-image');
-    var cartKey = foodId + '_' + sizeId;
-    if (cart[cartKey]) {
-        cart[cartKey].quantity++;
-    } else {
-        cart[cartKey] = {
-            id: parseInt(foodId),
-            cart_key: cartKey,
-            name: foodName,
-            price: sizePrice,
-            image: foodImage,
-            quantity: 1,
-            size_name: sizeName,
-            size_id: parseInt(sizeId)
-        };
-    }
-    updateCartUI();
-    openCart();
-    showToast('\u2705 ' + foodName + ' (' + sizeName + ') added to cart!');
+    var sizePrice = btn.getAttribute('data-size-price');
+    var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    fetch('/cart/add/' + foodId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ size_id: sizeId, size_price: sizePrice })
+    })
+    .then(function(r) {
+        if (!r.ok) throw new Error('Failed');
+        return r.json();
+    })
+    .then(function(data) {
+        cart = data.cart;
+        updateCartUI();
+        openCart();
+        showToast('\u2705 Added to cart!');
+    })
+    .catch(function(e) {
+        console.error(e);
+        showToast('\u274c Could not add item.');
+    });
 }
 
 function addToCart(foodId, announcementId, sizeId) {

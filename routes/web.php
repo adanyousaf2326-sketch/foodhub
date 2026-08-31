@@ -386,9 +386,11 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
         $dealPrice = $dealFood?->pivot?->deal_price;
     }
 
-    // Determine price: deal > size > base
+    // Determine price: deal > size_price (from button) > size DB > base
     if ($dealPrice !== null) {
         $cartPrice = (float) $dealPrice;
+    } elseif ($request->filled('size_price')) {
+        $cartPrice = (float) $request->size_price;
     } elseif ($sizeName && $foodSize) {
         $cartPrice = (float) $foodSize->price;
         if ((float) $foodSize->discount_percentage > 0) {
