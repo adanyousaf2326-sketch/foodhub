@@ -2817,7 +2817,7 @@
                                             <span class="size-row-price">Rs. {{ number_format($size->price, 0) }}</span>
                                         @endif
                                     </div>
-                                    <button type="button" class="order-btn size-add-btn" onclick="addToCartWithSize({{ $food->id }}, {{ $size->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">
+                                    <button type="button" class="order-btn size-add-btn" onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }}, {{ $size->id }})">
                                         + Add
                                     </button>
                                 </div>
@@ -3398,96 +3398,11 @@ function closeCart() {
 
     
 
-function addToCart(foodId, announcementId = null) {
-
-
-    fetch(`/cart/add/${foodId}`, {
-
-        method: 'POST',
-
-        headers: {
-
-            'Content-Type': 'application/json',
-
-            'X-CSRF-TOKEN':
-                document
-                .querySelector('meta[name="csrf-token"]')
-                ?.getAttribute('content'),
-
-            'Accept': 'application/json'
-
-        },
-
-        body: JSON.stringify({
-            announcement_id: announcementId
-        })
-
-    })
-
-    .then(response => {
-
-        if (!response.ok) {
-
-            throw new Error('Failed');
-
-        }
-
-        return response.json();
-
-    })
-
-    .then(data => {
-
-        cart = data.cart;
-
-        updateCartUI();
-
-        openCart();
-
-        showToast('✅ Food added to cart!');
-
-    })
-
-    .catch(error => {
-
-        console.error(error);
-
-        fetch(`/cart/add/${foodId}`, {
-
-            method: 'POST',
-
-            headers: {
-
-                'X-CSRF-TOKEN':
-                    '{{ csrf_token() }}',
-
-                'Accept': 'application/json'
-
-            },
-
-            body: JSON.stringify({
-                announcement_id: announcementId
-            })
-
-        })
-
-        .then(response => response.json())
-
-        .then(data => {
-
-            cart = data.cart;
-
-            updateCartUI();
-
-            openCart();
-
-            showToast('✅ Food added to cart!');
-
-        });
-
-    });
-
-}function addToCartWithSize(foodId, sizeId, announcementId = null) {
+function addToCart(foodId, announcementId, sizeId) {
+    if (typeof announcementId === 'undefined') announcementId = null;
+    if (typeof sizeId === 'undefined') sizeId = null;
+    var body = { announcement_id: announcementId };
+    if (sizeId) body.size_id = sizeId;
     fetch('/cart/add/' + foodId, {
         method: 'POST',
         headers: {
@@ -3495,21 +3410,21 @@ function addToCart(foodId, announcementId = null) {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
             'Accept': 'application/json'
         },
-        body: JSON.stringify({ announcement_id: announcementId, size_id: sizeId })
+        body: JSON.stringify(body)
     })
-    .then(function(response) {
-        if (!response.ok) return response.text().then(function(t) { throw new Error(t); });
-        return response.json();
+    .then(function(r) {
+        if (!r.ok) throw new Error('Failed');
+        return r.json();
     })
     .then(function(data) {
         cart = data.cart;
         updateCartUI();
+        openCart();
         showToast('\u2705 Food added to cart!');
-        setTimeout(function() { openCart(); }, 100);
     })
-    .catch(function(error) {
-        console.error('Size cart error:', error);
-        showToast('\u274c Could not add item. Please try again.');
+    .catch(function(e) {
+        console.error(e);
+        showToast('\u274c Could not add item.');
     });
 }
 
