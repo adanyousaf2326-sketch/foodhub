@@ -19,7 +19,7 @@ body.dark-theme {
     color: var(--text-primary) !important;
 }
 
-/* Global text fixes - override inline color:#222 etc */
+/* Fix inline hardcoded colors */
 body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, body.dark-theme h4,
 body.dark-theme strong, body.dark-theme label, body.dark-theme span {
     color: var(--text-primary) !important;
