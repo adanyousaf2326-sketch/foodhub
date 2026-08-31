@@ -2824,7 +2824,10 @@
                                         data-fid="{{ $food->id }}"
                                         data-sid="{{ $size->id }}"
                                         data-sp="{{ $sizePrice }}"
-                                        onclick="addToCart(this.dataset.fid, null, this.dataset.sid, this.dataset.sp)">
+                                        data-fn="{{ addslashes($food->name) }}"
+                                        data-fi="{{ $food->image ?? '' }}"
+                                        data-sn="{{ $size->name }}"
+                                        onclick="addSizeToCart(this)">
                                         + Add
                                     </button>
                                 </div>
@@ -3405,15 +3408,24 @@ function closeCart() {
 
     
 
-function addToCart(foodId, announcementId, sizeId, sizePrice) {
-    console.log('addToCart args:', foodId, announcementId, sizeId, sizePrice);
+function addSizeToCart(btn) {
+    var fid = btn.dataset.fid;
+    var sid = btn.dataset.sid;
+    var sp = btn.dataset.sp;
+    var fname = btn.dataset.fn;
+    var fimg = btn.dataset.fi;
+    var sname = btn.dataset.sn;
+    var key = fid + '_' + sid;
+    if (cart[key]) { cart[key].quantity++; }
+    else { cart[key] = { id: parseInt(fid), cart_key: key, name: fname, price: parseFloat(sp), image: fimg, quantity: 1, size_name: sname, size_id: parseInt(sid) }; }
+    updateCartUI();
+    openCart();
+    showToast('\u2705 ' + fname + ' (' + sname + ') added!');
+}
+
+function addToCart(foodId, announcementId) {
     if (typeof announcementId === 'undefined' || announcementId === 'null') announcementId = null;
-    if (typeof sizeId === 'undefined' || sizeId === 'null') sizeId = null;
-    if (typeof sizePrice === 'undefined' || sizePrice === '') sizePrice = null;
     var body = { announcement_id: announcementId };
-    if (sizeId) body.size_id = parseInt(sizeId);
-    if (sizePrice) body.size_price = parseFloat(sizePrice);
-    console.log('addToCart body:', JSON.stringify(body));
     var headers = {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
