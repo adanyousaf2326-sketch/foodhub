@@ -3503,30 +3503,62 @@ function addToCart(foodId, announcementId = null) {
 
 function addToCartWithSize(foodId, sizeId, announcementId = null) {
 
-    var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/cart/add/' + foodId, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('X-CSRF-TOKEN', token);
-    xhr.setRequestHeader('Accept', 'application/json');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                cart = data.cart;
-                updateCartUI();
-                openCart();
-                showToast('\u2705 Food added to cart!');
-            } catch(e) {
-                console.error('Cart error:', e, xhr.responseText);
-                showToast('\u274c Could not add item. Please try again.');
-            }
+    fetch('/cart/add/' + foodId, {
+
+        method: 'POST',
+
+        headers: {
+
+            'Content-Type': 'application/json',
+
+            'X-CSRF-TOKEN':
+                document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content'),
+
+            'Accept': 'application/json'
+
+        },
+
+        body: JSON.stringify({
+            announcement_id: announcementId,
+            size_id: sizeId
+        })
+
+    })
+
+    .then(function(response) {
+
+        if (!response.ok) {
+
+            throw new Error('Failed');
+
         }
-    };
-    xhr.send(JSON.stringify({
-        announcement_id: announcementId,
-        size_id: sizeId
-    }));
+
+        return response.json();
+
+    })
+
+    .then(function(data) {
+
+        cart = data.cart;
+
+        updateCartUI();
+
+        openCart();
+
+        showToast('\u2705 Food added to cart!');
+
+    })
+
+    .catch(function(error) {
+
+        console.error(error);
+
+        showToast('\u274c Could not add item. Please try again.');
+
+    });
+
 }
 
 
