@@ -3557,39 +3557,7 @@ function addToCartWithSize(foodId, sizeId, announcementId = null) {
 
         console.error(error);
 
-        fetch(`/cart/add/${foodId}`, {
-
-            method: 'POST',
-
-            headers: {
-
-                'X-CSRF-TOKEN':
-                    '{{ csrf_token() }}',
-
-                'Accept': 'application/json'
-
-            },
-
-            body: JSON.stringify({
-                announcement_id: announcementId,
-                size_id: sizeId
-            })
-
-        })
-
-        .then(response => response.json())
-
-        .then(data => {
-
-            cart = data.cart;
-
-            updateCartUI();
-
-            openCart();
-
-            showToast('✅ Food added to cart!');
-
-        });
+        showToast('❌ Could not add item. Please try again.');
 
     });
 
