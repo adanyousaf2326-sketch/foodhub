@@ -2485,10 +2485,10 @@
 <div id="fh-loader" aria-label="Loading FoodHub">
 
     <div class="fh-loader-brand">
-        🍔 FOOD<span>HUB</span>
+        <i class="fas fa-utensils"></i> FOOD<span>HUB</span>
     </div>
 
-    <div class="fh-plate">🍽️</div>
+    <div class="fh-plate"><i class="fas fa-utensils"></i></div>
 
     <div class="fh-loader-dots" aria-hidden="true">
         <span></span>
@@ -2506,7 +2506,7 @@
         <span></span><span></span><span></span>
     </button>
     <a href="{{ url('/') }}" class="logo">
-        <span class="logo-icon">🍔</span>
+        <span class="logo-icon"><i class="fas fa-utensils"></i></span>
         Food<span class="hub-brand">Hub</span>
     </a>
 
@@ -2757,7 +2757,7 @@
                         @endif
                     </div>
                     <div class="menu-deal-info">
-                        <h3>📣 {{ $deal->title }}</h3>
+                        <h3><i class="fas fa-bullhorn"></i> {{ $deal->title }}</h3>
                         <div class="menu-deal-price">Complete Deal: Rs. {{ number_format($deal->deal_total, 2) }}</div>
                         @if($deal->ends_at)
                             <div class="deal-end-date">Until {{ $deal->ends_at->format('d M Y, h:i A') }}</div>
@@ -2812,7 +2812,7 @@
                     </span>
 
                     @if(in_array($food->id, $featuredFoodIds))
-                        <span class="deal-badge">📣 Featured Deal</span>
+                        <span class="deal-badge"><i class="fas fa-bullhorn"></i> Featured Deal</span>
                     @endif
 
 
@@ -3098,7 +3098,7 @@
                                         </strong>
 
                                         @if(in_array($food->id, $featuredFoodIds))
-                                            <span class="deal-badge">📣 Deal</span>
+                                            <span class="deal-badge"><i class="fas fa-bullhorn"></i> Deal</span>
                                         @endif
 
                                         @if($food->description)
@@ -3182,7 +3182,7 @@
                                     </strong>
 
                                     @if(in_array($food->id, $featuredFoodIds))
-                                        <span class="deal-badge">📣 Deal</span>
+                                        <span class="deal-badge"><i class="fas fa-bullhorn"></i> Deal</span>
                                     @endif
 
                                     @if($food->description)
@@ -3226,7 +3226,7 @@
         <div class="poster-footer">
 
             <div>
-                🍔 FOODHUB HOTEL
+                <i class="fas fa-utensils"></i> FOODHUB HOTEL
             </div>
 
             <span>

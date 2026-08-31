@@ -531,7 +531,7 @@
 
         <div class="success">
 
-            ✅ {{ session('success') }}
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
 
         </div>
 
@@ -617,9 +617,9 @@
             @if($order->order_type === 'Delivery' && $order->address)
             <div style="background:white;border-radius:14px;overflow:hidden;border:1px solid #e5e7eb;margin-bottom:24px;">
                 <div style="padding:14px 18px;background:#111827;color:white;font-weight:bold;font-size:15px;display:flex;align-items:center;gap:8px;">
-                    🗺️ Delivery Location Map
+                    <i class="fas fa-map-marked-alt"></i> Delivery Location Map
                     @if($order->status === 'Out for Delivery')
-                        <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#dbeafe;color:#1d4ed8;">🛵 On The Way</span>
+                        <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#dbeafe;color:#1d4ed8;"><i class="fas fa-motorcycle"></i> On The Way</span>
                     @endif
                 </div>
                 <div id="adminTrackingMap" style="height:300px;width:100%;"></div>
@@ -642,7 +642,7 @@
                 }).addTo(map);
 
                 var restaurantIcon = L.divIcon({
-                    html: '<div style="background:#ff6b00;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🍔</div>',
+                    html: '<div style="background:#ff6b00;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"><i class="fas fa-utensils"></i></div>',
                     iconSize: [32, 32], iconAnchor: [16, 16], className: ''
                 });
                 L.marker([restaurantLat, restaurantLng], {icon: restaurantIcon}).addTo(map)
@@ -656,7 +656,7 @@
                                 var lat = parseFloat(data[0].lat);
                                 var lng = parseFloat(data[0].lon);
                                 var deliveryIcon = L.divIcon({
-                                    html: '<div style="background:#2563eb;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">📍</div>',
+                                    html: '<div style="background:#2563eb;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"><i class="fas fa-map-marker-alt"></i></div>',
                                     iconSize: [32, 32], iconAnchor: [16, 16], className: ''
                                 });
                                 L.marker([lat, lng], {icon: deliveryIcon}).addTo(map)
@@ -679,7 +679,7 @@
             <div class="card">
 
                 <h2>
-                    🍔 Ordered Items
+                    <i class="fas fa-utensils"></i> Ordered Items
                 </h2>
 
 
@@ -768,7 +768,7 @@
                 <div class="card">
 
                     <h2>
-                        📝 Customer Notes
+                        <i class="fas fa-align-left"></i> Customer Notes
                     </h2>
 
 
@@ -938,7 +938,7 @@
 
                 @if(!in_array($order->status, ['Cancelled', 'Completed', 'Delivered']))
                 <a href="{{ route('admin.orders.admin-edit', $order) }}" style="display:block;margin-top:10px;padding:12px;border:none;border-radius:8px;background:#7c3aed;color:white;font-weight:bold;font-size:14px;text-align:center;text-decoration:none;">
-                    ✏️ Edit Order (Full Edit)
+                    <i class="fas fa-pen"></i> Edit Order (Full Edit)
                 </a>
                 @endif
 
@@ -1003,7 +1003,7 @@
 
             @if($pendingEditRequests->count() > 0 || $acceptedEditRequest)
                 <div class="card" style="border:2px solid #f59e0b;background:#fffbeb;">
-                    <h2 style="color:#b45309;">✏️ Edit Requests</h2>
+                    <h2 style="color:#b45309;"><i class="fas fa-pen"></i> Edit Requests</h2>
 
                     @if($pendingEditRequests->count() > 0)
                         @foreach($pendingEditRequests as $req)
@@ -1021,12 +1021,12 @@
                                 <div style="display:flex;gap:8px;margin-top:12px;">
                                     <form method="POST" action="{{ route('admin.orders.edit-requests.accept', [$order, $req]) }}" style="flex:1;">
                                         @csrf
-                                        <button type="submit" style="width:100%;padding:10px;border:none;border-radius:8px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;">✅ Accept</button>
+                                        <button type="submit" style="width:100%;padding:10px;border:none;border-radius:8px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;"><i class="fas fa-check"></i> Accept</button>
                                     </form>
                                     <form method="POST" action="{{ route('admin.orders.edit-requests.reject', [$order, $req]) }}" style="flex:1;">
                                         @csrf
                                         <input type="hidden" name="admin_response" value="Request rejected by admin.">
-                                        <button type="submit" style="width:100%;padding:10px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;">❌ Reject</button>
+                                        <button type="submit" style="width:100%;padding:10px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;"><i class="fas fa-times"></i> Reject</button>
                                     </form>
                                 </div>
                             </div>
@@ -1036,7 +1036,7 @@
                     @if($acceptedEditRequest)
                         <div style="padding:14px;border:1px solid #bbf7d0;border-radius:10px;background:white;">
                             <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <strong style="color:#166534;">✅ Edit Approved</strong>
+                                <strong style="color:#166534;"><i class="fas fa-check-circle"></i> Edit Approved</strong>
                                 <span style="color:#666;font-size:12px;">Expires: {{ $acceptedEditRequest->expires_at->format('h:i A') }}</span>
                             </div>
                         </div>
@@ -1048,7 +1048,7 @@
             @if(!in_array($order->status, ['Cancelled', 'Completed']))
                 <div class="card" style="padding:0;overflow:hidden;">
                     <div style="padding:16px 20px;background:#111827;color:white;display:flex;align-items:center;gap:8px;">
-                        <h2 style="color:white;margin:0;font-size:17px;">💬 Chat with {{ $order->customer_name }}</h2>
+                        <h2 style="color:white;margin:0;font-size:17px;"><i class="fas fa-comments"></i> Chat with {{ $order->customer_name }}</h2>
                     </div>
                     <div id="adminChatMessages" style="height:280px;overflow-y:auto;padding:14px;background:#f9fafb;">
                         <div style="text-align:center;padding:20px;color:#9ca3af;font-size:13px;">Loading messages...</div>

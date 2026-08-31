@@ -161,7 +161,7 @@
 <div class="container">
 
     <div class="header">
-        <h1>✏️ Edit Food</h1>
+        <h1><i class="fas fa-pen"></i> Edit Food</h1>
 
         <p class="subtitle">
             Update food item information
@@ -322,7 +322,7 @@
 
             <!-- SIZES -->
             <div class="form-group">
-                <label>📏 Food Sizes (Optional)</label>
+                <label><i class="fas fa-ruler"></i> Food Sizes (Optional)</label>
                 <p style="color:#777;font-size:13px;margin-bottom:10px;">
                     Add sizes like Small/Medium/Large or Half/Full. If no sizes added, base price is used.
                 </p>
@@ -366,7 +366,7 @@
                     type="submit"
                     class="btn btn-primary"
                 >
-                    💾 Update Food
+                    <i class="fas fa-save"></i> Update Food
                 </button>
 
                 <a

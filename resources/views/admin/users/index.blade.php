@@ -183,7 +183,7 @@
     <div class="header">
 
         <div>
-            <h1>👥 Admin Users</h1>
+            <h1><i class="fas fa-users"></i> Admin Users</h1>
         </div>
 
         <a href="{{ route('admin.users.create') }}" class="add-btn">
@@ -259,7 +259,7 @@
                                 href="{{ route('admin.users.edit', $user) }}"
                                 class="edit"
                             >
-                                ✏️ Edit
+                                <i class="fas fa-pen"></i> Edit
                             </a>
 
                             @if(Auth::id() !== $user->id)
@@ -275,7 +275,7 @@
                                     @method('DELETE')
 
                                     <button type="submit" class="delete">
-                                        🗑️ Delete
+                                        <i class="fas fa-trash"></i> Delete
                                     </button>
 
                                 </form>

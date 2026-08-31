@@ -286,12 +286,12 @@
 <div class="container">
 
     <div class="header fade-in" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:linear-gradient(135deg,#0f172a,#1e293b);padding:24px;border-radius:16px;color:white;margin-bottom:24px;">
-        <h1 style="font-family:var(--font-display);font-size:24px;color:white;">🍔 FoodHub Hotel</h1>
+        <h1 style="font-family:var(--font-display);font-size:24px;color:white;"><i class="fas fa-utensils"></i> FoodHub Hotel</h1>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:#16a34a;">
-                <span>🔔</span> Auto-Refresh: ON
+                <i class="fas fa-bell"></i> Auto-Refresh: ON
             </button>
-            <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#dc2626;color:white;text-decoration:none;font-size:13px;font-weight:bold;">📄 PDF</a>
+            <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#dc2626;color:white;text-decoration:none;font-size:13px;font-weight:bold;"><i class="fas fa-file-pdf"></i> PDF</a>
         </div>
     </div>
 
@@ -301,7 +301,7 @@
                 <div class="stat-title">Total Categories</div>
                 <div class="stat-number">{{ $totalCategories }}</div>
             </div>
-            <div class="stat-icon icon-orange">📂</div>
+            <div class="stat-icon icon-orange"><i class="fas fa-layer-group"></i></div>
         </div>
 
         <div class="card stat-card">
@@ -309,7 +309,7 @@
                 <div class="stat-title">Total Food</div>
                 <div class="stat-number">{{ $totalFood }}</div>
             </div>
-            <div class="stat-icon icon-blue">🍔</div>
+            <div class="stat-icon icon-blue"><i class="fas fa-hamburger"></i></div>
         </div>
 
         <div class="card stat-card">
@@ -317,7 +317,7 @@
                 <div class="stat-title">Total Orders</div>
                 <div class="stat-number" id="totalOrdersNum">{{ $totalOrders }}</div>
             </div>
-            <div class="stat-icon icon-green">🛒</div>
+            <div class="stat-icon icon-green"><i class="fas fa-shopping-cart"></i></div>
         </div>
 
         <div class="card stat-card">
@@ -325,7 +325,7 @@
                 <div class="stat-title">Today Revenue</div>
                 <div class="stat-number">Rs. {{ number_format($todayRevenue, 0) }}</div>
             </div>
-            <div class="stat-icon icon-purple">💰</div>
+            <div class="stat-icon icon-purple"><i class="fas fa-coins"></i></div>
         </div>
     </div>
 
@@ -352,17 +352,17 @@
 
     <div class="quick-actions">
         <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Dine In'])) }}" class="action">
-            <div class="action-icon">🍽️</div>
+            <div class="action-icon"><i class="fas fa-utensils"></i></div>
             <h3>Dine In Orders</h3>
             <p>{{ $dineInOrders }} dine-in orders</p>
         </a>
         <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Takeaway'])) }}" class="action">
-            <div class="action-icon">🥡</div>
+            <div class="action-icon"><i class="fas fa-shopping-bag"></i></div>
             <h3>Takeaway Orders</h3>
             <p>{{ $takeAwayOrders }} takeaway orders</p>
         </a>
         <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['type' => 'Delivery'])) }}" class="action">
-            <div class="action-icon">🛵</div>
+            <div class="action-icon"><i class="fas fa-motorcycle"></i></div>
             <h3>Delivery Orders</h3>
             <p>{{ $deliveryOrders }} delivery orders</p>
         </a>
@@ -388,7 +388,7 @@
             <label>To Time</label>
             <input type="time" name="to_time" value="{{ request('to_time') }}">
         </div>
-        <button type="submit" class="filter-btn">🔍 Search</button>
+        <button type="submit" class="filter-btn"><i class="fas fa-search"></i> Search</button>
         <a href="{{ route('admin.dashboard') }}" class="clear-filter">Clear</a>
     </form>
 
@@ -470,7 +470,7 @@
                             </td>
                             <td>
                                 @if(!in_array($order->status, ['Completed', 'Delivered', 'Cancelled']))
-                                    <a href="{{ route('admin.orders.bill', $order) }}" class="view">💳 Bill</a>
+                                    <a href="{{ route('admin.orders.bill', $order) }}" class="view"><i class="fas fa-file-invoice-dollar"></i> Bill</a>
                                 @else
                                     <a href="{{ route('admin.orders.show', $order) }}" class="view">View</a>
                                 @endif
@@ -485,7 +485,7 @@
             </div>
         @else
             <div class="empty">
-                <h2>📋 No Orders Found</h2>
+                <h2><i class="fas fa-clipboard"></i> No Orders Found</h2>
                 <p>Search ya selected date/time range mein koi order nahi mila.</p>
             </div>
         @endif
@@ -611,7 +611,7 @@ function renderTopSelling(items) {
     }
     var html = '';
     items.forEach(function(item, i) {
-        var medals = ['🥇','🥈','🥉'];
+        var medals = ['<i class="fas fa-medal" style="color:#f59e0b;"></i>','<i class="fas fa-medal" style="color:#9ca3af;"></i>','<i class="fas fa-medal" style="color:#b45309;"></i>'];
         var medal = i < 3 ? medals[i] : '<span style="color:#999;font-size:12px;">#' + (i+1) + '</span>';
         html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;">';
         html += '<span style="font-size:16px;width:28px;text-align:center;">' + medal + '</span>';

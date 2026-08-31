@@ -144,7 +144,7 @@
 <div class="login-box">
 
     <div class="logo">
-        🍔 FoodHub <span>Hotel</span>
+        <i class="fas fa-utensils"></i> FoodHub <span>Hotel</span>
     </div>
 
   

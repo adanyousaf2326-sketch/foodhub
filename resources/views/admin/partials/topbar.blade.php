@@ -30,7 +30,7 @@
             {{-- Chat Dropdown --}}
             <div id="atbChatDropdown" class="atb-chat-dropdown">
                 <div class="atb-cd-header">
-                    <strong>💬 Chat Center</strong>
+                    <strong><i class="fas fa-comments"></i> Chat Center</strong>
                     <button onclick="atbCloseChat()" class="atb-cd-close">✕</button>
                 </div>
                 <div class="atb-cd-tabs">

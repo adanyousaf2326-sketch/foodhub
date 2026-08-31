@@ -508,7 +508,7 @@
 <div class="container">
 
     <div class="page-header">
-        <h1>📂 Add New Category</h1>
+        <h1><i class="fas fa-layer-group"></i> Add New Category</h1>
         <p>Create a new food category for your FoodHub menu.</p>
     </div>
 
@@ -517,7 +517,7 @@
         @if($errors->any())
             <div class="error">
                 @foreach($errors->all() as $error)
-                    <div>⚠️ {{ $error }}</div>
+                    <div>{{ "<i class="fas fa-exclamation-triangle"></i>" }} {{ $error }}</div>
                 @endforeach
             </div>
         @endif
@@ -527,7 +527,7 @@
             <div class="field">
 
                 <label>
-                    📂 Category Name
+                    <i class="fas fa-layer-group"></i> Category Name
                 </label>
 
                 <input
@@ -546,7 +546,7 @@
             <div class="field">
 
                 <label>
-                    📝 Description
+                    <i class="fas fa-align-left"></i> Description
                 </label>
 
                 <textarea
@@ -562,7 +562,7 @@
             <div class="field">
 
                 <label>
-                    🖼️ Category Image
+                    <i class="fas fa-image"></i> Category Image
                 </label>
 
                 <div class="image-box">
@@ -626,7 +626,7 @@
             <div class="buttons">
 
                 <button type="submit">
-                    💾 Save Category
+                    <i class="fas fa-save"></i> Save Category
                 </button>
 
                 <a

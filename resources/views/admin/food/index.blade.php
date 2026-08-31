@@ -429,7 +429,7 @@
         <div>
 
             <h1>
-                🍔 Food Items
+                <i class="fas fa-hamburger"></i> Food Items
             </h1>
 
 
@@ -453,7 +453,7 @@
 
         <div class="alert">
 
-            ✅ {{ session('success') }}
+            <i class="fas fa-check-circle"></i> {{ session("success") }}
 
         </div>
 
@@ -552,7 +552,7 @@
                                         class="food-placeholder"
                                         style="display:none;"
                                     >
-                                        🍔
+                                        <i class="fas fa-utensils"></i>
                                     </div>
 
 
@@ -561,7 +561,7 @@
 
                                     <div class="food-placeholder">
 
-                                        🍔
+                                        <i class="fas fa-utensils"></i>
 
                                     </div>
 
@@ -682,7 +682,7 @@
                                     href="{{ route('admin.food.show', $food) }}"
                                     class="btn btn-view"
                                 >
-                                    👁 View
+                                    <i class="fas fa-eye"></i> View
                                 </a>
 
 
@@ -692,7 +692,7 @@
                                     href="{{ route('admin.food.edit', $food) }}"
                                     class="btn btn-edit"
                                 >
-                                    ✏️ Edit
+                                    <i class="fas fa-pen"></i> Edit
                                 </a>
 
 
@@ -713,7 +713,7 @@
                                         type="submit"
                                         class="btn btn-delete"
                                     >
-                                        🗑 Delete
+                                        <i class="fas fa-trash"></i> Delete
                                     </button>
 
                                 </form>
@@ -746,7 +746,7 @@
 
 
                 <h2>
-                    No Food Items Yet 🍔
+                    No Food Items Yet <i class="fas fa-hamburger"></i>
                 </h2>
 
 

@@ -54,7 +54,7 @@
 @include('admin.partials.topbar')
 <div class="container">
     <div class="header">
-        <div><h1>📣 New Deals & Announcements</h1></div>
+        <div><h1><i class="fas fa-bullhorn"></i> New Deals & Announcements</h1></div>
         <a class="button" href="{{ route('admin.announcements.create') }}">＋ New Announcement</a>
     </div>
     @if(session('success')) <div class="success">{{ session('success') }}</div> @endif
@@ -72,8 +72,8 @@
             @endif
             <div class="meta">{{ $announcement->starts_at?->format('d M Y H:i') ?? 'Immediately' }} to {{ $announcement->ends_at?->format('d M Y H:i') ?? 'No expiry' }}</div>
             <div class="actions">
-                <a href="{{ route('admin.announcements.edit', $announcement) }}">✏️ Edit</a>
-                <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" onsubmit="return confirm('Delete this announcement?')">@csrf @method('DELETE')<button class="delete">🗑️ Delete</button></form>
+                <a href="{{ route('admin.announcements.edit', $announcement) }}"><i class="fas fa-pen"></i> Edit</a>
+                <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" onsubmit="return confirm('Delete this announcement?')">@csrf @method('DELETE')<button class="delete"><i class="fas fa-trash"></i> Delete</button></form>
             </div>
         </div>
     @empty

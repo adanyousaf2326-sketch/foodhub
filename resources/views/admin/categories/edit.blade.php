@@ -128,7 +128,7 @@
 
     <div class="card">
 
-        <h1>✏️ Edit Category</h1>
+        <h1><i class="fas fa-pen"></i> Edit Category</h1>
 
         <p class="subtitle">
             Update your food category information.
@@ -227,7 +227,7 @@
                     type="submit"
                     class="btn btn-primary"
                 >
-                    💾 Update Category
+                    <i class="fas fa-save"></i> Update Category
                 </button>
 
                 <a

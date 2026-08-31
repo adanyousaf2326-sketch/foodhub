@@ -72,13 +72,13 @@
 <div class="container">
 
     <div class="admin-header">
-        <h1>✏️ Admin Edit Order #{{ $order->id }}</h1>
+        <h1><i class="fas fa-pen"></i> Admin Edit Order #{{ $order->id }}</h1>
         <a href="{{ route('admin.orders.show', $order) }}">← Back to Order</a>
     </div>
 
     {{-- REASON BOX --}}
     <div class="reason-box">
-        <label>📝 Reason for editing this order (required):</label>
+        <label><i class="fas fa-align-left"></i> Reason for editing this order (required):</label>
         <textarea name="edit_reason" id="editReason" placeholder="e.g. Customer called to change items, wrong order type, etc.">{{ old('edit_reason') }}</textarea>
     </div>
 
@@ -102,7 +102,7 @@
             <!-- LEFT COLUMN: ORDER ITEMS -->
             <div>
                 <div class="card">
-                    <h3>🍔 Order Items & Quantities</h3>
+                    <h3><i class="fas fa-utensils"></i> Order Items & Quantities</h3>
 
                     <div class="items-list" id="itemsListContainer">
                         @foreach($order->items as $index => $item)
@@ -124,7 +124,7 @@
                                 </div>
 
                                 <div class="item-subtotal">Rs. <span class="subtotal-val">{{ number_format($item->price * $item->quantity, 2) }}</span></div>
-                                <button type="button" class="item-remove-btn" title="Remove">🗑️</button>
+                                <button type="button" class="item-remove-btn" title="Remove"><i class="fas fa-trash"></i></button>
                             </div>
                         @endforeach
                     </div>
@@ -154,7 +154,7 @@
             <!-- RIGHT COLUMN: DETAILS -->
             <div>
                 <div class="card">
-                    <h3>📋 Customer & Order Details</h3>
+                    <h3><i class="fas fa-clipboard"></i> Customer & Order Details</h3>
 
                     <div class="form-group">
                         <label>Customer Name *</label>
@@ -171,11 +171,11 @@
                         <div class="order-type-tabs">
                             <div class="order-type-tab">
                                 <input type="radio" id="type_dinein" name="order_type" value="Dine In" {{ old('order_type', $order->order_type) === 'Dine In' ? 'checked' : '' }} onchange="toggleOrderTypeFields()">
-                                <label for="type_dinein"><span>🍽️</span><span>Dine In</span></label>
+                                <label for="type_dinein"><i class="fas fa-utensils"></i><span>Dine In</span></label>
                             </div>
                             <div class="order-type-tab">
                                 <input type="radio" id="type_delivery" name="order_type" value="Delivery" {{ old('order_type', $order->order_type) === 'Delivery' ? 'checked' : '' }} onchange="toggleOrderTypeFields()">
-                                <label for="type_delivery"><span>🛵</span><span>Delivery</span></label>
+                                <label for="type_delivery"><i class="fas fa-motorcycle"></i><span>Delivery</span></label>
                             </div>
                             <div class="order-type-tab">
                                 <input type="radio" id="type_takeaway" name="order_type" value="Takeaway" {{ old('order_type', $order->order_type) === 'Takeaway' ? 'checked' : '' }} onchange="toggleOrderTypeFields()">
@@ -215,7 +215,7 @@
                     </div>
 
                     <div class="actions-box">
-                        <button type="submit" class="submit-btn" id="btnSubmit" onclick="return confirmAdminEdit()">💾 Save Changes</button>
+                        <button type="submit" class="submit-btn" id="btnSubmit" onclick="return confirmAdminEdit()"><i class="fas fa-save"></i> Save Changes</button>
                         <a href="{{ route('admin.orders.show', $order) }}" class="back-link">← Cancel & Go Back</a>
                     </div>
                 </div>
@@ -291,7 +291,7 @@ document.getElementById('btnAddFood').addEventListener('click', function() {
     html += '<div class="item-info"><div class="item-name">' + name + '</div><div class="item-price">Rs. ' + price.toFixed(2) + ' each</div></div>';
     html += '<div class="qty-control"><button type="button" class="qty-btn btn-minus">−</button><input type="number" name="items[' + idx + '][quantity]" class="qty-input" value="1" min="1" max="99" readonly><button type="button" class="qty-btn btn-plus">+</button></div>';
     html += '<div class="item-subtotal">Rs. <span class="subtotal-val">' + price.toFixed(2) + '</span></div>';
-    html += '<button type="button" class="item-remove-btn" title="Remove">🗑️</button>';
+    html += '<button type="button" class="item-remove-btn" title="Remove"><i class="fas fa-trash"></i></button>';
     html += '</div>';
     document.getElementById('itemsListContainer').insertAdjacentHTML('beforeend', html);
     sel.value = '';

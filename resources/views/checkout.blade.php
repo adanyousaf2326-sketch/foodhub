@@ -675,7 +675,7 @@
                     type="submit"
                     class="place-order"
                 >
-                    🚀 Place Order
+                    <i class="fas fa-paper-plane"></i> Place Order
                 </button>
 
 
@@ -696,7 +696,7 @@
 
         <div class="card">
 
-            <h2>🛒 Order Summary</h2>
+            <h2><i class="fas fa-shopping-cart"></i> Order Summary</h2>
 
 
             @foreach($cart as $item)

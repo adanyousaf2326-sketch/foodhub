@@ -368,7 +368,7 @@
     <div class="page-header">
 
         <h1>
-            🍔 Add Food
+            <i class="fas fa-hamburger"></i> Add Food
         </h1>
 
         <p class="subtitle">
@@ -390,7 +390,7 @@
             <div class="errors">
 
                 <strong>
-                    ⚠️ Please fix these errors:
+                    <i class="fas fa-exclamation-triangle"></i> Please fix these errors:
                 </strong>
 
                 <ul>
@@ -425,7 +425,7 @@
             <div class="form-group">
 
                 <label>
-                    📂 Category
+                    <i class="fas fa-layer-group"></i> Category
                 </label>
 
                 <select
@@ -460,7 +460,7 @@
             <div class="form-group">
 
                 <label>
-                    🍔 Food Name
+                    <i class="fas fa-hamburger"></i> Food Name
                 </label>
 
                 <input
@@ -479,7 +479,7 @@
             <div class="form-group">
 
                 <label>
-                    📝 Description
+                    <i class="fas fa-align-left"></i> Description
                 </label>
 
                 <textarea
@@ -495,7 +495,7 @@
             <div class="form-group">
 
                 <label>
-                    💰 Price (Rs.)
+                    <i class="fas fa-coins"></i> Price (Rs.)
                 </label>
 
                 <input
@@ -514,7 +514,7 @@
             <div class="form-group">
 
                 <label>
-                    🏷️ Discount (%)
+                    <i class="fas fa-tag"></i> Discount (%)
                 </label>
 
                 <input
@@ -534,7 +534,7 @@
             <div class="form-group">
 
                 <label>
-                    🖼️ Food Image URL
+                    <i class="fas fa-image"></i> Food Image URL
                 </label>
 
                 <input
@@ -563,7 +563,7 @@
             <div class="form-group">
 
                 <label>
-                    📏 Food Sizes (Optional)
+                    <i class="fas fa-ruler"></i> Food Sizes (Optional)
                 </label>
                 <p style="color:#777;font-size:13px;margin-bottom:10px;">
                     Add sizes like Small/Medium/Large or Half/Full. Each size can have its own price and discount.
@@ -610,7 +610,7 @@
                     type="submit"
                     class="btn btn-primary"
                 >
-                    💾 Save Food
+                    <i class="fas fa-save"></i> Save Food
                 </button>
 
 

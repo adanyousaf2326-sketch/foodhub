@@ -109,7 +109,7 @@
 
     <div class="card">
 
-        <h1>✏️ Edit User</h1>
+        <h1><i class="fas fa-pen"></i> Edit User</h1>
 
         <div class="info">
             Password change ke liye baad mein separate option add karenge.

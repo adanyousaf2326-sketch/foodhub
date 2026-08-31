@@ -526,23 +526,23 @@
         </a>
 
         <a href="{{ url('/#categories') }}">
-            <span>📂</span> Categories
+            <i class="fas fa-th-large"></i> Categories
         </a>
 
         <a href="{{ url('/#full-menu') }}">
-            <span>📋</span> Menu
+            <i class="fas fa-utensils"></i> Menu
         </a>
 
         <a href="{{ url('/#announcement') }}" class="announcement-nav">
-            <span>📣</span> New Deals
+            <i class="fas fa-tags"></i> New Deals
         </a>
 
         <a href="{{ route('track.order') }}" class="track-active">
-            <span>📍</span> Track Order
+            <i class="fas fa-map-marker-alt"></i> Track Order
         </a>
 
         <a href="{{ route('cart') }}" class="cart-nav">
-            <span>🛒</span> Cart
+            <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count" id="navCartCount">{{ collect(session()->get('cart', []))->sum('quantity') }}</span>
         </a>
     </div>
@@ -595,7 +595,7 @@
             <!-- LEFT COLUMN: ORDER ITEMS -->
             <div>
                 <div class="card">
-                    <h3>🍔 Order Items & Quantities</h3>
+                    <h3><i class="fas fa-utensils"></i> Order Items & Quantities</h3>
 
                     <div class="items-list" id="itemsListContainer">
                         @foreach($order->items as $index => $item)
@@ -617,7 +617,7 @@
 
                                 <div class="item-subtotal">Rs. <span class="subtotal-val">{{ number_format($item->price * $item->quantity, 2) }}</span></div>
 
-                                <button type="button" class="item-remove-btn" title="Remove item">🗑️</button>
+                                <button type="button" class="item-remove-btn" title="Remove item"><i class="fas fa-trash"></i></button>
                             </div>
                         @endforeach
                     </div>
@@ -652,7 +652,7 @@
             <!-- RIGHT COLUMN: DETAILS -->
             <div>
                 <div class="card">
-                    <h3>📋 Customer & Order Details</h3>
+                    <h3><i class="fas fa-clipboard"></i> Customer & Order Details</h3>
 
                     <!-- CUSTOMER NAME -->
                     <div class="form-group">
@@ -673,7 +673,7 @@
                             <div class="order-type-tab">
                                 <input type="radio" id="type_dinein" name="order_type" value="Dine In" {{ old('order_type', $order->order_type) === 'Dine In' ? 'checked' : '' }} onchange="toggleOrderTypeFields()">
                                 <label for="type_dinein">
-                                    <span>🍽️</span>
+                                    <i class="fas fa-utensils"></i>
                                     <span>Dine In</span>
                                 </label>
                             </div>
@@ -899,7 +899,7 @@
 
                 <div class="item-subtotal">Rs. <span class="subtotal-val">${price.toFixed(2)}</span></div>
 
-                <button type="button" class="item-remove-btn" title="Remove item">🗑️</button>
+                <button type="button" class="item-remove-btn" title="Remove item"><i class="fas fa-trash"></i></button>
             `;
 
             itemsListContainer.appendChild(newRow);

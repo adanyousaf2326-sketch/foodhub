@@ -227,7 +227,7 @@
 
         <div>
 
-            <h1>🍔 Food Details</h1>
+            <h1><i class="fas fa-hamburger"></i> Food Details</h1>
 
             <p class="subtitle">
                 View complete food information
@@ -276,13 +276,13 @@
         font-size:25px;
     "
 >
-    🍔
+    <i class="fas fa-utensils"></i>
 </div>
 
                 @else
 
                     <div class="image-placeholder">
-                        🍔
+                        <i class="fas fa-utensils"></i>
                     </div>
 
                 @endif
@@ -465,7 +465,7 @@
                 href="{{ route('admin.food.edit', $food) }}"
                 class="btn btn-primary"
             >
-                ✏️ Edit Food
+                <i class="fas fa-pen"></i> Edit Food
             </a>
 
 

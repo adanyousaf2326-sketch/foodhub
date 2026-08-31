@@ -60,7 +60,7 @@
 <body>
 @include('admin.partials.topbar')
 <div class="container"><div class="card">
-    <h1>{{ isset($announcement) ? '✏️ Edit Announcement' : '📣 New Announcement' }}</h1>
+    <h1>{{ isset($announcement) ? '<i class="fas fa-pen"></i> Edit Announcement' : '<i class="fas fa-bullhorn"></i> New Announcement' }}</h1>
     <p>Customer home page par new item, deal ya restaurant update show karein.</p>
     @if($errors->any())<div class="error"><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
     <form method="POST" action="{{ isset($announcement) ? route('admin.announcements.update', $announcement) : route('admin.announcements.store') }}">
@@ -73,7 +73,7 @@
         <div class="field"><label>Starts At</label><input type="datetime-local" name="starts_at" value="{{ old('starts_at', isset($announcement) && $announcement->starts_at ? $announcement->starts_at->format('Y-m-d\\\\TH:i') : '') }}"></div>
         <div class="field"><label>Ends At</label><input type="datetime-local" name="ends_at" value="{{ old('ends_at', isset($announcement) && $announcement->ends_at ? $announcement->ends_at->format('Y-m-d\\\\TH:i') : '') }}"></div>
         <label class="check"><input type="checkbox" name="is_active" value="1" {{ old('is_active', $announcement->is_active ?? true) ? 'checked' : '' }}> Show this announcement on website</label>
-        <div class="buttons"><button class="save">💾 Save Announcement</button><a class="cancel" href="{{ route('admin.announcements.index') }}">Cancel</a></div>
+        <div class="buttons"><button class="save"><i class="fas fa-save"></i> Save Announcement</button><a class="cancel" href="{{ route('admin.announcements.index') }}">Cancel</a></div>
     </form>
 </div></div>
 <script>

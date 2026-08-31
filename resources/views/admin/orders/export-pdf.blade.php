@@ -84,10 +84,10 @@
 </head>
 <body>
 
-    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print / Save as PDF</button>
 
     <div class="report-header">
-        <h1>🍔 <span class="brand">FoodHub</span> Orders Report</h1>
+        <h1><i class="fas fa-utensils"></i> <span class="brand">FoodHub</span> Orders Report</h1>
         <p>Date Range: {{ $dateRange }}</p>
         <p>Generated: {{ now()->format('d M Y, h:i A') }}</p>
     </div>
@@ -154,7 +154,7 @@
     </table>
 
     <div class="footer-note">
-        🍔 FoodHub Hotel &mdash; Report auto-generated on {{ now()->format('d M Y h:i A') }}
+        <i class="fas fa-utensils"></i> FoodHub Hotel &mdash; Report auto-generated on {{ now()->format('d M Y h:i A') }}
     </div>
 
 </div>

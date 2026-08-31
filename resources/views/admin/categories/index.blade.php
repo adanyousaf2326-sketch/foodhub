@@ -480,7 +480,7 @@
         <div>
 
             <h1>
-                📂 Food Categories
+                <i class="fas fa-layer-group"></i> Food Categories
             </h1>
 
             <p class="subtitle">
@@ -596,7 +596,7 @@
                                     <div class="category-name">
 
                                         <div class="category-icon">
-                                            🍽️
+                                            <i class="fas fa-utensils"></i>
                                         </div>
 
                                         <strong>
@@ -659,7 +659,7 @@
                                             href="{{ route('admin.categories.edit', $category) }}"
                                             class="btn btn-edit"
                                         >
-                                            ✏️ Edit
+                                            <i class="fas fa-pen"></i> Edit
                                         </a>
 
 
@@ -680,7 +680,7 @@
                                                 type="submit"
                                                 class="btn btn-delete"
                                             >
-                                                🗑️ Delete
+                                                <i class="fas fa-trash"></i> Delete
                                             </button>
 
                                         </form>
@@ -712,7 +712,7 @@
             <div class="empty">
 
                 <div class="empty-icon">
-                    📂
+                    <i class="fas fa-layer-group"></i>
                 </div>
 
                 <h2>

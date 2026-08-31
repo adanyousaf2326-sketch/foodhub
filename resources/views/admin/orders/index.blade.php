@@ -519,7 +519,7 @@
             href="{{ route('admin.food.index') }}"
             class="back-btn"
         >
-            🍔 Food Items
+            <i class="fas fa-hamburger"></i> Food Items
         </a>
 
 
@@ -534,7 +534,7 @@
 
         <div class="alert">
 
-            ✅ {{ session('success') }}
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
 
         </div>
 
@@ -647,7 +647,7 @@
                     {{ $totalOrders }} Orders
                 </span>
                 <a href="{{ route("admin.orders.export.csv", request()->query()) }}" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;background:#16a34a;color:white;text-decoration:none;font-size:12px;font-weight:bold;">📥 CSV</a>
-                <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;background:#dc2626;color:white;text-decoration:none;font-size:12px;font-weight:bold;">📄 PDF</a>
+                <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;background:#dc2626;color:white;text-decoration:none;font-size:12px;font-weight:bold;"><i class="fas fa-file-pdf"></i> PDF</a>
             </div>
 
         </div>
@@ -851,7 +851,7 @@
 <td>
     @if($order->order_type === 'Dine In' && $order->table_id)
         <span class="table-badge">
-            🍽️ Table {{ $order->table_id }}
+            <i class="fas fa-utensils"></i> Table {{ $order->table_id }}
         </span>
     @else
         —
@@ -877,7 +877,7 @@
                 <button type="submit"
                         class="action-btn close-btn"
                         onclick="return confirm('Close this order and free the table?')">
-                    ✅ Close
+                    <i class="fas fa-check"></i> Close
                 </button>
             </form>
 
@@ -895,7 +895,7 @@
                 <button type="submit"
                         class="action-btn cancel-btn"
                         onclick="return confirm('Are you sure you want to cancel this order?')">
-                    ❌ Cancel
+                    <i class="fas fa-times"></i> Cancel
                 </button>
 
             </form>
