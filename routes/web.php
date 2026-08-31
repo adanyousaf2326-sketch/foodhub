@@ -354,12 +354,17 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
     // Handle size selection
     $sizeName = null;
     $sizeId = null;
-    if ($request->filled('size_id') && \Illuminate\Support\Facades\Schema::hasTable('food_sizes')) {
+    $foodSize = null;
+    if ($request->filled('size_id')) {
         try {
-            $foodSize = $food->foodSizes()->find($request->size_id);
-            if ($foodSize) {
-                $sizeName = $foodSize->name;
-                $sizeId = $foodSize->id;
+            if (\Illuminate\Support\Facades\Schema::hasTable('food_sizes')) {
+                $foodSize = \App\Models\FoodSize::where('food_id', $food->id)
+                    ->where('id', $request->size_id)
+                    ->first();
+                if ($foodSize) {
+                    $sizeName = $foodSize->name;
+                    $sizeId = $foodSize->id;
+                }
             }
         } catch (\Exception $e) {
             // Table might not exist yet — ignore
