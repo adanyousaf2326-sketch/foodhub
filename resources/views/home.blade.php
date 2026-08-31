@@ -840,6 +840,8 @@
     .poster-deal-info { flex: 1; }
     .poster-deal-info h3 { color: #166534; margin-bottom: 4px; }
     .poster-deal-info p { color: #4b5563; font-size: 12px; }
+    .poster-deal-items { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; }
+    .poster-deal-item { display: inline-block; background: #f0fdf4; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
 
     @media(max-width:700px) {
         .menu-deal-card, .poster-deal { align-items: flex-start; }
@@ -2982,9 +2984,9 @@
                             <h3>{{ $deal->title }}</h3>
                             <strong>Complete Deal: Rs. {{ number_format($deal->deal_total, 2) }}</strong>
                             @if($deal->foods && $deal->foods->count())
-                                <div style="margin-top:6px;">
+                                <div style="margin-top:6px;" class="poster-deal-items">
                                     @foreach($deal->foods as $dfood)
-                                        <small style="display:block;color:#4b5563;font-size:12px;">{{ $dfood->name }} x{{ $dfood->pivot->quantity ?? 1 }} — Rs. {{ number_format($dfood->pivot->deal_price ?? $dfood->price, 0) }}</small>
+                                        <small class="poster-deal-item">{{ $dfood->name }} x{{ $dfood->pivot->quantity ?? 1 }}</small>
                                     @endforeach
                                 </div>
                             @endif
