@@ -2821,7 +2821,8 @@
                                         @endif
                                     </div>
                                     <button type="button" class="order-btn size-add-btn"
-                                        onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }}, {{ $size->id }}, {{ $sizePrice }})">
+                                        data-sp="{{ $sizePrice }}"
+                                        onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }}, {{ $size->id }}, this.getAttribute('data-sp'))">
                                         + Add
                                     </button>
                                 </div>
@@ -3403,24 +3404,19 @@ function closeCart() {
     
 
 function addToCart(foodId, announcementId, sizeId, sizePrice) {
-    if (typeof announcementId === 'undefined' || announcementId === 'null' || announcementId === 'undefined') announcementId = null;
-    if (typeof sizeId === 'undefined' || sizeId === 'null' || sizeId === 'undefined') sizeId = null;
+    if (typeof announcementId === 'undefined' || announcementId === 'null') announcementId = null;
+    if (typeof sizeId === 'undefined' || sizeId === 'null') sizeId = null;
+    if (typeof sizePrice === 'undefined') sizePrice = null;
     var body = { announcement_id: announcementId };
-    if (sizeId !== null && sizeId !== undefined && sizeId !== '') body.size_id = parseInt(sizeId);
-    if (sizePrice) body.size_price = sizePrice;
-    fetch('/cart/add/' + foodId, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(body)
-    })
-    .then(function(r) {
-        if (!r.ok) throw new Error('Failed');
-        return r.json();
-    })
+    if (sizeId) body.size_id = parseInt(sizeId);
+    if (sizePrice) body.size_price = parseFloat(sizePrice);
+    var headers = {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+        'Accept': 'application/json'
+    };
+    fetch('/cart/add/' + foodId, { method: 'POST', headers: headers, body: JSON.stringify(body) })
+    .then(function(r) { return r.json(); })
     .then(function(data) {
         cart = data.cart;
         updateCartUI();
