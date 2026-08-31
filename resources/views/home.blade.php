@@ -3966,7 +3966,7 @@ document.addEventListener(
         var icon = document.querySelector(".theme-icon-customer");
         if (saved === "dark") {
             document.body.classList.add("dark-theme");
-            if (icon) icon.textContent = "☀️";
+            if (icon) icon.innerHTML = '<i class="fas fa-sun"></i>';
         }
     })();
 
