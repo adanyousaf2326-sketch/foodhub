@@ -1,136 +1,190 @@
 /* ==========================================================================
-   FoodHub Customer - Dark Theme
+   FoodHub Customer - Dark Theme (Professional)
    ========================================================================== */
 
 body.dark-theme {
-    background: #0f172a !important;
-    color: #e2e8f0 !important;
+    background: #0b1120 !important;
+    color: #e8edf4 !important;
 }
 
-/* ── GLOBAL TEXT OVERRIDES ── */
+/* ── Global Text ── */
 body.dark-theme h1,
 body.dark-theme h2,
 body.dark-theme h3,
 body.dark-theme h4,
-body.dark-theme strong,
-body.dark-theme label,
-body.dark-theme span {
-    color: #f1f5f9 !important;
+body.dark-theme strong {
+    color: #f0f4f8 !important;
+    letter-spacing: -0.01em;
 }
 
 body.dark-theme p,
 body.dark-theme small {
-    color: #94a3b8 !important;
+    color: #8896aa !important;
 }
 
 body.dark-theme a {
     color: #60a5fa !important;
+    transition: color 0.2s;
+}
+
+body.dark-theme a:hover {
+    color: #93c5fd !important;
+}
+
+body.dark-theme label {
+    color: #f0f4f8 !important;
+}
+
+body.dark-theme span {
+    color: inherit !important;
 }
 
 /* ── Nav ── */
 body.dark-theme nav {
-    background: #0f172a !important;
+    background: rgba(11, 17, 32, 0.92) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 /* ── Hero ── */
 body.dark-theme .hero {
-    background: linear-gradient(90deg, rgba(15, 23, 42, .95), rgba(15, 23, 42, .6)) !important;
+    background: linear-gradient(135deg, rgba(11, 17, 32, .97), rgba(22, 32, 50, .7), rgba(255, 107, 0, .05)) !important;
 }
 
 body.dark-theme .hero h1 {
-    color: #f1f5f9;
+    color: #f0f4f8;
+}
+
+body.dark-theme .hero h1 span {
+    color: #ff6b00;
 }
 
 body.dark-theme .hero p {
-    color: #94a3b8;
+    color: #8896aa;
+}
+
+body.dark-theme .hero-btn {
+    background: linear-gradient(135deg, #ff6b00, #e85d00);
+    box-shadow: 0 4px 20px rgba(255,107,0,0.3);
+}
+
+body.dark-theme .hero-btn:hover {
+    box-shadow: 0 6px 28px rgba(255,107,0,0.4);
+    transform: translateY(-2px);
 }
 
 /* ── Section ── */
 body.dark-theme .section-title h2 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .section-title p {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 /* ── Categories ── */
 body.dark-theme .category {
-    background: #1e293b !important;
-    color: #e2e8f0 !important;
-    border: 1px solid #334155;
+    background: rgba(22, 32, 50, 0.7) !important;
+    backdrop-filter: blur(12px);
+    color: #e8edf4 !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.dark-theme .category:hover {
-    border-color: #ff6b00;
-    box-shadow: 0 8px 25px rgba(255, 107, 0, .2);
+    border-color: rgba(255, 107, 0, 0.4) !important;
+    box-shadow: 0 8px 32px rgba(255, 107, 0, .15), 0 0 0 1px rgba(255,107,0,0.1) !important;
+    transform: translateY(-4px);
 }
 
 body.dark-theme .category h3 {
-    color: #f1f5f9 !important;
+    color: #f0f4f8 !important;
 }
 
 body.dark-theme .category p {
-    color: #94a3b8 !important;
+    color: #8896aa !important;
 }
 
 body.dark-theme .category-icon {
-    background: #1e293b !important;
+    background: rgba(255, 107, 0, 0.08) !important;
 }
 
 /* ── Food Cards ── */
 body.dark-theme .food-card {
-    background: #1e293b !important;
-    border: 1px solid #334155;
+    background: rgba(22, 32, 50, 0.7) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-theme .food-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
 }
 
 body.dark-theme .food-info h3 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .food-info p {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .food-category {
-    background: rgba(255, 107, 0, .15);
+    background: rgba(255, 107, 0, .12);
     color: #ff8c38;
 }
 
 body.dark-theme .food-bottom {
-    border-top-color: #334155;
+    border-top-color: rgba(255,255,255,0.06);
 }
 
 body.dark-theme .price {
-    color: #f1f5f9 !important;
+    color: #f0f4f8 !important;
 }
 
 body.dark-theme .price-old {
-    color: #64748b !important;
+    color: #5a6a7e !important;
+    text-decoration: line-through;
 }
 
 body.dark-theme .discount-badge {
-    background: rgba(220, 38, 38, .15);
+    background: rgba(248, 113, 113, .12);
     color: #f87171;
 }
 
 body.dark-theme .deal-badge {
-    background: rgba(22, 101, 52, .2);
+    background: rgba(74, 222, 128, .12);
     color: #4ade80;
+}
+
+body.dark-theme .order-btn {
+    background: linear-gradient(135deg, #ff6b00, #e85d00);
+    box-shadow: 0 2px 8px rgba(255,107,0,0.25);
+}
+
+body.dark-theme .order-btn:hover {
+    box-shadow: 0 4px 16px rgba(255,107,0,0.35);
 }
 
 /* ── Menu Top ── */
 body.dark-theme .menu-top {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .all-food-btn {
-    background: #334155;
-    color: #e2e8f0;
+    background: rgba(255,255,255,0.06);
+    color: #e8edf4;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 body.dark-theme .all-food-btn:hover {
     background: #ff6b00;
+    border-color: #ff6b00;
 }
 
 body.dark-theme .selected-category {
@@ -139,45 +193,47 @@ body.dark-theme .selected-category {
 
 /* ── Menu Poster ── */
 body.dark-theme .menu-poster {
-    background: #1e293b;
-    border-color: #334155;
+    background: rgba(22, 32, 50, 0.95);
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
 }
 
 body.dark-theme .poster-header {
-    background: #0f172a;
+    background: rgba(11, 17, 32, 0.9);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 body.dark-theme .poster-header h2 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .poster-header p {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .poster-logo {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .poster-subtitle {
-    color: #94a3b8;
+    color: #5a6a7e;
 }
 
 body.dark-theme .poster-category-title {
-    color: #f1f5f9;
-    border-bottom-color: #ff6b00;
+    color: #f0f4f8;
+    border-bottom-color: rgba(255, 107, 0, 0.4);
 }
 
 body.dark-theme .poster-item {
-    border-bottom-color: #334155;
+    border-bottom-color: rgba(255,255,255,0.04);
 }
 
 body.dark-theme .poster-item-left strong {
-    color: #e2e8f0;
+    color: #e8edf4;
 }
 
 body.dark-theme .poster-item-left small {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .poster-price {
@@ -185,13 +241,13 @@ body.dark-theme .poster-price {
 }
 
 body.dark-theme .poster-old-price {
-    color: #64748b;
+    color: #5a6a7e;
     text-decoration: line-through;
 }
 
 body.dark-theme .poster-deal {
-    background: rgba(22, 101, 52, .1) !important;
-    border-color: rgba(22, 101, 52, .4) !important;
+    background: rgba(74, 222, 128, 0.06) !important;
+    border-color: rgba(74, 222, 128, 0.2) !important;
 }
 
 body.dark-theme .poster-deal-info h3 {
@@ -199,91 +255,94 @@ body.dark-theme .poster-deal-info h3 {
 }
 
 body.dark-theme .poster-deal-info strong {
-    color: #e2e8f0;
+    color: #e8edf4;
 }
 
 body.dark-theme .poster-deal-info p {
-    color: #94a3b8;
-}
-
-body.dark-theme .poster-deal-items {
-    /* flex wrap stays the same */
+    color: #8896aa;
 }
 
 body.dark-theme .poster-deal-item {
-    background: rgba(22, 101, 52, .2);
+    background: rgba(74, 222, 128, 0.1);
     color: #4ade80;
 }
 
 body.dark-theme .poster-footer {
-    background: #0f172a;
-    color: #94a3b8;
+    background: rgba(11, 17, 32, 0.9);
+    color: #8896aa;
 }
 
 /* ── Side Cart ── */
 body.dark-theme .side-cart {
-    background: #1e293b !important;
-    border-color: #334155;
+    background: rgba(22, 32, 50, 0.97) !important;
+    border-color: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(20px);
+    box-shadow: -4px 0 32px rgba(0,0,0,0.4);
 }
 
 body.dark-theme .cart-header {
-    background: #0f172a;
+    background: rgba(11, 17, 32, 0.9);
+    border-bottom-color: rgba(255,255,255,0.06);
 }
 
 body.dark-theme .cart-header h3 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .side-cart-info h4 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .side-cart-info p {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .qty-number {
-    color: #e2e8f0;
+    color: #e8edf4;
 }
 
 body.dark-theme .cart-footer {
-    background: #1e293b !important;
-    border-top-color: #334155;
+    background: rgba(22, 32, 50, 0.95) !important;
+    border-top-color: rgba(255,255,255,0.06) !important;
 }
 
 body.dark-theme .cart-total-row {
-    color: #e2e8f0;
+    color: #f0f4f8;
 }
 
 body.dark-theme .continue-btn {
-    background: #334155;
-    color: #e2e8f0;
+    background: rgba(255,255,255,0.06);
+    color: #e8edf4;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 body.dark-theme .continue-btn:hover {
     background: #ff6b00;
-    color: white;
+    border-color: #ff6b00;
 }
 
 body.dark-theme .checkout-btn {
-    background: #ff6b00;
-    color: white;
+    background: linear-gradient(135deg, #ff6b00, #e85d00);
+    box-shadow: 0 4px 16px rgba(255,107,0,0.3);
 }
 
 /* ── Toast ── */
 body.dark-theme .toast {
-    background: #334155;
-    color: #e2e8f0;
+    background: rgba(26, 39, 68, 0.95);
+    color: #e8edf4;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 /* ── Footer ── */
 body.dark-theme footer {
-    background: #0f172a;
-    color: #94a3b8;
+    background: rgba(11, 17, 32, 0.98);
+    color: #8896aa;
+    border-top: 1px solid rgba(255,255,255,0.04);
 }
 
 body.dark-theme footer a {
-    color: #94a3b8 !important;
+    color: #8896aa !important;
 }
 
 body.dark-theme footer a:hover {
@@ -292,8 +351,8 @@ body.dark-theme footer a:hover {
 
 /* ── Deal Cards ── */
 body.dark-theme .menu-deal-card {
-    background: rgba(22, 101, 52, .15) !important;
-    border-color: rgba(22, 101, 52, .4);
+    background: rgba(74, 222, 128, 0.06) !important;
+    border-color: rgba(74, 222, 128, 0.2) !important;
 }
 
 body.dark-theme .menu-deal-info h3 {
@@ -302,20 +361,24 @@ body.dark-theme .menu-deal-info h3 {
 
 body.dark-theme .menu-deal-info p,
 body.dark-theme .deal-end-date {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 /* ── Announcement Panel ── */
 body.dark-theme .announcement-overlay {
-    background: rgba(0, 0, 0, .75);
+    background: rgba(0, 0, 0, .8);
+    backdrop-filter: blur(4px);
 }
 
 body.dark-theme .announcement-panel {
-    background: #1e293b;
+    background: rgba(22, 32, 50, 0.97);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
 body.dark-theme .announcement-panel h2 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .announcement-kicker {
@@ -323,22 +386,27 @@ body.dark-theme .announcement-kicker {
 }
 
 body.dark-theme .announcement-message {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .announcement-food {
-    background: #0f172a;
-    border-color: #334155;
-    color: #e2e8f0;
+    background: rgba(11, 17, 32, 0.8);
+    border-color: rgba(255,255,255,0.06);
+    color: #e8edf4;
 }
 
 body.dark-theme .announcement-food small {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 body.dark-theme .announcement-close {
-    background: #334155;
-    color: #e2e8f0;
+    background: rgba(255,255,255,0.06);
+    color: #8896aa;
+}
+
+body.dark-theme .announcement-close:hover {
+    background: rgba(255,255,255,0.12);
+    color: #f0f4f8;
 }
 
 body.dark-theme .bundle-total {
@@ -347,20 +415,21 @@ body.dark-theme .bundle-total {
 
 /* ── Track Order ── */
 body.dark-theme .track-card {
-    background: #1e293b !important;
-    border-color: #334155;
+    background: rgba(22, 32, 50, 0.7) !important;
+    border-color: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(12px);
 }
 
 body.dark-theme .track-card h2 {
-    color: #f1f5f9;
+    color: #f0f4f8;
 }
 
 body.dark-theme .track-status {
-    color: #e2e8f0;
+    color: #e8edf4;
 }
 
 body.dark-theme .track-info {
-    color: #94a3b8;
+    color: #8896aa;
 }
 
 /* ── Search Box ── */
@@ -370,76 +439,85 @@ body.dark-theme input[type="tel"],
 body.dark-theme input[type="number"],
 body.dark-theme input[type="email"],
 body.dark-theme textarea {
-    background: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-color: #334155 !important;
+    background: rgba(22, 32, 50, 0.8) !important;
+    color: #e8edf4 !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+
+body.dark-theme input:focus,
+body.dark-theme textarea:focus {
+    border-color: #ff6b00 !important;
+    box-shadow: 0 0 0 3px rgba(255,107,0,0.12) !important;
 }
 
 body.dark-theme input::placeholder,
 body.dark-theme textarea::placeholder {
-    color: #64748b !important;
+    color: #5a6a7e !important;
 }
 
 /* ── Forms ── */
 body.dark-theme label {
-    color: #e2e8f0 !important;
+    color: #e8edf4 !important;
 }
 
 body.dark-theme select {
-    background: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-color: #334155 !important;
+    background: rgba(22, 32, 50, 0.8) !important;
+    color: #e8edf4 !important;
+    border-color: rgba(255,255,255,0.08) !important;
 }
 
 body.dark-theme select option {
-    background: #1e293b;
-    color: #e2e8f0;
+    background: #162032;
+    color: #e8edf4;
 }
 
 /* ── Edit Request / Chat ── */
 body.dark-theme .edit-request-box {
-    background: #1e293b;
-    border-color: #334155;
-    color: #e2e8f0;
+    background: rgba(22, 32, 50, 0.7);
+    border-color: rgba(255,255,255,0.06);
+    color: #e8edf4;
 }
 
 body.dark-theme .chat-box {
-    background: #1e293b;
-    border-color: #334155;
+    background: rgba(22, 32, 50, 0.7);
+    border-color: rgba(255,255,255,0.06);
 }
 
 body.dark-theme .chat-bubble {
-    background: #334155;
-    color: #e2e8f0;
+    background: rgba(255,255,255,0.06);
+    color: #e8edf4;
 }
 
 body.dark-theme .chat-bubble.customer {
-    background: rgba(255, 107, 0, .2);
+    background: rgba(255, 107, 0, .12);
     color: #ff8c38;
+    border: 1px solid rgba(255,107,0,0.15);
 }
 
 body.dark-theme .chat-bubble.admin {
-    background: rgba(37, 99, 235, .2);
+    background: rgba(96, 165, 250, .12);
     color: #60a5fa;
+    border: 1px solid rgba(96,165,250,0.15);
 }
 
-/* ── Theme Toggle Button ── */
+/* ── Theme Toggle ── */
 body.dark-theme .theme-toggle-customer {
-    background: rgba(255, 200, 60, .15) !important;
-    border-color: rgba(255, 200, 60, .3) !important;
+    background: rgba(255, 200, 60, .1) !important;
+    border-color: rgba(255, 200, 60, .2) !important;
 }
 
 /* ── Scrollbar ── */
-body.dark-theme ::-webkit-scrollbar { width: 8px; }
-body.dark-theme ::-webkit-scrollbar-track { background: #1e293b; }
-body.dark-theme ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+body.dark-theme ::-webkit-scrollbar { width: 6px; }
+body.dark-theme ::-webkit-scrollbar-track { background: transparent; }
+body.dark-theme ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+body.dark-theme ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
 
-/* ── Full menu section overlay ── */
+/* ── Full Menu Overlay ── */
 body.dark-theme .full-menu-section {
-    background: rgba(0, 0, 0, .8) !important;
+    background: rgba(0, 0, 0, .85) !important;
 }
 
-/* ── Smooth transition ── */
+/* ── Smooth Transition ── */
 body.dark-theme,
 body.dark-theme .food-card,
 body.dark-theme .category,
@@ -447,8 +525,14 @@ body.dark-theme .side-cart,
 body.dark-theme .cart-footer,
 body.dark-theme .menu-poster,
 body.dark-theme .announcement-panel,
+body.dark-theme .track-card,
 body.dark-theme input,
 body.dark-theme textarea,
-body.dark-theme select {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+body.dark-theme select,
+body.dark-theme nav,
+body.dark-theme footer {
+    transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
