@@ -1266,80 +1266,67 @@
 
     }
 
-    /* Size Selector */
-    .size-selector {
-        padding: 0 18px 18px;
+    /* Size List — compact rows like food-bottom */
+    .size-list {
+        padding: 0 18px 14px;
     }
-    .size-label {
-        font-size: 12px;
-        font-weight: bold;
-        color: #6b7280;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .size-options {
+    .size-row {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+        gap: 8px;
+    }
+    .size-row:last-child {
+        border-bottom: none;
+    }
+    .size-row-info {
+        display: flex;
+        align-items: center;
         gap: 6px;
         flex-wrap: wrap;
+        min-width: 0;
     }
-    .size-btn {
-        flex: 1;
-        min-width: 80px;
-        padding: 8px 6px;
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
-        background: white;
-        cursor: pointer;
-        text-align: center;
-        transition: all 0.2s;
-    }
-    .size-btn:hover {
-        border-color: #ff6b00;
-        background: #fff7ed;
-    }
-    .size-btn:active {
-        transform: scale(0.95);
-    }
-    .size-name {
-        display: block;
-        font-size: 12px;
-        font-weight: bold;
+    .size-row-name {
+        font-size: 13px;
+        font-weight: 600;
         color: #111827;
     }
-    .size-price {
-        display: block;
-        font-size: 11px;
+    .size-row-price {
+        font-size: 13px;
         color: #ff6b00;
         font-weight: bold;
-        margin-top: 2px;
     }
-    .size-price-old {
-        display: block;
-        font-size: 10px;
+    .size-row-old {
+        font-size: 11px;
         color: #9ca3af;
         text-decoration: line-through;
-        font-weight: normal;
     }
-    .size-discount-badge {
-        display: inline-block;
-        font-size: 9px;
+    .size-row-badge {
+        font-size: 10px;
         background: #dcfce7;
         color: #15803d;
-        padding: 1px 4px;
-        border-radius: 3px;
+        padding: 1px 5px;
+        border-radius: 4px;
         font-weight: bold;
     }
+    .size-add-btn {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
     @media (max-width: 700px) {
-        .size-selector { padding: 0 12px 12px; }
-        .size-options { gap: 4px; }
-        .size-btn { padding: 6px 4px; min-width: 70px; }
-        .size-name { font-size: 11px; }
-        .size-price { font-size: 10px; }
+        .size-list { padding: 0 12px 10px; }
+        .size-row { padding: 6px 0; }
+        .size-row-name { font-size: 12px; }
+        .size-row-price { font-size: 12px; }
+        .size-add-btn { padding: 5px 10px !important; font-size: 11px !important; }
     }
     @media (max-width: 450px) {
-        .size-options { gap: 4px; }
-        .size-btn { min-width: 60px; padding: 5px 3px; }
+        .size-row-info { gap: 4px; }
+        .size-add-btn { padding: 4px 8px !important; font-size: 11px !important; }
     }
 
 
@@ -2817,22 +2804,24 @@
 
 
                     @if(isset($hasFoodSizes) && $hasFoodSizes && $food->foodSizes->count())
-                        <div class="size-selector">
-                            <div class="size-label">📏 Choose Size:</div>
-                            <div class="size-options">
-                                @foreach($food->foodSizes as $size)
-                                    <button type="button" class="size-btn" onclick="addToCartWithSize({{ $food->id }}, {{ $size->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">
-                                        <span class="size-name">{{ $size->name }}</span>
+                        <div class="size-list">
+                            @foreach($food->foodSizes as $size)
+                                <div class="size-row">
+                                    <div class="size-row-info">
+                                        <span class="size-row-name">{{ $size->name }}</span>
                                         @if($size->hasDiscount())
-                                            <span class="size-price-old">Rs. {{ number_format($size->price, 2) }}</span>
-                                            <span class="size-price">Rs. {{ number_format($size->discounted_price, 2) }}</span>
-                                            <span class="size-discount-badge">-{{ rtrim(rtrim(number_format($size->discount_percentage, 2), '0'), '.') }}%</span>
+                                            <span class="size-row-old">Rs. {{ number_format($size->price, 0) }}</span>
+                                            <span class="size-row-price">Rs. {{ number_format($size->discounted_price, 0) }}</span>
+                                            <span class="size-row-badge">-{{ rtrim(rtrim(number_format($size->discount_percentage, 2), '0'), '.') }}%</span>
                                         @else
-                                            <span class="size-price">Rs. {{ number_format($size->price, 2) }}</span>
+                                            <span class="size-row-price">Rs. {{ number_format($size->price, 0) }}</span>
                                         @endif
+                                    </div>
+                                    <button type="button" class="order-btn size-add-btn" onclick="addToCartWithSize({{ $food->id }}, {{ $size->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">
+                                        + Add
                                     </button>
-                                @endforeach
-                            </div>
+                                </div>
+                            @endforeach
                         </div>
                     @else
                         <div class="food-bottom">
