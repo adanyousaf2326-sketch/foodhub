@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>FoodHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         * {
@@ -402,7 +403,7 @@
     {{-- RATING SUMMARY --}}
     <div id="ratingSummary" style="display:none;background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:12px;padding:16px 24px;margin-bottom:20px;color:white;box-shadow:0 4px 12px rgba(245,158,11,.3);">
         <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;">
-            <span style="font-size:28px;">⭐</span>
+            <span style="font-size:28px;"><i class="fas fa-star"></i></span>
             <div>
                 <div style="font-size:22px;font-weight:bold;">Average Rating: <span id="avgRatingVal">0</span> / 5</div>
                 <div style="font-size:13px;opacity:.9;"><span id="totalRatingsVal">0</span> total ratings</div>
@@ -453,11 +454,11 @@
                             <td>{{ $order->phone }}</td>
                             <td>
                                 @if($order->order_type === 'Dine In')
-                                    <span class="order-type dine-in">🍽️ Dine In</span>
+                                    <span class="order-type dine-in"><i class="fas fa-utensils"></i> Dine In</span>
                                 @elseif($order->order_type === 'Delivery')
-                                    <span class="order-type delivery">🛵 Delivery</span>
+                                    <span class="order-type delivery"><i class="fas fa-motorcycle"></i> Delivery</span>
                                 @else
-                                    <span class="order-type takeaway">🥡 Takeaway</span>
+                                    <span class="order-type takeaway"><i class="fas fa-shopping-bag"></i> Takeaway</span>
                                 @endif
                             </td>
                             <td>Rs. {{ number_format($order->total_amount, 2) }}</td>

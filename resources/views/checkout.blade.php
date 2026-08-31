@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Checkout - FoodHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
 .table-option {
@@ -358,33 +359,33 @@
 
 <nav>
     <a href="{{ url('/') }}" class="logo">
-        <span class="logo-icon">🍔</span>
+        <span class="logo-icon"><i class="fas fa-utensils"></i></span>
         Food<span class="hub-brand">Hub</span>
     </a>
 
     <div>
         <a href="{{ url('/') }}">
-            <span>🏠</span> Home
+            <i class="fas fa-home"></i> Home
         </a>
 
         <a href="{{ url('/#categories') }}">
-            <span>📂</span> Categories
+            <i class="fas fa-th-large"></i> Categories
         </a>
 
         <a href="{{ url('/#full-menu') }}">
-            <span>📋</span> Menu
+            <i class="fas fa-utensils"></i> Menu
         </a>
 
         <a href="{{ url('/#announcement') }}" class="announcement-nav">
-            <span>📣</span> New Deals
+            <i class="fas fa-tags"></i> New Deals
         </a>
 
         <a href="{{ route('track.order') }}">
-            <span>📍</span> Track Order
+            <i class="fas fa-map-marker-alt"></i> Track Order
         </a>
 
         <a href="{{ route('cart') }}" class="cart-nav">
-            <span>🛒</span> Cart
+            <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count" id="navCartCount">{{ collect(session()->get('cart', []))->sum('quantity') }}</span>
         </a>
     </div>
@@ -394,7 +395,7 @@
 
     <div class="header">
 
-        <h1>🧾 Checkout</h1>
+        <h1><i class="fas fa-file-invoice"></i> Checkout</h1>
 
         <p>
             Choose your order type and enter your information

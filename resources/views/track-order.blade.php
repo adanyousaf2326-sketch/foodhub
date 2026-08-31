@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Order - FoodHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         * {
@@ -536,34 +537,34 @@
 <nav>
 
     <a href="{{ url('/') }}" class="logo">
-        <span class="logo-icon">&#127828;</span>
+        <span class="logo-icon"><i class="fas fa-utensils"></i></span>
         Food<span class="hub-brand">Hub</span>
     </a>
 
     <div>
 
         <a href="{{ url('/') }}">
-            <span>&#127968;</span> Home
+            <i class="fas fa-home"></i> Home
         </a>
 
         <a href="{{ url('/#categories') }}">
-            <span>&#128194;</span> Categories
+            <i class="fas fa-th-large"></i> Categories
         </a>
 
         <a href="{{ url('/#full-menu') }}">
-            <span>&#128203;</span> Menu
+            <i class="fas fa-utensils"></i> Menu
         </a>
 
         <a href="{{ url('/#announcement') }}" class="announcement-nav">
-            <span>&#128227;</span> New Deals
+            <i class="fas fa-tags"></i> New Deals
         </a>
 
         <a href="{{ route('track.order') }}" class="track-active">
-            <span>&#128205;</span> Track Order
+            <i class="fas fa-map-marker-alt"></i> Track Order
         </a>
 
         <a href="{{ route('cart') }}" class="cart-nav">
-            <span>&#128722;</span>
+            <i class="fas fa-shopping-cart"></i>
             Cart
             <span class="cart-count" id="navCartCount">
                 {{ collect(session()->get('cart', []))->sum('quantity') }}
@@ -581,7 +582,7 @@
         <div class="title">
 
             <div class="icon">
-                &#128230;
+                <i class="fas fa-shipping-fast"></i>
             </div>
 
             <h1>

@@ -10,6 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>FoodHub - Order Delicious Food</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script>
         window.foodHubCart = @json(session()->get('cart', []));
@@ -2511,23 +2512,23 @@
 
     <div id="customerNavLinks">
         <a href="{{ url('/') }}">
-            <span>🏠</span> Home
+            <i class="fas fa-home"></i> Home
         </a>
 
         <a href="#categories">
-            <span>📂</span> Categories
+            <i class="fas fa-th-large"></i> Categories
         </a>
 
         <a href="#full-menu" onclick="openMenu(event)">
-            <span>📋</span> Menu
+            <i class="fas fa-utensils"></i> Menu
         </a>
 
         <a href="#announcement" class="announcement-nav" onclick="openAnnouncement(event)">
-            <span>📣</span> New Deals
+            <i class="fas fa-tags"></i> New Deals
         </a>
 
         <a href="{{ route('track.order') }}">
-            <span>📍</span> Track Order
+            <i class="fas fa-map-marker-alt"></i> Track Order
         </a>
 
         <a
@@ -2535,11 +2536,11 @@
             class="cart-nav"
             onclick="openCart()"
         >
-            <span>🛒</span> Cart
+            <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count" id="navCartCount">0</span>
         </a>
         <button type="button" class="theme-toggle-customer" onclick="toggleCustomerTheme()" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:17px;margin-left:6px;transition:all .25s ease;">
-            <span class="theme-icon-customer">🌙</span>
+            <span class="theme-icon-customer"><i class="fas fa-moon"></i></span>
         </button>
     </div>
 </nav>
@@ -2581,7 +2582,7 @@
                     @if($announcement->ends_at)
                         <div class="deal-end-date">Offer valid until {{ $announcement->ends_at->format('d M Y, h:i A') }}</div>
                     @endif
-                    <button type="button" class="announcement-action" onclick="closeAnnouncement(); addDealToCart({{ $announcement->id }})">🛒 Add Complete Deal</button>
+                    <button type="button" class="announcement-action" onclick="closeAnnouncement(); addDealToCart({{ $announcement->id }})"><i class="fas fa-shopping-cart"></i> Add Complete Deal</button>
                 @endif
 
                 @if($announcement->button_text)
@@ -2604,7 +2605,7 @@
 
         <p>Order your favorite meals from FoodHub. Fresh food, great taste and easy ordering.</p>
 
-        <a href="#categories" class="hero-btn">🍔 Explore Menu</a>
+        <a href="#categories" class="hero-btn"><i class="fas fa-utensils"></i> Explore Menu</a>
 
     </div>
 
@@ -2630,7 +2631,7 @@
         >
 
             <div class="category-icon">
-                🍽️
+                <i class="fas fa-utensils" style="font-size:45px;color:#ff6b00;"></i>
             </div>
 
             <h3>
@@ -2708,7 +2709,7 @@
     <div class="section-title">
 
         <h2>
-            🍔 Food Menu
+            <i class="fas fa-utensils"></i> Food Menu
         </h2>
 
         <p id="menuDescription">
@@ -2731,16 +2732,13 @@
                 All Food
             </span>
 
-        </div>
-
-
-        <a
-            href="#menu"
-            class="all-food-btn"
-            onclick="showAllFood()"
-        >
-            🍽️ Show All
-        </a>
+        </div>            <a
+                href="#menu"
+                class="all-food-btn"
+                onclick="showAllFood()"
+            >
+                <i class="fas fa-th-large"></i> Show All
+            </a>
 
     </div>
 
@@ -2787,7 +2785,7 @@
 
                     @else
 
-                        🍔
+                        <i class="fas fa-utensils" style="font-size:50px;color:#d1d5db;"></i>
 
                     @endif
 
@@ -2880,7 +2878,7 @@
 
             <div class="empty">
 
-                🍔
+                <i class="fas fa-utensils" style="font-size:50px;color:#d1d5db;"></i>
 
                 <h3>
                     No food items available
@@ -2928,7 +2926,7 @@
     <div class="cart-header">
 
         <h2>
-            🛒 Your Cart
+            <i class="fas fa-shopping-cart"></i> Your Cart
         </h2>
 
         <button
@@ -3020,7 +3018,7 @@
         <div class="poster-header">
 
             <div class="poster-logo">
-                🍔 FOODHUB
+                <i class="fas fa-utensils"></i> FOODHUB
             </div>
 
             <div class="poster-subtitle">
@@ -3079,7 +3077,7 @@
                         <div class="poster-category-title">
 
                             <span>
-                                🍽️
+                                <i class="fas fa-utensils"></i>
                             </span>
 
                             {{ strtoupper($category->name) }}
@@ -3142,7 +3140,7 @@
 
                 <div class="poster-empty">
 
-                    🍔
+                    <i class="fas fa-utensils" style="font-size:50px;"></i>
 
                     <h3>
                         Menu Coming Soon
@@ -3883,7 +3881,7 @@ function renderCart() {
             <div class="cart-empty">
 
                 <div class="cart-empty-icon">
-                    🛒
+                    <i class="fas fa-shopping-cart" style="font-size:55px;color:#d1d5db;"></i>
                 </div>
 
                 <h3>
@@ -4007,7 +4005,7 @@ function renderCart() {
                     onclick="removeFromCart('${escapeHtml(item.cart_key || item.id)}')"
                     title="Remove"
                 >
-                    🗑️
+                    <i class="fas fa-trash"></i>
                 </button>
 
 
@@ -4146,11 +4144,11 @@ document.addEventListener(
         var icon = document.querySelector(".theme-icon-customer");
         if (body.classList.contains("dark-theme")) {
             body.classList.remove("dark-theme");
-            if (icon) icon.textContent = "🌙";
+            if (icon) icon.innerHTML = '<i class="fas fa-moon"></i>';
             localStorage.setItem("foodhub-theme", "light");
         } else {
             body.classList.add("dark-theme");
-            if (icon) icon.textContent = "☀️";
+            if (icon) icon.innerHTML = '<i class="fas fa-sun"></i>';
             localStorage.setItem("foodhub-theme", "dark");
         }
     }

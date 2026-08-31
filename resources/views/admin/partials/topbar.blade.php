@@ -1,21 +1,21 @@
 {{-- ===== ADMIN TOPBAR — Clean Responsive ===== --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <nav class="admin-topbar" id="adminTopbar">
 
     {{-- Logo --}}
     <a href="{{ route('admin.dashboard') }}" class="atb-logo">
-        <span>🍔</span> Food<span style="color:#fff;">Hub</span>
+        <i class="fas fa-utensils"></i> Food<span style="color:#fff;">Hub</span>
     </a>
 
     {{-- Desktop Nav Links --}}
     <div class="atb-links">
-        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-active' : '' }}"  class="fa-duotone fa-solid fa-house"
->Dashboard</a>
-        <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'atb-active' : '' }}">🛒 Orders</a>
-        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'atb-active' : '' }}">🍔 Food</a>
-        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-active' : '' }}">📂 Categories</a>
-        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-active' : '' }}">📣 Deals</a>
-        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'atb-active' : '' }}">👥 Users</a>
-        <a href="{{ url('/') }}" target="_blank" rel="noopener" class="atb-website">🌐 Website</a>
+        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-active' : '' }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'atb-active' : '' }}"><i class="fas fa-receipt"></i> Orders</a>
+        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'atb-active' : '' }}"><i class="fas fa-hamburger"></i> Food</a>
+        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-active' : '' }}"><i class="fas fa-layer-group"></i> Categories</a>
+        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-active' : '' }}"><i class="fas fa-bullhorn"></i> Deals</a>
+        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'atb-active' : '' }}"><i class="fas fa-users"></i> Users</a>
+        <a href="{{ url('/') }}" target="_blank" rel="noopener" class="atb-website"><i class="fas fa-globe"></i> Website</a>
     </div>
 
     {{-- Right Side Controls --}}
@@ -24,7 +24,7 @@
         {{-- Chat Button --}}
         <div class="atb-chat-wrap" id="atbChatWrap">
             <button type="button" id="atbChatBtn" onclick="atbToggleChat()" class="atb-icon-btn" title="Chat">
-                💬
+                <i class="fas fa-comments"></i>
                 <span id="atbChatBadge" class="atb-badge"></span>
             </button>
             {{-- Chat Dropdown --}}
@@ -35,30 +35,30 @@
                 </div>
                 <div class="atb-cd-tabs">
                     <button onclick="atbSwitchTab('editReqs')" id="atbTabEditReqs" class="atb-cd-tab atb-tab-active">
-                        ✏️ Requests <span id="atbBadgeEditReqs" class="atb-tab-badge" style="display:none;background:#f59e0b;"></span>
+                        <i class="fas fa-pen"></i> Requests <span id="atbBadgeEditReqs" class="atb-tab-badge" style="display:none;background:#f59e0b;"></span>
                     </button>
                     <button onclick="atbSwitchTab('messages')" id="atbTabMessages" class="atb-cd-tab">
-                        💬 Messages <span id="atbBadgeMessages" class="atb-tab-badge" style="display:none;background:#3b82f6;"></span>
+                        <i class="fas fa-envelope"></i> Messages <span id="atbBadgeMessages" class="atb-tab-badge" style="display:none;background:#3b82f6;"></span>
                     </button>
                     <button onclick="atbSwitchTab('updates')" id="atbTabUpdates" class="atb-cd-tab">
-                        🔄 Updates <span id="atbBadgeUpdates" class="atb-tab-badge" style="display:none;background:#ef4444;"></span>
+                        <i class="fas fa-sync-alt"></i> Updates <span id="atbBadgeUpdates" class="atb-tab-badge" style="display:none;background:#ef4444;"></span>
                     </button>
                 </div>
-                <div id="atbPanelEditReqs" class="atb-cd-panel"><div class="atb-cd-empty">📭 No pending requests</div></div>
-                <div id="atbPanelMessages" class="atb-cd-panel" style="display:none;"><div class="atb-cd-empty">💬 No unread messages</div></div>
-                <div id="atbPanelUpdates" class="atb-cd-panel" style="display:none;"><div class="atb-cd-empty">🔄 No order updates</div></div>
+                <div id="atbPanelEditReqs" class="atb-cd-panel"><div class="atb-cd-empty"><i class="fas fa-inbox" style="font-size:20px;"></i><br>No pending requests</div></div>
+                <div id="atbPanelMessages" class="atb-cd-panel" style="display:none;"><div class="atb-cd-empty"><i class="fas fa-envelope-open" style="font-size:20px;"></i><br>No unread messages</div></div>
+                <div id="atbPanelUpdates" class="atb-cd-panel" style="display:none;"><div class="atb-cd-empty"><i class="fas fa-clock" style="font-size:20px;"></i><br>No order updates</div></div>
             </div>
         </div>
 
         {{-- Theme Toggle --}}
         <button type="button" onclick="toggleTheme()" class="atb-icon-btn" title="Toggle Theme">
-            <span class="theme-icon">🌙</span>
+            <span class="theme-icon"><i class="fas fa-moon"></i></span>
         </button>
 
         {{-- Logout --}}
         <form method="POST" action="{{ route('logout') }}" style="margin:0;">
             @csrf
-            <button type="submit" class="atb-logout-btn">↪ Logout</button>
+            <button type="submit" class="atb-logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </form>
 
         {{-- Hamburger (mobile only) --}}
@@ -71,21 +71,21 @@
 {{-- ===== MOBILE SLIDE-DOWN MENU ===== --}}
 <div class="atb-mobile-menu" id="atbMobileMenu">
     <div class="atb-mm-links">
-        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-mm-active' : '' }}">📊 Dashboard</a>
-        <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'atb-mm-active' : '' }}">🛒 Orders</a>
-        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'atb-mm-active' : '' }}">🍔 Food</a>
-        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-mm-active' : '' }}">📂 Categories</a>
-        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-mm-active' : '' }}">📣 Deals</a>
-        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'atb-mm-active' : '' }}">👥 Users</a>
-        <a href="{{ url('/') }}" target="_blank" rel="noopener">🌐 Website</a>
+        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-mm-active' : '' }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-receipt"></i> Orders</a>
+        <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-hamburger"></i> Food</a>
+        <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-layer-group"></i> Categories</a>
+        <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-bullhorn"></i> Deals</a>
+        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-users"></i> Users</a>
+        <a href="{{ url('/') }}" target="_blank" rel="noopener"><i class="fas fa-globe"></i> Website</a>
     </div>
     <div class="atb-mm-footer">
         <button type="button" onclick="toggleTheme()" class="atb-mm-btn">
-            <span class="theme-icon">🌙</span> Theme
+            <span class="theme-icon"><i class="fas fa-moon"></i></span> Theme
         </button>
         <form method="POST" action="{{ route('logout') }}" style="flex:1;">
             @csrf
-            <button type="submit" class="atb-mm-btn atb-mm-logout">↪ Logout</button>
+            <button type="submit" class="atb-mm-btn atb-mm-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </form>
     </div>
 </div>
@@ -492,18 +492,18 @@ function toggleTheme() {
     var icons = document.querySelectorAll('.theme-icon');
     if (body.classList.contains('dark-theme')) {
         body.classList.remove('dark-theme');
-        icons.forEach(function(i) { i.textContent = '🌙'; });
+        icons.forEach(function(i) { i.innerHTML = '<i class="fas fa-moon"></i>'; });
         localStorage.setItem('theme', 'light');
     } else {
         body.classList.add('dark-theme');
-        icons.forEach(function(i) { i.textContent = '☀️'; });
+        icons.forEach(function(i) { i.innerHTML = '<i class="fas fa-sun"></i>'; });
         localStorage.setItem('theme', 'dark');
     }
 }
 document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
-        document.querySelectorAll('.theme-icon').forEach(function(i) { i.textContent = '☀️'; });
+        document.querySelectorAll('.theme-icon').forEach(function(i) { i.innerHTML = '<i class="fas fa-sun"></i>'; });
     }
 });
 
@@ -548,16 +548,16 @@ function atbSwitchTab(tab) {
 function atbRenderEditRequests(reqs) {
     var panel = document.getElementById('atbPanelEditReqs');
     var badge = document.getElementById('atbBadgeEditReqs');
-    if (!reqs.length) { panel.innerHTML = '<div class="atb-cd-empty">📭 No pending requests</div>'; badge.style.display = 'none'; atbEditReqCount = 0; return; }
+    if (!reqs.length) { panel.innerHTML = '<div class="atb-cd-empty"><i class="fas fa-inbox" style="font-size:20px;"></i><br>No pending requests</div>'; badge.style.display = 'none'; atbEditReqCount = 0; return; }
     atbEditReqCount = reqs.length; badge.textContent = atbEditReqCount; badge.style.display = 'inline';
     var html = '';
     reqs.forEach(function(r) {
         html += '<div style="padding:12px 16px;border-bottom:1px solid #f3f4f6;background:#fffbeb;">';
-        html += '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="color:#92400e;font-size:13px;">✏️ Order #' + r.order_id + '</strong><span style="font-size:11px;color:#a16207;">' + atbTimeAgo(r.created_at) + '</span></div>';
+        html += '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="color:#92400e;font-size:13px;"><i class="fas fa-pen"></i> Order #' + r.order_id + '</strong><span style="font-size:11px;color:#a16207;">' + atbTimeAgo(r.created_at) + '</span></div>';
         html += '<div style="font-size:12px;color:#78716c;margin-bottom:8px;">' + (r.customer_name || 'Customer') + ': ' + (r.message || 'Wants to edit') + '</div>';
         html += '<div style="display:flex;gap:6px;">';
-        html += '<form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;">✅ Accept</button></form>';
-        html += '<form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected."><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;">❌ Reject</button></form>';
+        html += '<form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;"><i class="fas fa-check"></i> Accept</button></form>';
+        html += '<form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected."><button type="submit" style="width:100%;padding:8px;border:none;border-radius:6px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;"><i class="fas fa-times"></i> Reject</button></form>';
         html += '</div></div>';
     });
     panel.innerHTML = html;
@@ -566,12 +566,12 @@ function atbRenderEditRequests(reqs) {
 function atbRenderMessages(msgs) {
     var panel = document.getElementById('atbPanelMessages');
     var badge = document.getElementById('atbBadgeMessages');
-    if (!msgs.length) { panel.innerHTML = '<div class="atb-cd-empty">💬 No unread messages</div>'; badge.style.display = 'none'; atbMsgCount = 0; return; }
+    if (!msgs.length) { panel.innerHTML = '<div class="atb-cd-empty"><i class="fas fa-envelope-open" style="font-size:20px;"></i><br>No unread messages</div>'; badge.style.display = 'none'; atbMsgCount = 0; return; }
     atbMsgCount = msgs.length; badge.textContent = atbMsgCount; badge.style.display = 'inline';
     var html = '';
     msgs.forEach(function(m) {
         html += '<a href="/admin/orders/' + m.order_id + '" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;">';
-        html += '<div style="width:34px;height:34px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💬</div>';
+        html += '<div style="width:34px;height:34px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:#3b82f6;"><i class="fas fa-comment-dots"></i></div>';
         html += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#1d4ed8;margin-bottom:2px;">Order #' + m.order_id + '</div><div style="font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (m.sender_name || 'Customer') + ': ' + m.message + '</div></div></a>';
     });
     panel.innerHTML = html;
@@ -580,12 +580,12 @@ function atbRenderMessages(msgs) {
 function atbRenderUpdates(updates) {
     var panel = document.getElementById('atbPanelUpdates');
     var badge = document.getElementById('atbBadgeUpdates');
-    if (!updates.length) { panel.innerHTML = '<div class="atb-cd-empty">🔄 No order updates</div>'; badge.style.display = 'none'; atbUpdateCount = 0; return; }
+    if (!updates.length) { panel.innerHTML = '<div class="atb-cd-empty"><i class="fas fa-clock" style="font-size:20px;"></i><br>No order updates</div>'; badge.style.display = 'none'; atbUpdateCount = 0; return; }
     atbUpdateCount = updates.length; badge.textContent = atbUpdateCount; badge.style.display = 'inline';
     var html = '';
     updates.forEach(function(o) {
         html += '<a href="/admin/orders/' + o.id + '" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #f3f4f6;text-decoration:none;color:inherit;">';
-        html += '<div style="width:34px;height:34px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔄</div>';
+        html += '<div style="width:34px;height:34px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:#f59e0b;"><i class="fas fa-sync-alt"></i></div>';
         html += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#b45309;margin-bottom:2px;">Order #' + o.id + ' Updated</div><div style="font-size:12px;color:#6b7280;">' + (o.customer_name || 'Customer') + ' — Rs. ' + parseFloat(o.total_amount).toLocaleString('en-PK', {minimumFractionDigits:2}) + '</div></div></a>';
     });
     panel.innerHTML = html;

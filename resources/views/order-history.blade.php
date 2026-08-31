@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order History - FoodHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/foodhub.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
@@ -116,12 +117,12 @@
     <div>
         <a href="{{ url('/') }}">🏠 Home</a>
         <a href="{{ url('/#categories') }}">📁 Categories</a>
-        <a href="{{ url('/#full-menu') }}">📋 Menu</a>
-        <a href="{{ url('/#announcement') }}">📣 New Deals</a>
-        <a href="{{ route('track.order') }}">📍 Track Order</a>
-        <a href="{{ route('order.history') }}" class="history-active">📜 History</a>
+        <a href="{{ url('/#full-menu') }}"><i class="fas fa-utensils"></i> Menu</a>
+        <a href="{{ url('/#announcement') }}"><i class="fas fa-tags"></i> New Deals</a>
+        <a href="{{ route('track.order') }}"><i class="fas fa-map-marker-alt"></i> Track Order</a>
+        <a href="{{ route('order.history') }}" class="history-active"><i class="fas fa-history"></i> History</a>
         <a href="{{ route('cart') }}" class="cart-nav" style="background:#ff6b00;">
-            🛒 Cart
+            <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count">{{ collect(session()->get('cart', []))->sum('quantity') }}</span>
         </a>
     </div>
@@ -130,7 +131,7 @@
 <div class="container">
     <div class="card">
         <div class="title">
-            <div class="icon">📜</div>
+            <div class="icon"><i class="fas fa-history" style="font-size:40px;color:#ff6b00;"></i></div>
             <h1>Order History</h1>
             <p>Search and view all your past orders</p>
         </div>
@@ -147,12 +148,12 @@
         <form action="{{ route('order.history') }}" method="GET">
             <div class="search-box">
                 <input type="text" name="phone" value="{{ request('phone') }}" placeholder="Enter your phone number" required>
-                <button type="submit" class="search-btn">🔍 Search Orders</button>
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i> Search Orders</button>
             </div>
 
             <div class="filter-row">
                 <div class="filter-group">
-                    <label>📅 From Date</label>
+                    <label><i class="fas fa-calendar-alt"></i> From Date</label>
                     <input type="date" name="from_date" value="{{ request('from_date') }}">
                 </div>
                 <div class="filter-group">
