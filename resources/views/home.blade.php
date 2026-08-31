@@ -3430,7 +3430,7 @@ function addSizeToCart(btn) {
     .then(function(data) {
         cart = data.cart;
         updateCartUI();
-        openCart();
+        setTimeout(function() { openCart(); }, 150);
         showToast('\u2705 Added to cart!');
     })
     .catch(function(e) {
