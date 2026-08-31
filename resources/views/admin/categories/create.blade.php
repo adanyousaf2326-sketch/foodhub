@@ -517,7 +517,7 @@
         @if($errors->any())
             <div class="error">
                 @foreach($errors->all() as $error)
-                    <div>{{ "<i class="fas fa-exclamation-triangle"></i>" }} {{ $error }}</div>
+                    <div><i class="fas fa-exclamation-triangle"></i> {{ $error }}</div>
                 @endforeach
             </div>
         @endif
