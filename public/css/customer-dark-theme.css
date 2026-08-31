@@ -7,32 +7,9 @@ body.dark-theme {
     color: #e2e8f0 !important;
 }
 
-/* ── GLOBAL TEXT OVERRIDES ── */
-body.dark-theme h1,
-body.dark-theme h2,
-body.dark-theme h3,
-body.dark-theme h4,
-body.dark-theme strong,
-body.dark-theme label,
-body.dark-theme span {
-    color: #f1f5f9 !important;
-}
+/* Nav - already dark, keep it */
 
-body.dark-theme p,
-body.dark-theme small {
-    color: #94a3b8 !important;
-}
-
-body.dark-theme a {
-    color: #60a5fa !important;
-}
-
-/* ── Nav ── */
-body.dark-theme nav {
-    background: #0f172a !important;
-}
-
-/* ── Hero ── */
+/* Hero */
 body.dark-theme .hero {
     background: linear-gradient(90deg, rgba(15, 23, 42, .95), rgba(15, 23, 42, .6)) !important;
 }
@@ -45,7 +22,7 @@ body.dark-theme .hero p {
     color: #94a3b8;
 }
 
-/* ── Section ── */
+/* Section */
 body.dark-theme .section-title h2 {
     color: #f1f5f9;
 }
@@ -54,7 +31,7 @@ body.dark-theme .section-title p {
     color: #94a3b8;
 }
 
-/* ── Categories ── */
+/* Categories */
 body.dark-theme .category {
     background: #1e293b !important;
     color: #e2e8f0 !important;
@@ -66,19 +43,11 @@ body.dark-theme .category:hover {
     box-shadow: 0 8px 25px rgba(255, 107, 0, .2);
 }
 
-body.dark-theme .category h3 {
-    color: #f1f5f9 !important;
-}
-
 body.dark-theme .category p {
-    color: #94a3b8 !important;
+    color: #94a3b8;
 }
 
-body.dark-theme .category-icon {
-    background: #1e293b !important;
-}
-
-/* ── Food Cards ── */
+/* Food Cards */
 body.dark-theme .food-card {
     background: #1e293b !important;
     border: 1px solid #334155;
@@ -97,29 +66,7 @@ body.dark-theme .food-category {
     color: #ff8c38;
 }
 
-body.dark-theme .food-bottom {
-    border-top-color: #334155;
-}
-
-body.dark-theme .price {
-    color: #f1f5f9 !important;
-}
-
-body.dark-theme .price-old {
-    color: #64748b !important;
-}
-
-body.dark-theme .discount-badge {
-    background: rgba(220, 38, 38, .15);
-    color: #f87171;
-}
-
-body.dark-theme .deal-badge {
-    background: rgba(22, 101, 52, .2);
-    color: #4ade80;
-}
-
-/* ── Menu Top ── */
+/* Menu Top */
 body.dark-theme .menu-top {
     color: #94a3b8;
 }
@@ -137,30 +84,10 @@ body.dark-theme .selected-category {
     color: #ff6b00;
 }
 
-/* ── Menu Poster ── */
+/* Menu Poster */
 body.dark-theme .menu-poster {
     background: #1e293b;
     border-color: #334155;
-}
-
-body.dark-theme .poster-header {
-    background: #0f172a;
-}
-
-body.dark-theme .poster-header h2 {
-    color: #f1f5f9;
-}
-
-body.dark-theme .poster-header p {
-    color: #94a3b8;
-}
-
-body.dark-theme .poster-logo {
-    color: #f1f5f9;
-}
-
-body.dark-theme .poster-subtitle {
-    color: #94a3b8;
 }
 
 body.dark-theme .poster-category-title {
@@ -180,43 +107,7 @@ body.dark-theme .poster-item-left small {
     color: #94a3b8;
 }
 
-body.dark-theme .poster-price {
-    color: #ff6b00;
-}
-
-body.dark-theme .poster-old-price {
-    color: #64748b;
-    text-decoration: line-through;
-}
-
-body.dark-theme .poster-deal {
-    background: rgba(22, 101, 52, .1) !important;
-    border-color: rgba(22, 101, 52, .4) !important;
-}
-
-body.dark-theme .poster-deal-info h3 {
-    color: #4ade80;
-}
-
-body.dark-theme .poster-deal-info strong {
-    color: #e2e8f0;
-}
-
-body.dark-theme .poster-deal-info p {
-    color: #94a3b8;
-}
-
-body.dark-theme .poster-deal-item {
-    background: rgba(22, 101, 52, .2);
-    color: #4ade80;
-}
-
-body.dark-theme .poster-footer {
-    background: #0f172a;
-    color: #94a3b8;
-}
-
-/* ── Side Cart ── */
+/* Side Cart */
 body.dark-theme .side-cart {
     background: #1e293b !important;
     border-color: #334155;
@@ -226,16 +117,8 @@ body.dark-theme .cart-header {
     background: #0f172a;
 }
 
-body.dark-theme .cart-header h3 {
-    color: #f1f5f9;
-}
-
 body.dark-theme .side-cart-info h4 {
     color: #f1f5f9;
-}
-
-body.dark-theme .side-cart-info p {
-    color: #94a3b8;
 }
 
 body.dark-theme .qty-number {
@@ -256,36 +139,19 @@ body.dark-theme .continue-btn {
     color: #e2e8f0;
 }
 
-body.dark-theme .continue-btn:hover {
-    background: #ff6b00;
-}
-
-body.dark-theme .checkout-btn {
-    background: #ff6b00;
-    color: white;
-}
-
-/* ── Toast ── */
+/* Toast */
 body.dark-theme .toast {
     background: #334155;
     color: #e2e8f0;
 }
 
-/* ── Footer ── */
+/* Footer */
 body.dark-theme footer {
     background: #0f172a;
     color: #94a3b8;
 }
 
-body.dark-theme footer a {
-    color: #94a3b8 !important;
-}
-
-body.dark-theme footer a:hover {
-    color: #ff6b00 !important;
-}
-
-/* ── Deal Cards ── */
+/* Deal cards */
 body.dark-theme .menu-deal-card {
     background: rgba(22, 101, 52, .15) !important;
     border-color: rgba(22, 101, 52, .4);
@@ -300,21 +166,13 @@ body.dark-theme .deal-end-date {
     color: #94a3b8;
 }
 
-/* ── Announcement Panel ── */
-body.dark-theme .announcement-overlay {
-    background: rgba(0, 0, 0, .75);
-}
-
+/* Announcement */
 body.dark-theme .announcement-panel {
     background: #1e293b;
 }
 
 body.dark-theme .announcement-panel h2 {
     color: #f1f5f9;
-}
-
-body.dark-theme .announcement-kicker {
-    color: #4ade80;
 }
 
 body.dark-theme .announcement-message {
@@ -327,123 +185,28 @@ body.dark-theme .announcement-food {
     color: #e2e8f0;
 }
 
-body.dark-theme .announcement-food small {
-    color: #94a3b8;
-}
-
-body.dark-theme .announcement-close {
-    background: #334155;
-    color: #e2e8f0;
-}
-
-body.dark-theme .bundle-total {
-    color: #4ade80;
-}
-
-/* ── Track Order ── */
-body.dark-theme .track-card {
-    background: #1e293b !important;
-    border-color: #334155;
-}
-
-body.dark-theme .track-card h2 {
-    color: #f1f5f9;
-}
-
-body.dark-theme .track-status {
-    color: #e2e8f0;
-}
-
-body.dark-theme .track-info {
-    color: #94a3b8;
-}
-
-/* ── Search Box ── */
-body.dark-theme input[type="text"],
-body.dark-theme input[type="search"],
-body.dark-theme input[type="tel"],
-body.dark-theme input[type="number"],
-body.dark-theme input[type="email"],
-body.dark-theme textarea {
-    background: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-color: #334155 !important;
-}
-
-body.dark-theme input::placeholder,
-body.dark-theme textarea::placeholder {
-    color: #64748b !important;
-}
-
-/* ── Forms ── */
-body.dark-theme label {
-    color: #e2e8f0 !important;
-}
-
-body.dark-theme select {
-    background: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-color: #334155 !important;
-}
-
-body.dark-theme select option {
-    background: #1e293b;
-    color: #e2e8f0;
-}
-
-/* ── Edit Request / Chat ── */
-body.dark-theme .edit-request-box {
-    background: #1e293b;
-    border-color: #334155;
-    color: #e2e8f0;
-}
-
-body.dark-theme .chat-box {
-    background: #1e293b;
-    border-color: #334155;
-}
-
-body.dark-theme .chat-bubble {
-    background: #334155;
-    color: #e2e8f0;
-}
-
-body.dark-theme .chat-bubble.customer {
-    background: rgba(255, 107, 0, .2);
-    color: #ff8c38;
-}
-
-body.dark-theme .chat-bubble.admin {
-    background: rgba(37, 99, 235, .2);
-    color: #60a5fa;
-}
-
-/* ── Theme Toggle Button ── */
+/* Theme toggle button */
 body.dark-theme .theme-toggle-customer {
     background: rgba(255, 200, 60, .15) !important;
     border-color: rgba(255, 200, 60, .3) !important;
 }
 
-/* ── Scrollbar ── */
+/* Scrollbar */
 body.dark-theme ::-webkit-scrollbar { width: 8px; }
 body.dark-theme ::-webkit-scrollbar-track { background: #1e293b; }
 body.dark-theme ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
 
-/* ── Full menu section overlay ── */
-body.dark-theme .full-menu-section {
-    background: rgba(0, 0, 0, .8) !important;
-}
-
-/* ── Smooth transition ── */
+/* Smooth transition */
 body.dark-theme,
 body.dark-theme .food-card,
 body.dark-theme .category,
 body.dark-theme .side-cart,
 body.dark-theme .cart-footer,
-body.dark-theme .menu-poster,
-body.dark-theme .announcement-panel,
-body.dark-theme input,
-body.dark-theme textarea,
-body.dark-theme select {
+body.dark-theme .menu-poster {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Full menu section overlay */
+body.dark-theme .full-menu-section {
+    background: rgba(0, 0, 0, .8) !important;
 }
