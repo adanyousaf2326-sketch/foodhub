@@ -112,7 +112,7 @@
         <h1><i class="fas fa-pen"></i> Edit User</h1>
 
         <div class="info">
-            Password change ke liye baad mein separate option add karenge.
+            Password change option will be available separately.
         </div>
 
         @if($errors->any())

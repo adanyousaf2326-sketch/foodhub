@@ -486,7 +486,7 @@
         @else
             <div class="empty">
                 <h2><i class="fas fa-clipboard"></i> No Orders Found</h2>
-                <p>Search ya selected date/time range mein koi order nahi mila.</p>
+                <p>No orders found in the selected date/time range.</p>
             </div>
         @endif
     </div>

@@ -31,7 +31,7 @@ class CategoryController extends Controller
 
     $validated['is_active'] = $request->has('is_active');
 
-    // Agar image URL nahi diya to name ke according automatic image
+    // If no image URL provided, generate one based on the category name
     if (empty($validated['image'])) {
         $keyword = urlencode($validated['name']);
 

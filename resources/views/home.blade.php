@@ -2517,7 +2517,7 @@
             @empty
                 <div class="announcement-kicker">FoodHub Updates</div>
                 <h2>New deals coming soon</h2>
-                <div class="announcement-message">Abhi koi active offer nahi hai. Naye deals jald yahan show honge.</div>
+                <div class="announcement-message">No active offers right now. New deals will be shown here soon.</div>
             @endforelse
         </div>
     </div>

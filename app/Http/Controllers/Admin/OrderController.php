@@ -380,7 +380,7 @@ class OrderController extends Controller
                     'from_date' => $order->created_at->toDateString(),
                     'to_date' => $order->created_at->toDateString(),
                 ])
-                ->with('success', 'Cancelled order ka bill close nahi ho sakta.');
+                ->with('success', 'Cancelled orders cannot be billed.');
         }
 
         if ($order->status === 'Completed') {
