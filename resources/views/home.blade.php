@@ -3487,67 +3487,30 @@ function addToCart(foodId, announcementId = null) {
 
     });
 
-}
-
-
-function addToCartWithSize(foodId, sizeId, announcementId = null) {
-
+}function addToCartWithSize(foodId, sizeId, announcementId = null) {
     fetch('/cart/add/' + foodId, {
-
         method: 'POST',
-
         headers: {
-
             'Content-Type': 'application/json',
-
-            'X-CSRF-TOKEN':
-                document
-                .querySelector('meta[name="csrf-token"]')
-                ?.getAttribute('content'),
-
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
             'Accept': 'application/json'
-
         },
-
-        body: JSON.stringify({
-            announcement_id: announcementId,
-            size_id: sizeId
-        })
-
+        body: JSON.stringify({ announcement_id: announcementId, size_id: sizeId })
     })
-
     .then(function(response) {
-
-        if (!response.ok) {
-
-            throw new Error('Failed');
-
-        }
-
+        if (!response.ok) return response.text().then(function(t) { throw new Error(t); });
         return response.json();
-
     })
-
     .then(function(data) {
-
         cart = data.cart;
-
         updateCartUI();
-
-        openCart();
-
         showToast('\u2705 Food added to cart!');
-
+        setTimeout(function() { openCart(); }, 100);
     })
-
     .catch(function(error) {
-
-        console.error(error);
-
+        console.error('Size cart error:', error);
         showToast('\u274c Could not add item. Please try again.');
-
     });
-
 }
 
 
