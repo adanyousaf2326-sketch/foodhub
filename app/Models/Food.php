@@ -18,6 +18,8 @@ class Food extends Model
         'is_available',
     ];
 
+    protected $with = ['foodSizes'];
+
     protected $casts = [
         'price' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
@@ -32,6 +34,16 @@ class Food extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function foodSizes()
+    {
+        return $this->hasMany(FoodSize::class);
+    }
+
+    public function hasSizes(): bool
+    {
+        return $this->foodSizes()->count() > 0;
     }
 
     public function getDiscountedPriceAttribute(): float

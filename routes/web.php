@@ -217,6 +217,8 @@ Route::post('/order/place', function (Request $request) {
                         ? $item['name'] . ' (' . ($item['included_items'] ?? 'Bundle deal') . ')'
                         : $item['name'],
 
+                    'size_name' => $item['size_name'] ?? null,
+
                     'price' => $item['price'],
 
                     'quantity' => $item['quantity'],
@@ -357,7 +359,19 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
 
     $cart = session()->get('cart', []);
 
-    $id = $food->id;
+    // Handle size selection
+    $sizeName = null;
+    $sizeId = null;
+    if ($request->filled('size_id')) {
+        $foodSize = $food->foodSizes()->find($request->size_id);
+        if ($foodSize) {
+            $sizeName = $foodSize->name;
+            $sizeId = $foodSize->id;
+        }
+    }
+
+    // Cart key: food_id (no size) or food_id_sizeid (with size)
+    $cartKey = $sizeId ? $food->id . '_' . $sizeId : $food->id;
 
     $dealPrice = null;
 
@@ -371,25 +385,29 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
         $dealPrice = $dealFood?->pivot?->deal_price;
     }
 
-    $cartPrice = $dealPrice !== null
-        ? (float) $dealPrice
-        : $food->discounted_price;
-
-    if (isset($cart[$id])) {
-
-        $cart[$id]['quantity']++;
-        $cart[$id]['price'] = $cartPrice;
-
+    // Determine price: deal > size > base
+    if ($dealPrice !== null) {
+        $cartPrice = (float) $dealPrice;
+    } elseif ($sizeName && isset($foodSize)) {
+        $cartPrice = (float) $foodSize->price;
     } else {
+        $cartPrice = $food->discounted_price;
+    }
 
-        $cart[$id] = [
+    if (isset($cart[$cartKey])) {
+        $cart[$cartKey]['quantity']++;
+        $cart[$cartKey]['price'] = $cartPrice;
+    } else {
+        $cart[$cartKey] = [
             'id' => $food->id,
+            'cart_key' => $cartKey,
             'name' => $food->name,
             'price' => $cartPrice,
             'image' => $food->image,
             'quantity' => 1,
+            'size_name' => $sizeName,
+            'size_id' => $sizeId,
         ];
-
     }
 
     session()->put('cart', $cart);

@@ -694,6 +694,9 @@
                             <div class="item-name">
 
                                 {{ $item->food_name }}
+                                @if($item->size_name)
+                                    <span style="color:#6b7280;font-size:13px;"> — {{ $item->size_name }}</span>
+                                @endif
 
                             </div>
 

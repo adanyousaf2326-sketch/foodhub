@@ -1259,10 +1259,70 @@
         font-weight: bold;
 
         transition: .2s;
+    }    .order-btn:hover {
+
+        background: #ff6b00;
+
     }
 
-    .order-btn:hover {
-        background: #ff6b00;
+    /* Size Selector */
+    .size-selector {
+        padding: 0 18px 18px;
+    }
+    .size-label {
+        font-size: 12px;
+        font-weight: bold;
+        color: #6b7280;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .size-options {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .size-btn {
+        flex: 1;
+        min-width: 80px;
+        padding: 8px 6px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    .size-btn:hover {
+        border-color: #ff6b00;
+        background: #fff7ed;
+    }
+    .size-btn:active {
+        transform: scale(0.95);
+    }
+    .size-name {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        color: #111827;
+    }
+    .size-price {
+        display: block;
+        font-size: 11px;
+        color: #ff6b00;
+        font-weight: bold;
+        margin-top: 2px;
+    }
+    @media (max-width: 700px) {
+        .size-selector { padding: 0 12px 12px; }
+        .size-options { gap: 4px; }
+        .size-btn { padding: 6px 4px; min-width: 70px; }
+        .size-name { font-size: 11px; }
+        .size-price { font-size: 10px; }
+    }
+    @media (max-width: 450px) {
+        .size-options { gap: 4px; }
+        .size-btn { min-width: 60px; padding: 5px 3px; }
     }
 
 
@@ -2742,37 +2802,51 @@
                     @endif
 
 
-                    <div class="food-bottom">
+                    @if($food->foodSizes->count())
+                        <div class="size-selector">
+                            <div class="size-label">📏 Choose Size:</div>
+                            <div class="size-options">
+                                @foreach($food->foodSizes as $size)
+                                    <button type="button" class="size-btn" onclick="addToCartWithSize({{ $food->id }}, {{ $size->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">
+                                        <span class="size-name">{{ $size->name }}</span>
+                                        <span class="size-price">Rs. {{ number_format($size->price, 2) }}</span>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <div class="food-bottom">
 
-                        <div class="price">
+                            <div class="price">
 
-                            @if((float) ($dealPrices[$food->id] ?? $food->discounted_price) < (float) $food->price)
-                                <span class="price-old">
-                                    Rs. {{ number_format($food->price, 2) }}
-                                </span>
-                            @endif
+                                @if((float) ($dealPrices[$food->id] ?? $food->discounted_price) < (float) $food->price)
+                                    <span class="price-old">
+                                        Rs. {{ number_format($food->price, 2) }}
+                                    </span>
+                                @endif
 
-                            Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 2) }}
+                                Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 2) }}
 
-                            @if($food->hasDiscount())
-                                <span class="discount-badge">
-                                    -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}%
-                                </span>
-                            @endif
+                                @if($food->hasDiscount())
+                                    <span class="discount-badge">
+                                        -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}%
+                                    </span>
+                                @endif
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="order-btn"
+                                onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
+                            >
+                                + Add
+                            </button>
+
 
                         </div>
-
-
-                        <button
-                            type="button"
-                            class="order-btn"
-                            onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
-                        >
-                            + Add
-                        </button>
-
-
-                    </div>
+                    @endif
 
 
                 </div>
@@ -3407,6 +3481,99 @@ function addToCart(foodId, announcementId = null) {
 }
 
 
+function addToCartWithSize(foodId, sizeId, announcementId = null) {
+
+    fetch(`/cart/add/${foodId}`, {
+
+        method: 'POST',
+
+        headers: {
+
+            'Content-Type': 'application/json',
+
+            'X-CSRF-TOKEN':
+                document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content'),
+
+            'Accept': 'application/json'
+
+        },
+
+        body: JSON.stringify({
+            announcement_id: announcementId,
+            size_id: sizeId
+        })
+
+    })
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error('Failed');
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(data => {
+
+        cart = data.cart;
+
+        updateCartUI();
+
+        openCart();
+
+        showToast('✅ Food added to cart!');
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        fetch(`/cart/add/${foodId}`, {
+
+            method: 'POST',
+
+            headers: {
+
+                'X-CSRF-TOKEN':
+                    '{{ csrf_token() }}',
+
+                'Accept': 'application/json'
+
+            },
+
+            body: JSON.stringify({
+                announcement_id: announcementId,
+                size_id: sizeId
+            })
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            cart = data.cart;
+
+            updateCartUI();
+
+            openCart();
+
+            showToast('✅ Food added to cart!');
+
+        });
+
+    });
+
+}
+
+
 function addDealToCart(announcementId) {
 
     fetch(`/cart/add-deal/${announcementId}`, {
@@ -3803,7 +3970,7 @@ function renderCart() {
 
 
                     <h4>
-                        ${escapeHtml(item.name)}
+                        ${escapeHtml(item.name)}${item.size_name ? ' <span style="color:#6b7280;font-size:11px;">(' + escapeHtml(item.size_name) + ')</span>' : ''}
                     </h4>
 
 
@@ -3820,7 +3987,7 @@ function renderCart() {
 
                         <button
                             class="qty-btn"
-                            onclick="changeQuantity(${JSON.stringify(item.id)}, -1)"
+                            onclick="changeQuantity('${escapeHtml(item.cart_key || item.id)}', -1)"
                         >
                             −
                         </button>
@@ -3833,7 +4000,7 @@ function renderCart() {
 
                         <button
                             class="qty-btn"
-                            onclick="changeQuantity(${JSON.stringify(item.id)}, 1)"
+                            onclick="changeQuantity('${escapeHtml(item.cart_key || item.id)}', 1)"
                         >
                             +
                         </button>
@@ -3847,7 +4014,7 @@ function renderCart() {
 
                 <button
                     class="remove-item"
-                    onclick="removeFromCart(${JSON.stringify(item.id)})"
+                    onclick="removeFromCart('${escapeHtml(item.cart_key || item.id)}')"
                     title="Remove"
                 >
                     🗑️

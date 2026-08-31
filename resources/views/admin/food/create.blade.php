@@ -558,6 +558,27 @@
             </div>
 
 
+            <!-- SIZES -->
+
+            <div class="form-group">
+
+                <label>
+                    📏 Food Sizes (Optional)
+                </label>
+                <p style="color:#777;font-size:13px;margin-bottom:10px;">
+                    Add sizes like Small/Medium/Large or Half/Full. If no sizes added, base price is used.
+                </p>
+
+                <div id="sizes-container">
+                    <!-- Sizes will be added here dynamically -->
+                </div>
+
+                <button type="button" onclick="addSizeField()" style="margin-top:10px;padding:8px 16px;background:#16a34a;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;">
+                    + Add Size
+                </button>
+
+            </div>
+
             <!-- AVAILABLE -->
 
             <div class="form-group checkbox">
@@ -604,6 +625,23 @@
 </div>
 
 
+<script>
+let sizeCount = 0;
+function addSizeField(name = '', price = '') {
+    sizeCount++;
+    const container = document.getElementById('sizes-container');
+    const div = document.createElement('div');
+    div.className = 'size-row';
+    div.style.cssText = 'display:flex;gap:10px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+        <input type="text" name="size_names[]" value="${name}" placeholder="e.g. Small, Medium, Large" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <input type="number" name="size_prices[]" value="${price}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <button type="button" onclick="this.parentElement.remove()" style="padding:8px 12px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:14px;">×
+        </button>
+    `;
+    container.appendChild(div);
+}
+</script>
 </body>
 
 </html>
