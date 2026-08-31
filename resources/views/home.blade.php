@@ -2806,18 +2806,28 @@
                     @if(isset($hasFoodSizes) && $hasFoodSizes && $food->foodSizes->count())
                         <div class="size-list">
                             @foreach($food->foodSizes as $size)
+                                @php
+                                    $sizePrice = $size->hasDiscount() ? $size->discounted_price : $size->price;
+                                @endphp
                                 <div class="size-row">
                                     <div class="size-row-info">
                                         <span class="size-row-name">{{ $size->name }}</span>
                                         @if($size->hasDiscount())
                                             <span class="size-row-old">Rs. {{ number_format($size->price, 0) }}</span>
-                                            <span class="size-row-price">Rs. {{ number_format($size->discounted_price, 0) }}</span>
+                                        @endif
+                                        <span class="size-row-price">Rs. {{ number_format($sizePrice, 0) }}</span>
+                                        @if($size->hasDiscount())
                                             <span class="size-row-badge">-{{ rtrim(rtrim(number_format($size->discount_percentage, 2), '0'), '.') }}%</span>
-                                        @else
-                                            <span class="size-row-price">Rs. {{ number_format($size->price, 0) }}</span>
                                         @endif
                                     </div>
-                                    <button type="button" class="order-btn size-add-btn" onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }}, {{ $size->id }})">
+                                    <button type="button" class="order-btn size-add-btn"
+                                        data-food-id="{{ $food->id }}"
+                                        data-size-id="{{ $size->id }}"
+                                        data-size-name="{{ $size->name }}"
+                                        data-size-price="{{ $sizePrice }}"
+                                        data-food-name="{{ $food->name }}"
+                                        data-food-image="{{ $food->image ?? '' }}"
+                                        onclick="addSizeToCart(this)">
                                         + Add
                                     </button>
                                 </div>
@@ -3397,6 +3407,33 @@ function closeCart() {
 
 
     
+
+function addSizeToCart(btn) {
+    var foodId = btn.getAttribute('data-food-id');
+    var sizeId = btn.getAttribute('data-size-id');
+    var sizeName = btn.getAttribute('data-size-name');
+    var sizePrice = parseFloat(btn.getAttribute('data-size-price'));
+    var foodName = btn.getAttribute('data-food-name');
+    var foodImage = btn.getAttribute('data-food-image');
+    var cartKey = foodId + '_' + sizeId;
+    if (cart[cartKey]) {
+        cart[cartKey].quantity++;
+    } else {
+        cart[cartKey] = {
+            id: parseInt(foodId),
+            cart_key: cartKey,
+            name: foodName,
+            price: sizePrice,
+            image: foodImage,
+            quantity: 1,
+            size_name: sizeName,
+            size_id: parseInt(sizeId)
+        };
+    }
+    updateCartUI();
+    openCart();
+    showToast('\u2705 ' + foodName + ' (' + sizeName + ') added to cart!');
+}
 
 function addToCart(foodId, announcementId, sizeId) {
     if (typeof announcementId === 'undefined' || announcementId === 'null' || announcementId === 'undefined') announcementId = null;
