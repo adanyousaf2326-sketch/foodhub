@@ -647,20 +647,10 @@
                         Payment Method
                     </label>
 
-                    <select
-                        name="payment_method"
-                        required
-                    >
-
-                        <option value="Cash on Delivery">
-                            Cash
-                        </option>
-
-                        <option value="Cash">
-                            Cash
-                        </option>
-
-                    </select>
+                    <input type="hidden" name="payment_method" value="Cash">
+                    <div style="padding:12px;background:#f0fdf4;border:2px solid #16a34a;border-radius:8px;color:#166534;font-weight:600;">
+                        <i class="fas fa-money-bill-wave"></i> Cash Payment
+                    </div>
 
                 </div>
 

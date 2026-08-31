@@ -335,12 +335,7 @@ Route::get('/order/success/{order}', function (Order $order) {
 })->name('order.success');
 
 /*
- * ONLINE PAYMENT PAGE
- */
-Route::get('/payment/{order}', function (Order $order) {
-    $order->load('items.food');
-    return view('payment', compact('order'));
-})->name('payment.page');Route::get('/track-order', function () {
+Route::get('/track-order', function () {
     return view('track-order');
 })->name('track.order');
 
@@ -630,9 +625,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Admin Edit Order (unlimited before delivery/completion)
     Route::get('/orders/{order}/admin-edit', [OrderController::class, 'adminEdit'])->name('orders.admin-edit');
     Route::post('/orders/{order}/admin-edit-save', [OrderController::class, 'adminEditSave'])->name('orders.admin-edit-save');
-
-    Route::post('/orders/{order}/complete-payment', [OrderController::class, 'completePayment'])
-        ->name('orders.complete-payment');
 
     Route::get('/orders/export/csv', [OrderController::class, 'exportCsv'])
         ->name('orders.export.csv');

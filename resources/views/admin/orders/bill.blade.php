@@ -320,53 +320,41 @@
                 </span>
             </div>
 
-            <form
-                method="POST"
-                action="{{ route('admin.orders.complete-payment', $order) }}"
-            >
-                @csrf
+            <div class="payment-box">
+                <label for="paidAmount">
+                    Cash Received
+                </label>
 
-                <div class="payment-box">
-                    <label for="paidAmount">
-                        Cash Received
-                    </label>
+                <input
+                    id="paidAmount"
+                    type="number"
+                    min="{{ $order->total_amount }}"
+                    step="0.01"
+                    placeholder="Enter received amount"
+                >
 
-                    <input
-                        id="paidAmount"
-                        type="number"
-                        name="paid_amount"
-                        min="{{ $order->total_amount }}"
-                        step="0.01"
-                        placeholder="Enter received amount"
-                        required
-                    >
-
-                    @error('paid_amount')
-                        <div class="error">
-                            {{ $message }}
-                        </div>
-                    @enderror
-
-                    <div class="change-box">
-                        <span>Return / Change:</span>
-                        <span id="changeAmount">Rs. 0.00</span>
-                    </div>
+                <div class="change-box">
+                    <span>Return / Change:</span>
+                    <span id="changeAmount">Rs. 0.00</span>
                 </div>
+            </div>
 
-                <div class="actions">
-                    <button type="button" class="btn" onclick="window.print()" style="background:#2563eb;color:white;">🖨️ Print Bill</button>
-                    <button type="submit" class="btn btn-close">
-                        ✅ Close Bill & Add Sale
-                    </button>
+            <div class="actions">
+                <button type="button" class="btn" onclick="window.print()" style="background:#2563eb;color:white;"><i class="fas fa-print"></i> Print Bill</button>
+                <a
+                    href="{{ route('admin.orders.show', $order) }}"
+                    class="btn btn-close"
+                >
+                    <i class="fas fa-check"></i> Done
+                </a>
 
-                    <a
-                        href="{{ route('admin.orders.index', ['type' => $order->order_type]) }}"
-                        class="btn btn-back"
-                    >
-                        ← Back
-                    </a>
-                </div>
-            </form>
+                <a
+                    href="{{ route('admin.orders.index', ['type' => $order->order_type]) }}"
+                    class="btn btn-back"
+                >
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
         </div>
     </div>
 </div>
