@@ -389,11 +389,22 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
     // Determine price: deal > size > base
     if ($dealPrice !== null) {
         $cartPrice = (float) $dealPrice;
-    } elseif ($sizeName && isset($foodSize)) {
-        $cartPrice = (float) $foodSize->discounted_price;
+    } elseif ($sizeName && $foodSize) {
+        $cartPrice = (float) $foodSize->price;
+        if ((float) $foodSize->discount_percentage > 0) {
+            $cartPrice = round($cartPrice * (1 - ((float) $foodSize->discount_percentage / 100)), 2);
+        }
     } else {
         $cartPrice = $food->discounted_price;
     }
+
+    \Log::info('CART DEBUG', [
+        'food_id' => $food->id,
+        'size_id_sent' => $request->size_id,
+        'foodSize_found' => $foodSize ? $foodSize->name . ' @ ' . $foodSize->price : 'NONE',
+        'sizeName' => $sizeName,
+        'cartPrice' => $cartPrice,
+    ]);
 
     if (isset($cart[$cartKey])) {
         $cart[$cartKey]['quantity']++;
