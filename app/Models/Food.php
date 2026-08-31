@@ -18,7 +18,7 @@ class Food extends Model
         'is_available',
     ];
 
-    protected $with = ['foodSizes'];
+
 
     protected $casts = [
         'price' => 'decimal:2',

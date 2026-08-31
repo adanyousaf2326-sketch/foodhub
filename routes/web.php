@@ -24,7 +24,7 @@ Route::get('/', function () {
         ->get();
 
     $foods = Food::where('is_available', true)
-        ->with('category')
+        ->with(['category', 'foodSizes'])
         ->latest()
         ->get();
 
