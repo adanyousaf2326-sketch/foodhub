@@ -8,7 +8,8 @@
 
     {{-- Desktop Nav Links --}}
     <div class="atb-links">
-        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-active' : '' }}">📊 Dashboard</a>
+        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-active' : '' }}"  class="fa-duotone fa-solid fa-house"
+>Dashboard</a>
         <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'atb-active' : '' }}">🛒 Orders</a>
         <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'atb-active' : '' }}">🍔 Food</a>
         <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-active' : '' }}">📂 Categories</a>

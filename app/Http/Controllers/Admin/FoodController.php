@@ -12,7 +12,8 @@ class FoodController extends Controller
 {
     public function index()
     {
-        $foods = Food::with(['category', 'foodSizes'])->latest()->get();
+        $hasFoodSizes = \Illuminate\Support\Facades\Schema::hasTable('food_sizes');
+        $foods = Food::with($hasFoodSizes ? ['category', 'foodSizes'] : ['category'])->latest()->get();
 
         return view('admin.food.index', compact('foods'));
     }
@@ -53,7 +54,7 @@ class FoodController extends Controller
         ]);
 
         // Save sizes
-        if ($request->filled('size_names')) {
+        if (\Illuminate\Support\Facades\Schema::hasTable('food_sizes') && $request->filled('size_names')) {
             foreach ($request->size_names as $index => $name) {
                 if (!empty($name) && isset($request->size_prices[$index])) {
                     $food->foodSizes()->create([
@@ -71,14 +72,20 @@ class FoodController extends Controller
 
     public function show(Food $food)
     {
-        $food->load(['category', 'foodSizes']);
+        if (\Illuminate\Support\Facades\Schema::hasTable('food_sizes')) {
+            $food->load(['category', 'foodSizes']);
+        } else {
+            $food->load('category');
+        }
 
         return view('admin.food.show', compact('food'));
     }
 
     public function edit(Food $food)
     {
-        $food->load('foodSizes');
+        if (\Illuminate\Support\Facades\Schema::hasTable('food_sizes')) {
+            $food->load('foodSizes');
+        }
         $categories = Category::where('is_active', true)
             ->orderBy('name')
             ->get();
@@ -110,14 +117,16 @@ class FoodController extends Controller
         $food->update($validated);
 
         // Sync sizes
-        $food->foodSizes()->delete();
-        if ($request->filled('size_names')) {
-            foreach ($request->size_names as $index => $name) {
-                if (!empty($name) && isset($request->size_prices[$index])) {
-                    $food->foodSizes()->create([
-                        'name' => $name,
-                        'price' => $request->size_prices[$index],
-                    ]);
+        if (\Illuminate\Support\Facades\Schema::hasTable('food_sizes')) {
+            $food->foodSizes()->delete();
+            if ($request->filled('size_names')) {
+                foreach ($request->size_names as $index => $name) {
+                    if (!empty($name) && isset($request->size_prices[$index])) {
+                        $food->foodSizes()->create([
+                            'name' => $name,
+                            'price' => $request->size_prices[$index],
+                        ]);
+                    }
                 }
             }
         }

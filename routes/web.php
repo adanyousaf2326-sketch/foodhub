@@ -23,8 +23,10 @@ Route::get('/', function () {
         ->orderBy('name')
         ->get();
 
+    $hasFoodSizes = \Illuminate\Support\Facades\Schema::hasTable('food_sizes');
+
     $foods = Food::where('is_available', true)
-        ->with(['category', 'foodSizes'])
+        ->with($hasFoodSizes ? ['category', 'foodSizes'] : ['category'])
         ->latest()
         ->get();
 
