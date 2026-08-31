@@ -2508,6 +2508,30 @@
                     @if($announcement->ends_at)
                         <div class="deal-end-date">Offer valid until {{ $announcement->ends_at->format('d M Y, h:i A') }}</div>
                     @endif
+
+                    @if($announcement->foods && $announcement->foods->count())
+                        <div class="announcement-foods">
+                            @foreach($announcement->foods as $food)
+                                <div class="announcement-food">
+                                    <div class="announcement-food-image">
+                                        @if($food->image)
+                                            <img src="{{ $food->image }}" alt="{{ $food->name }}">
+                                        @else
+                                            <i class="fas fa-utensils" style="font-size:32px;color:#9ca3af;"></i>
+                                        @endif
+                                    </div>
+                                    <span>{{ $food->name }}</span>
+                                    <small>Qty: {{ $food->pivot->quantity ?? 1 }}</small>
+                                    @if($food->pivot->deal_price)
+                                        <span style="color:#16a34a;">Rs. {{ number_format($food->pivot->deal_price, 0) }}</span>
+                                    @else
+                                        <span style="color:#16a34a;">Rs. {{ number_format($food->price, 0) }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <button type="button" class="announcement-action" onclick="closeAnnouncement(); addDealToCart({{ $announcement->id }})"><i class="fas fa-shopping-cart"></i> Add Complete Deal</button>
                 @endif
 
@@ -2957,6 +2981,13 @@
                         <div class="poster-deal-info">
                             <h3>{{ $deal->title }}</h3>
                             <strong>Complete Deal: Rs. {{ number_format($deal->deal_total, 2) }}</strong>
+                            @if($deal->foods && $deal->foods->count())
+                                <div style="margin-top:6px;">
+                                    @foreach($deal->foods as $dfood)
+                                        <small style="display:block;color:#4b5563;font-size:12px;">{{ $dfood->name }} x{{ $dfood->pivot->quantity ?? 1 }} — Rs. {{ number_format($dfood->pivot->deal_price ?? $dfood->price, 0) }}</small>
+                                    @endforeach
+                                </div>
+                            @endif
                             @if($deal->ends_at)
                                 <p class="deal-end-date">Until {{ $deal->ends_at->format('d M Y, h:i A') }}</p>
                             @endif
