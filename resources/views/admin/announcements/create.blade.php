@@ -60,7 +60,7 @@
 <body>
 @include('admin.partials.topbar')
 <div class="container"><div class="card">
-    <h1>{{ isset($announcement) ? '<i class="fas fa-pen"></i> Edit Announcement' : '<i class="fas fa-bullhorn"></i> New Announcement' }}</h1>
+    <h1>{!! isset($announcement) ? '<i class="fas fa-pen"></i> Edit Announcement' : '<i class="fas fa-bullhorn"></i> New Announcement' !!}</h1>
     <p>Customer home page par new item, deal ya restaurant update show karein.</p>
     @if($errors->any())<div class="error"><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
     <form method="POST" action="{{ isset($announcement) ? route('admin.announcements.update', $announcement) : route('admin.announcements.store') }}">
