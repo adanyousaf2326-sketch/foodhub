@@ -399,6 +399,7 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
     } else {
         $cartPrice = $food->discounted_price;
     }
+    \Log::info('CART2', ['size_id'=>$request->size_id,'size_price'=>$request->size_price,'price'=>$cartPrice,'all'=>$request->all()]);
 
 
 
