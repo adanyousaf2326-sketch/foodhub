@@ -624,7 +624,7 @@
                                 {{ number_format($food->price, 2) }}
 
                             </strong>
-                            @if($food->foodSizes->count())
+                            @if(!empty($hasFoodSizes) && $food->foodSizes->count())
                                 <div style="margin-top:4px;font-size:12px;color:#6b7280;">
                                     @foreach($food->foodSizes as $size)
                                         <span style="display:inline-block;background:#f3f4f6;padding:2px 6px;border-radius:4px;margin:1px;">

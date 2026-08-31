@@ -1313,6 +1313,22 @@
         font-weight: bold;
         margin-top: 2px;
     }
+    .size-price-old {
+        display: block;
+        font-size: 10px;
+        color: #9ca3af;
+        text-decoration: line-through;
+        font-weight: normal;
+    }
+    .size-discount-badge {
+        display: inline-block;
+        font-size: 9px;
+        background: #dcfce7;
+        color: #15803d;
+        padding: 1px 4px;
+        border-radius: 3px;
+        font-weight: bold;
+    }
     @media (max-width: 700px) {
         .size-selector { padding: 0 12px 12px; }
         .size-options { gap: 4px; }
@@ -2802,14 +2818,20 @@
                     @endif
 
 
-                    @if($food->foodSizes->count())
+                    @if(isset($hasFoodSizes) && $hasFoodSizes && $food->foodSizes->count())
                         <div class="size-selector">
                             <div class="size-label">📏 Choose Size:</div>
                             <div class="size-options">
                                 @foreach($food->foodSizes as $size)
                                     <button type="button" class="size-btn" onclick="addToCartWithSize({{ $food->id }}, {{ $size->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">
                                         <span class="size-name">{{ $size->name }}</span>
-                                        <span class="size-price">Rs. {{ number_format($size->price, 2) }}</span>
+                                        @if($size->hasDiscount())
+                                            <span class="size-price-old">Rs. {{ number_format($size->price, 2) }}</span>
+                                            <span class="size-price">Rs. {{ number_format($size->discounted_price, 2) }}</span>
+                                            <span class="size-discount-badge">-{{ rtrim(rtrim(number_format($size->discount_percentage, 2), '0'), '.') }}%</span>
+                                        @else
+                                            <span class="size-price">Rs. {{ number_format($size->price, 2) }}</span>
+                                        @endif
                                     </button>
                                 @endforeach
                             </div>

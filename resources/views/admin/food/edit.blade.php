@@ -328,9 +328,10 @@
                 </p>
                 <div id="sizes-container">
                     @foreach($food->foodSizes as $size)
-                        <div class="size-row" style="display:flex;gap:10px;margin-bottom:8px;align-items:center;">
-                            <input type="text" name="size_names[]" value="{{ $size->name }}" placeholder="e.g. Small, Medium, Large" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-                            <input type="number" name="size_prices[]" value="{{ $size->price }}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+                        <div class="size-row" style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
+                            <input type="text" name="size_names[]" value="{{ $size->name }}" placeholder="Size name" style="flex:1;min-width:120px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+                            <input type="number" name="size_prices[]" value="{{ $size->price }}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;min-width:100px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+                            <input type="number" name="size_discounts[]" value="{{ $size->discount_percentage }}" min="0" max="100" step="0.01" placeholder="Discount %" style="width:90px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
                             <button type="button" onclick="this.parentElement.remove()" style="padding:8px 12px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:14px;">×</button>
                         </div>
                     @endforeach
@@ -384,14 +385,15 @@
 </div>
 
 <script>
-function addSizeField(name = '', price = '') {
+function addSizeField(name = '', price = '', discount = '0') {
     const container = document.getElementById('sizes-container');
     const div = document.createElement('div');
     div.className = 'size-row';
-    div.style.cssText = 'display:flex;gap:10px;margin-bottom:8px;align-items:center;';
+    div.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;';
     div.innerHTML = `
-        <input type="text" name="size_names[]" value="${name}" placeholder="e.g. Small, Medium, Large" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-        <input type="number" name="size_prices[]" value="${price}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <input type="text" name="size_names[]" value="${name}" placeholder="Size name" style="flex:1;min-width:120px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <input type="number" name="size_prices[]" value="${price}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;min-width:100px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <input type="number" name="size_discounts[]" value="${discount}" min="0" max="100" step="0.01" placeholder="Discount %" style="width:90px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
         <button type="button" onclick="this.parentElement.remove()" style="padding:8px 12px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:14px;">×</button>
     `;
     container.appendChild(div);

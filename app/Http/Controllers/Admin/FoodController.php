@@ -15,7 +15,7 @@ class FoodController extends Controller
         $hasFoodSizes = \Illuminate\Support\Facades\Schema::hasTable('food_sizes');
         $foods = Food::with($hasFoodSizes ? ['category', 'foodSizes'] : ['category'])->latest()->get();
 
-        return view('admin.food.index', compact('foods'));
+        return view('admin.food.index', compact('foods', 'hasFoodSizes'));
     }
 
     public function create()
@@ -41,6 +41,8 @@ class FoodController extends Controller
             'size_names.*' => 'nullable|string|max:255',
             'size_prices' => 'nullable|array',
             'size_prices.*' => 'nullable|numeric|min:0',
+            'size_discounts' => 'nullable|array',
+            'size_discounts.*' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $food = Food::create([
@@ -60,6 +62,7 @@ class FoodController extends Controller
                     $food->foodSizes()->create([
                         'name' => $name,
                         'price' => $request->size_prices[$index],
+                        'discount_percentage' => $request->size_discounts[$index] ?? 0,
                     ]);
                 }
             }
@@ -110,6 +113,8 @@ class FoodController extends Controller
             'size_names.*' => 'nullable|string|max:255',
             'size_prices' => 'nullable|array',
             'size_prices.*' => 'nullable|numeric|min:0',
+            'size_discounts' => 'nullable|array',
+            'size_discounts.*' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $validated['is_available'] = $request->has('is_available');
@@ -125,6 +130,7 @@ class FoodController extends Controller
                         $food->foodSizes()->create([
                             'name' => $name,
                             'price' => $request->size_prices[$index],
+                            'discount_percentage' => $request->size_discounts[$index] ?? 0,
                         ]);
                     }
                 }

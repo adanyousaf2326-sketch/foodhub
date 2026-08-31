@@ -35,7 +35,7 @@ Route::get('/', function () {
         ->latest()
         ->get();
 
-    return view('home', compact('categories', 'foods', 'announcements'));
+    return view('home', compact('categories', 'foods', 'announcements', 'hasFoodSizes'));
 
 })->name('home');
 
@@ -391,7 +391,7 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
     if ($dealPrice !== null) {
         $cartPrice = (float) $dealPrice;
     } elseif ($sizeName && isset($foodSize)) {
-        $cartPrice = (float) $foodSize->price;
+        $cartPrice = (float) $foodSize->discounted_price;
     } else {
         $cartPrice = $food->discounted_price;
     }
