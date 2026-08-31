@@ -1266,68 +1266,7 @@
 
     }
 
-    /* Size List — compact rows like food-bottom */
-    .size-list {
-        padding: 0 18px 14px;
-    }
-    .size-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #f3f4f6;
-        gap: 8px;
-    }
-    .size-row:last-child {
-        border-bottom: none;
-    }
-    .size-row-info {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-        min-width: 0;
-    }
-    .size-row-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: #111827;
-    }
-    .size-row-price {
-        font-size: 13px;
-        color: #ff6b00;
-        font-weight: bold;
-    }
-    .size-row-old {
-        font-size: 11px;
-        color: #9ca3af;
-        text-decoration: line-through;
-    }
-    .size-row-badge {
-        font-size: 10px;
-        background: #dcfce7;
-        color: #15803d;
-        padding: 1px 5px;
-        border-radius: 4px;
-        font-weight: bold;
-    }
-    .size-add-btn {
-        padding: 6px 12px !important;
-        font-size: 12px !important;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-    @media (max-width: 700px) {
-        .size-list { padding: 0 12px 10px; }
-        .size-row { padding: 6px 0; }
-        .size-row-name { font-size: 12px; }
-        .size-row-price { font-size: 12px; }
-        .size-add-btn { padding: 5px 10px !important; font-size: 11px !important; }
-    }
-    @media (max-width: 450px) {
-        .size-row-info { gap: 4px; }
-        .size-add-btn { padding: 4px 8px !important; font-size: 11px !important; }
-    }
+
 
 
     .side-cart {
@@ -2803,36 +2742,37 @@
                     @endif
 
 
-                    @if(isset($hasFoodSizes) && $hasFoodSizes && $food->foodSizes->count())
-                        <div class="size-list">
-                            @foreach($food->foodSizes as $size)
-                                @php
-                                    $sizePrice = $size->hasDiscount() ? $size->discounted_price : $size->price;
-                                @endphp
-                                <div class="size-row">
-                                    <div class="size-row-info">
-                                        <span class="size-row-name">{{ $size->name }}</span>
-                                        @if($size->hasDiscount())
-                                            <span class="size-row-old">Rs. {{ number_format($size->price, 0) }}</span>
-                                        @endif
-                                        <span class="size-row-price">Rs. {{ number_format($sizePrice, 0) }}</span>
-                                        @if($size->hasDiscount())
-                                            <span class="size-row-badge">-{{ rtrim(rtrim(number_format($size->discount_percentage, 2), '0'), '.') }}%</span>
-                                        @endif
-                                    </div>
-                                    <button type="button" class="order-btn size-add-btn"
-                                        data-fid="{{ $food->id }}"
-                                        data-sid="{{ $size->id }}"
-                                        data-sp="{{ $sizePrice }}"
-                                        data-fn="{{ addslashes($food->name) }}"
-                                        data-fi="{{ $food->image ?? '' }}"
-                                        data-sn="{{ $size->name }}"
-                                        onclick="addSizeToCart(this)">
-                                        + Add
-                                    </button>
-                                </div>
-                            @endforeach
+                    <div class="food-bottom">
+
+                        <div class="price">
+
+                            @if((float) ($dealPrices[$food->id] ?? $food->discounted_price) < (float) $food->price)
+                                <span class="price-old">
+                                    Rs. {{ number_format($food->price, 2) }}
+                                </span>
+                            @endif
+
+                            Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 2) }}
+
+                            @if($food->hasDiscount())
+                                <span class="discount-badge">
+                                    -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}%
+                                </span>
+                            @endif
+
                         </div>
+
+
+                        <button
+                            type="button"
+                            class="order-btn"
+                            onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
+                        >
+                            + Add
+                        </button>
+
+
+                    </div>
                     @else
                         <div class="food-bottom">
 
@@ -3408,21 +3348,6 @@ function closeCart() {
 
     
 
-function addSizeToCart(btn) {
-    var fid = btn.dataset.fid;
-    var sid = btn.dataset.sid;
-    var sp = btn.dataset.sp;
-    var fname = btn.dataset.fn;
-    var fimg = btn.dataset.fi;
-    var sname = btn.dataset.sn;
-    var key = fid + '_' + sid;
-    if (cart[key]) { cart[key].quantity++; }
-    else { cart[key] = { id: parseInt(fid), cart_key: key, name: fname, price: parseFloat(sp), image: fimg, quantity: 1, size_name: sname, size_id: parseInt(sid) }; }
-    updateCartUI();
-    openCart();
-    showToast('\u2705 ' + fname + ' (' + sname + ') added!');
-}
-
 function addToCart(foodId, announcementId) {
     if (typeof announcementId === 'undefined' || announcementId === 'null') announcementId = null;
     var body = { announcement_id: announcementId };
@@ -3842,7 +3767,7 @@ function renderCart() {
 
 
                     <h4>
-                        ${escapeHtml(item.name)}${item.size_name ? ' <span style="color:#6b7280;font-size:11px;">(' + escapeHtml(item.size_name) + ')</span>' : ''}
+                        ${escapeHtml(item.name)}
                     </h4>
 
 

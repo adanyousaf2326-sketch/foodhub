@@ -233,7 +233,6 @@ class OrderController extends Controller
                         'order_id' => $order->id,
                         'food_id' => !empty($item['food_id']) ? (int) $item['food_id'] : null,
                         'food_name' => $item['food_name'],
-                        'size_name' => $item['size_name'] ?? null,
                         'price' => $price,
                         'quantity' => $qty,
                         'subtotal' => $subtotal,

@@ -23,10 +23,8 @@ Route::get('/', function () {
         ->orderBy('name')
         ->get();
 
-    $hasFoodSizes = \Illuminate\Support\Facades\Schema::hasTable('food_sizes');
-
     $foods = Food::where('is_available', true)
-        ->with($hasFoodSizes ? ['category', 'foodSizes'] : ['category'])
+        ->with('category')
         ->latest()
         ->get();
 
@@ -35,7 +33,7 @@ Route::get('/', function () {
         ->latest()
         ->get();
 
-    return view('home', compact('categories', 'foods', 'announcements', 'hasFoodSizes'));
+    return view('home', compact('categories', 'foods', 'announcements'));
 
 })->name('home');
 
@@ -219,8 +217,6 @@ Route::post('/order/place', function (Request $request) {
                         ? $item['name'] . ' (' . ($item['included_items'] ?? 'Bundle deal') . ')'
                         : $item['name'],
 
-                    'size_name' => $item['size_name'] ?? null,
-
                     'price' => $item['price'],
 
                     'quantity' => $item['quantity'],
@@ -351,28 +347,7 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
 
     $cart = session()->get('cart', []);
 
-    // Handle size selection
-    $sizeName = null;
-    $sizeId = null;
-    $foodSize = null;
-    if ($request->filled('size_id')) {
-        try {
-            if (\Illuminate\Support\Facades\Schema::hasTable('food_sizes')) {
-                $foodSize = \App\Models\FoodSize::where('food_id', $food->id)
-                    ->where('id', $request->size_id)
-                    ->first();
-                if ($foodSize) {
-                    $sizeName = $foodSize->name;
-                    $sizeId = $foodSize->id;
-                }
-            }
-        } catch (\Exception $e) {
-            // Table might not exist yet — ignore
-        }
-    }
-
-    // Cart key: food_id (no size) or food_id_sizeid (with size)
-    $cartKey = $sizeId ? $food->id . '_' . $sizeId : $food->id;
+    $cartKey = $food->id;
 
     $dealPrice = null;
 
@@ -386,19 +361,7 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
         $dealPrice = $dealFood?->pivot?->deal_price;
     }
 
-    // Determine price: deal > size_price (from button) > size DB > base
-    if ($dealPrice !== null) {
-        $cartPrice = (float) $dealPrice;
-    } elseif ($request->filled('size_price')) {
-        $cartPrice = (float) $request->size_price;
-    } elseif ($sizeName && $foodSize) {
-        $cartPrice = (float) $foodSize->price;
-        if ((float) $foodSize->discount_percentage > 0) {
-            $cartPrice = round($cartPrice * (1 - ((float) $foodSize->discount_percentage / 100)), 2);
-        }
-    } else {
-        $cartPrice = $food->discounted_price;
-    }
+    $cartPrice = $dealPrice !== null ? (float) $dealPrice : $food->discounted_price;
 
 
 
@@ -414,8 +377,6 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
             'price' => $cartPrice,
             'image' => $food->image,
             'quantity' => 1,
-            'size_name' => $sizeName,
-            'size_id' => $sizeId,
         ];
     }
 

@@ -109,11 +109,11 @@
                             <div class="item-row" data-index="{{ $index }}">
                                 <input type="hidden" name="items[{{ $index }}][food_id]" value="{{ $item->food_id }}">
                                 <input type="hidden" name="items[{{ $index }}][food_name]" value="{{ $item->food_name }}">
-                                <input type="hidden" name="items[{{ $index }}][size_name]" value="{{ $item->size_name }}">
+
                                 <input type="hidden" name="items[{{ $index }}][price]" class="item-price-val" value="{{ $item->price }}">
 
                                 <div class="item-info">
-                                    <div class="item-name">{{ $item->food_name }}@if($item->size_name) <span style="color:#6b7280;font-size:13px;">— {{ $item->size_name }}</span>@endif</div>
+                                    <div class="item-name">{{ $item->food_name }}</div>
                                     <div class="item-price">Rs. {{ number_format($item->price, 2) }} each</div>
                                 </div>
 

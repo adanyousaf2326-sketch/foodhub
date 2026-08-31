@@ -36,16 +36,6 @@ class Food extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function foodSizes()
-    {
-        return $this->hasMany(FoodSize::class);
-    }
-
-    public function hasSizes(): bool
-    {
-        return $this->foodSizes()->count() > 0;
-    }
-
     public function getDiscountedPriceAttribute(): float
     {
         return round(

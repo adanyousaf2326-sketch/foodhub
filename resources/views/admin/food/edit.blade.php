@@ -320,27 +320,6 @@
             </div>
 
 
-            <!-- SIZES -->
-            <div class="form-group">
-                <label><i class="fas fa-ruler"></i> Food Sizes (Optional)</label>
-                <p style="color:#777;font-size:13px;margin-bottom:10px;">
-                    Add sizes like Small/Medium/Large or Half/Full. If no sizes added, base price is used.
-                </p>
-                <div id="sizes-container">
-                    @foreach($food->foodSizes as $size)
-                        <div class="size-row" style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
-                            <input type="text" name="size_names[]" value="{{ $size->name }}" placeholder="Size name" style="flex:1;min-width:120px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-                            <input type="number" name="size_prices[]" value="{{ $size->price }}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;min-width:100px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-                            <input type="number" name="size_discounts[]" value="{{ $size->discount_percentage }}" min="0" max="100" step="0.01" placeholder="Discount %" style="width:90px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-                            <button type="button" onclick="this.parentElement.remove()" style="padding:8px 12px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:14px;">×</button>
-                        </div>
-                    @endforeach
-                </div>
-                <button type="button" onclick="addSizeField()" style="margin-top:10px;padding:8px 16px;background:#16a34a;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;">
-                    + Add Size
-                </button>
-            </div>
-
             <div class="form-group">
 
                 <label class="checkbox">
@@ -384,20 +363,5 @@
 
 </div>
 
-<script>
-function addSizeField(name = '', price = '', discount = '0') {
-    const container = document.getElementById('sizes-container');
-    const div = document.createElement('div');
-    div.className = 'size-row';
-    div.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;';
-    div.innerHTML = `
-        <input type="text" name="size_names[]" value="${name}" placeholder="Size name" style="flex:1;min-width:120px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-        <input type="number" name="size_prices[]" value="${price}" min="0" step="0.01" placeholder="Price (Rs.)" style="flex:1;min-width:100px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-        <input type="number" name="size_discounts[]" value="${discount}" min="0" max="100" step="0.01" placeholder="Discount %" style="width:90px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
-        <button type="button" onclick="this.parentElement.remove()" style="padding:8px 12px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:14px;">×</button>
-    `;
-    container.appendChild(div);
-}
-</script>
 </body>
 </html>

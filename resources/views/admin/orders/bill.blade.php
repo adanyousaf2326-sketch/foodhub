@@ -291,9 +291,6 @@
                             <tr>
                                 <td>
                                     {{ $item->food_name }}
-                                    @if($item->size_name)
-                                        <small style="color:#6b7280;"> ({{ $item->size_name }})</small>
-                                    @endif
                                 </td>
 
                                 <td class="right">
