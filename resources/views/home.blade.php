@@ -2773,39 +2773,6 @@
 
 
                     </div>
-                    @else
-                        <div class="food-bottom">
-
-                            <div class="price">
-
-                                @if((float) ($dealPrices[$food->id] ?? $food->discounted_price) < (float) $food->price)
-                                    <span class="price-old">
-                                        Rs. {{ number_format($food->price, 2) }}
-                                    </span>
-                                @endif
-
-                                Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 2) }}
-
-                                @if($food->hasDiscount())
-                                    <span class="discount-badge">
-                                        -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}%
-                                    </span>
-                                @endif
-
-                            </div>
-
-
-                            <button
-                                type="button"
-                                class="order-btn"
-                                onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
-                            >
-                                + Add
-                            </button>
-
-
-                        </div>
-                    @endif
 
 
                 </div>
