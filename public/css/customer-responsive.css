@@ -25,7 +25,7 @@ main, .section, .foods, .food-category-group, .hero {
     /* Hero - slightly smaller, still sticky */
     .hero {
         min-height: 240px !important;
-        padding: 28px 5% !important;
+        padding: 80px 5% 28px !important;
     }
 
     .hero h1 {
@@ -87,7 +87,7 @@ main, .section, .foods, .food-category-group, .hero {
     /* Hero - compact */
     .hero {
         min-height: auto !important;
-        padding: 16px 5% !important;
+        padding: 80px 5% 16px !important;
         position: relative !important;
         top: auto !important;
     }
@@ -281,7 +281,7 @@ main, .section, .foods, .food-category-group, .hero {
 
     /* Hero - minimal */
     .hero {
-        padding: 12px 4% !important;
+        padding: 70px 4% 12px !important;
     }
 
     .hero h1 {
@@ -418,5 +418,44 @@ main, .section, .foods, .food-category-group, .hero {
         font-size: 20px !important;
         bottom: 60px !important;
         right: 12px !important;
+    }
+}
+
+/* ==================== LAPTOP / DESKTOP — Scale down when side cart is active ==================== */
+@media (min-width: 901px) and (max-width: 1200px) {
+    .hero h1 {
+        font-size: 26px !important;
+    }
+
+    .hero p {
+        font-size: 12px !important;
+    }
+
+    .section-title h2 {
+        font-size: 18px !important;
+    }
+
+    .section-title p {
+        font-size: 10px !important;
+    }
+
+    .category h3 {
+        font-size: 12px !important;
+    }
+
+    .category p {
+        font-size: 10px !important;
+    }
+
+    .food-info h3 {
+        font-size: 12px !important;
+    }
+
+    .food-info p {
+        font-size: 10px !important;
+    }
+
+    .category-heading h3 {
+        font-size: 14px !important;
     }
 }

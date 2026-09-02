@@ -2106,7 +2106,7 @@
 
             min-height: 200px;
 
-            padding: 20px 5%;
+            padding: 80px 5% 20px;
 
         }
 
