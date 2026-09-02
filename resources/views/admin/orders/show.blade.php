@@ -486,6 +486,7 @@
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
 </head>
 
 
@@ -628,9 +629,10 @@
                         <div>
 
                             <div class="item-name">
-
                                 {{ $item->food_name }}
-
+                                @if($item->variant_name && !str_contains($item->food_name, '(' . $item->variant_name . ')'))
+                                    <span style="font-size:11px; background:#e0e7ff; color:#3730a3; padding:1px 6px; border-radius:4px; margin-left:4px; font-weight:600;"><i class="fas fa-tag"></i> {{ $item->variant_name }}</span>
+                                @endif
                             </div>
 
 

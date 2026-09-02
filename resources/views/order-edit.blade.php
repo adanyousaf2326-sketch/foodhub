@@ -627,11 +627,19 @@
                         <h4>➕ Add More Food to Order</h4>
                         <div class="add-item-row">
                             <select id="foodSelector" class="add-item-select">
-                                <option value="">-- Choose Food Item --</option>
+                                <option value="">-- Choose Food Item / Size --</option>
                                 @foreach($availableFoods as $food)
-                                    <option value="{{ $food->id }}" data-name="{{ $food->name }}" data-price="{{ $food->discounted_price }}">
-                                        {{ $food->name }} ({{ $food->category->name ?? 'Menu' }}) - Rs. {{ number_format($food->discounted_price, 2) }}
-                                    </option>
+                                    @if($food->hasVariations())
+                                        @foreach($food->variations as $var)
+                                            <option value="{{ $food->id }}" data-name="{{ $food->name }} ({{ $var->name }})" data-price="{{ $var->discounted_price }}">
+                                                {{ $food->name }} [{{ $var->name }}] ({{ $food->category->name ?? 'Menu' }}) - Rs. {{ number_format($var->discounted_price, 2) }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="{{ $food->id }}" data-name="{{ $food->name }}" data-price="{{ $food->discounted_price }}">
+                                            {{ $food->name }} ({{ $food->category->name ?? 'Menu' }}) - Rs. {{ number_format($food->discounted_price, 2) }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
 

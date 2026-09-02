@@ -6,6 +6,7 @@
     <title>Admin Edit Order #{{ $order->id }} - FoodHub</title>
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f6f9; color: #222; padding: 0 0 50px 0; }
@@ -133,11 +134,19 @@
                         <h4>➕ Add Food Item</h4>
                         <div class="add-item-row">
                             <select id="foodSelector" class="add-item-select">
-                                <option value="">-- Choose Food --</option>
+                                <option value="">-- Choose Food / Size --</option>
                                 @foreach($availableFoods as $food)
-                                    <option value="{{ $food->id }}" data-name="{{ $food->name }}" data-price="{{ $food->discounted_price }}">
-                                        {{ $food->name }} - Rs. {{ number_format($food->discounted_price, 2) }}
-                                    </option>
+                                    @if($food->hasVariations())
+                                        @foreach($food->variations as $var)
+                                            <option value="{{ $food->id }}" data-name="{{ $food->name }} ({{ $var->name }})" data-price="{{ $var->discounted_price }}">
+                                                {{ $food->name }} [{{ $var->name }}] - Rs. {{ number_format($var->discounted_price, 2) }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="{{ $food->id }}" data-name="{{ $food->name }}" data-price="{{ $food->discounted_price }}">
+                                            {{ $food->name }} - Rs. {{ number_format($food->discounted_price, 2) }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                             <button type="button" class="add-item-btn" id="btnAddFood">＋ Add</button>

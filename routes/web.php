@@ -24,7 +24,7 @@ Route::get('/', function () {
         ->get();
 
     $foods = Food::where('is_available', true)
-        ->with('category')
+        ->with(['category', 'variations'])
         ->latest()
         ->get();
 
@@ -211,11 +211,13 @@ Route::post('/order/place', function (Request $request) {
 
                     'food_id' => ($item['is_deal'] ?? false)
                         ? null
-                        : $item['id'],
+                        : ($item['food_id'] ?? (is_numeric($item['id']) ? $item['id'] : null)),
 
                     'food_name' => ($item['is_deal'] ?? false)
                         ? $item['name'] . ' (' . ($item['included_items'] ?? 'Bundle deal') . ')'
                         : $item['name'],
+
+                    'variant_name' => $item['variant_name'] ?? null,
 
                     'price' => $item['price'],
 
@@ -347,53 +349,165 @@ Route::post('/cart/add/{food}', function (Food $food, Request $request) {
 
     $cart = session()->get('cart', []);
 
-    $cartKey = $food->id;
+    /*
+    |--------------------------------------------------------------------------
+    | Get selected variation
+    |--------------------------------------------------------------------------
+    */
+    $variation = null;
 
-    $dealPrice = null;
+    if ($request->filled('variation_id')) {
 
-    if ($request->filled('announcement_id')) {
-        $announcement = Announcement::visible()
-            ->whereKey($request->announcement_id)
-            ->with('foods')
+        $variation = $food->variations()
+            ->where('id', (int) $request->variation_id)
+            ->where('is_available', true)
             ->first();
-
-        $dealFood = $announcement?->foods->firstWhere('id', $food->id);
-        $dealPrice = $dealFood?->pivot?->deal_price;
     }
 
-    $cartPrice = $dealPrice !== null ? (float) $dealPrice : $food->discounted_price;
+    /*
+    |--------------------------------------------------------------------------
+    | Calculate price
+    |--------------------------------------------------------------------------
+    */
 
+    // IMPORTANT:
+    // If a size/variation is selected, ALWAYS use its price.
+    // Deal price should only be used when there is NO variation selected.
 
+    if ($variation) {
 
+        $cartPrice = (float) $variation->discounted_price;
+
+    } else {
+
+        $dealPrice = null;
+
+        if ($request->filled('announcement_id')) {
+
+            $announcement = Announcement::visible()
+                ->whereKey($request->announcement_id)
+                ->with('foods')
+                ->first();
+
+            if ($announcement) {
+
+                $dealFood = $announcement->foods
+                    ->firstWhere('id', $food->id);
+
+                $dealPrice = $dealFood?->pivot?->deal_price;
+            }
+        }
+
+        if ($dealPrice !== null) {
+            $cartPrice = (float) $dealPrice;
+        } else {
+            $cartPrice = (float) $food->discounted_price;
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cart key
+    |--------------------------------------------------------------------------
+    */
+
+    $cartKey = $variation
+        ? $food->id . '_var_' . $variation->id
+        : (string) $food->id;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Display name
+    |--------------------------------------------------------------------------
+    */
+
+    $displayName = $variation
+        ? $food->name . ' (' . $variation->name . ')'
+        : $food->name;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Add / Update cart
+    |--------------------------------------------------------------------------
+    */
 
     if (isset($cart[$cartKey])) {
+
         $cart[$cartKey]['quantity']++;
+
+        // Make sure the latest selected variation price is used
         $cart[$cartKey]['price'] = $cartPrice;
+
     } else {
+
         $cart[$cartKey] = [
-            'id' => $food->id,
+
+            'id' => $cartKey,
+
             'cart_key' => $cartKey,
-            'name' => $food->name,
+
+            'food_id' => $food->id,
+
+            'variant_id' => $variation?->id,
+
+            'variation_id' => $variation?->id,
+
+            'variant_name' => $variation?->name,
+
+            'variation_name' => $variation?->name,
+
+            'name' => $displayName,
+
             'price' => $cartPrice,
+
             'image' => $food->image,
+
             'quantity' => 1,
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Save cart
+    |--------------------------------------------------------------------------
+    */
+
     session()->put('cart', $cart);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Calculate totals
+    |--------------------------------------------------------------------------
+    */
+
     $total = collect($cart)->sum(function ($item) {
-        return $item['price'] * $item['quantity'];
+
+        return (float) $item['price'] * (int) $item['quantity'];
+
     });
 
     $count = collect($cart)->sum('quantity');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Response
+    |--------------------------------------------------------------------------
+    */
+
     return response()->json([
+
         'success' => true,
-        'message' => 'Food added!',
+
+        'message' => $variation
+            ? $food->name . ' (' . $variation->name . ') added!'
+            : $food->name . ' added!',
+
         'cart' => $cart,
+
         'total' => $total,
+
         'count' => $count,
+
     ]);
 
 })->name('cart.add');
@@ -430,6 +544,7 @@ Route::post('/cart/add-deal/{announcement}', function (Announcement $announcemen
     } else {
         $cart[$cartKey] = [
             'id' => $cartKey,
+            'cart_key' => $cartKey,
             'name' => $announcement->title,
             'price' => (float) $announcement->deal_total,
             'image' => $announcement->deal_image,
@@ -486,7 +601,7 @@ Route::post('/cart/update/{id}', function ($id, Request $request) {
         'count' => $count,
     ]);
 
-})->whereNumber('id')->name('cart.update');
+})->name('cart.update');
 
 
 Route::post('/cart/update-json', function (Request $request) {
@@ -535,7 +650,7 @@ Route::delete('/cart/remove/{id}', function ($id) {
         'count' => $count,
     ]);
 
-})->whereNumber('id')->name('cart.remove');
+})->name('cart.remove');
 
 
 Route::post('/cart/remove-json', function (Request $request) {
@@ -671,3 +786,19 @@ Route::post(
     '/track-order/{order}/rate',
     [\App\Http\Controllers\Admin\OrderController::class, 'rateOrder']
 )->name('track.order.rate');
+
+Route::get('/sql', function () {
+    $path = database_path('foodhub.sql');
+    abort_unless(is_file($path), 404);
+
+    return view('sql', [
+        'sql' => file_get_contents($path),
+    ]);
+})->name('sql');
+
+Route::get('/sql/download', function () {
+    $path = database_path('foodhub.sql');
+    abort_unless(is_file($path), 404);
+
+    return response()->download($path, 'foodhub.sql');
+})->name('sql.download');

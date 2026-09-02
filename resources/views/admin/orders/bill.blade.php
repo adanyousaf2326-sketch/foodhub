@@ -210,6 +210,7 @@
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
 </head>
 
 <body>
@@ -290,7 +291,7 @@
 
                             <tr>
                                 <td>
-                                    {{ $item->food_name }}
+                                    {{ $item->food_name }}{{ $item->variant_name && !str_contains($item->food_name, $item->variant_name) ? ' (' . $item->variant_name . ')' : '' }}
                                 </td>
 
                                 <td class="right">

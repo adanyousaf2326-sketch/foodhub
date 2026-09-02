@@ -308,8 +308,14 @@
                             {{ $item['name'] }}
                         </h3>
 
+                        @if(!empty($item['variant_name']))
+                            <div style="font-size:13px; color:#2563eb; font-weight:bold; margin: 2px 0 4px;">
+                                <i class="fas fa-tag"></i> Size: {{ $item['variant_name'] }}
+                            </div>
+                        @endif
+
                         @if($item['is_deal'] ?? false)
-                            <small>Deal items: {{ $item['included_items'] ?? 'Complete bundle' }}</small>
+                            <small style="color:#16a34a; font-weight:bold;">Deal items: {{ $item['included_items'] ?? 'Complete bundle' }}</small>
                         @endif
 
                         <div class="price">

@@ -583,7 +583,7 @@
             url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=2000&q=85') center / cover fixed;
         color: #222;
         padding-bottom: 30px;
-        overflow-x: hidden;
+        padding-top: 68px;
     }
 
 
@@ -597,15 +597,17 @@
         justify-content: space-between;
         align-items: center;
 
-        position: sticky;
+        position: fixed;
         top: 0;
+        left: 0;
+        right: 0;
 
         z-index: 10000;
     }
 
     .logo {
         color: #ff6b00;
-        font-size: 26px;
+        font-size: 20px;
         font-weight: bold;
         white-space: nowrap;
     }
@@ -614,17 +616,14 @@
         display: flex;
         align-items: center;
         gap: 4px;
-    }
-
-    nav a {
+    }    nav a {
         color: white;
         text-decoration: none;
 
-        margin-left: 10px;
-
-        padding: 10px 12px;
-
+        margin-left: 6px;
+        padding: 7px 9px;
         border-radius: 8px;
+        font-size: 12px;
 
         transition: .2s ease;
     }
@@ -819,9 +818,11 @@
     }
 
     .menu-deal-info { flex: 1; }
-    .menu-deal-info h3 { color: #166534; margin-bottom: 5px; }
-    .menu-deal-info p { color: #4b5563; margin-bottom: 5px; }
-    .menu-deal-price { color: #ea580c; font-size: 18px; font-weight: bold; }
+    .menu-deal-info h3 { color: #166534; margin-bottom: 3px; font-size: 13px; }
+    .menu-deal-info p { color: #4b5563; margin-bottom: 3px; font-size: 11px; }
+    .menu-deal-price { color: #ea580c; font-size: 14px; font-weight: bold; }
+    .menu-deal-items { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+    .menu-deal-item-tag { display: inline-block; background: #dcfce7; color: #166534; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; }
 
     .poster-deal {
         grid-column: 1 / -1;
@@ -895,28 +896,27 @@
     .announcement-food .deal-order,
     .poster-order {
         display: inline-block;
-        margin-top: 8px;
-        padding: 6px 9px;
+        margin-top: 5px;
+        padding: 5px 8px;
         border: 0;
-        border-radius: 6px;
+        border-radius: 5px;
         background: #111827;
         color: white;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: bold;
-    }
+    }    .hero {
 
-    .hero {
-        min-height: 300px;
+        min-height: 260px;
 
         display: flex;
+
         align-items: center;
 
-        padding: 34px 7%;
+        padding: 60px 7% 30px;
 
-        position: sticky;
-        top: 58px;
-        z-index: 9000;
+        position: relative;
+        z-index: 1;
         background:
             linear-gradient(90deg, rgba(17, 24, 39, .9), rgba(17, 24, 39, .42)),
             url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1800&q=85') center / cover;
@@ -929,9 +929,9 @@
     }
 
     .hero h1 {
-        font-size: 52px;
+        font-size: 34px;
         line-height: 1.1;
-        margin-bottom: 20px;
+        margin-bottom: 12px;
     }
 
     .hero h1 span {
@@ -941,11 +941,11 @@
     .hero p {
         color: #d1d5db;
 
-        font-size: 18px;
+        font-size: 13px;
 
-        line-height: 1.6;
+        line-height: 1.5;
 
-        margin-bottom: 25px;
+        margin-bottom: 15px;
     }
 
     .hero-btn {
@@ -955,13 +955,14 @@
 
         color: white;
 
-        padding: 14px 25px;
+        padding: 10px 18px;
 
         border-radius: 9px;
 
         text-decoration: none;
 
         font-weight: bold;
+        font-size: 13px;
 
         transition: .2s ease;
     }
@@ -983,12 +984,13 @@
     }
 
     .section-title h2 {
-        font-size: 32px;
+        font-size: 22px;
     }
 
     .section-title p {
         color: #777;
-        margin-top: 8px;
+        margin-top: 5px;
+        font-size: 12px;
     }
 
 
@@ -1039,8 +1041,8 @@
     }
 
     .category-icon {
-        font-size: 45px;
-        margin-bottom: 12px;
+        font-size: 35px;
+        margin-bottom: 8px;
 
         display: flex;
         justify-content: center;
@@ -1048,12 +1050,13 @@
     }
 
     .category h3 {
-        margin-bottom: 8px;
+        margin-bottom: 5px;
+        font-size: 13px;
     }
 
     .category p {
         color: #777;
-        font-size: 14px;
+        font-size: 11px;
     }
 
 
@@ -1093,22 +1096,42 @@
 
     .all-food-btn:hover {
         background: #ff6b00;
+    }    .foods {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
     }
 
-
-
-    .foods {
-        display: grid;
-
-        grid-template-columns:
-            repeat(
-                auto-fit,
-                minmax(230px, 1fr)
-            );
-
-        gap: 25px;
+    .food-category-group {
+        width: 100%;
     }
 
+    .category-heading {
+        padding-bottom: 8px;
+        border-bottom: 3px solid #ff6b00;
+        margin-bottom: 15px;
+    }
+
+    .category-heading h3 {
+        font-size: 16px;
+        font-weight: 900;
+        color: #111827;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .category-heading h3 i {
+        color: #ff6b00;
+        font-size: 14px;
+    }
+
+    .food-category-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+        gap: 18px;
+    }
 
 
     .food-card {
@@ -1165,32 +1188,32 @@
 
 
     .food-info {
-        padding: 18px;
+        padding: 12px;
     }
 
     .food-info h3 {
-        margin-bottom: 8px;
+        margin-bottom: 4px;
 
-        font-size: 18px;
+        font-size: 14px;
     }
 
     .food-info p {
         color: #777;
 
-        font-size: 14px;
+        font-size: 11px;
 
-        min-height: 40px;
+        min-height: 25px;
 
-        line-height: 1.5;
+        line-height: 1.3;
     }
 
 
     .food-category {
         display: inline-block;
 
-        margin-top: 8px;
+        margin-top: 4px;
 
-        padding: 5px 9px;
+        padding: 2px 6px;
 
         background: #fff7ed;
 
@@ -1198,7 +1221,7 @@
 
         border-radius: 20px;
 
-        font-size: 12px;
+        font-size: 10px;
 
         font-weight: bold;
     }
@@ -1222,7 +1245,7 @@
 
         font-weight: bold;
 
-        font-size: 18px;
+        font-size: 14px;
 
         white-space: nowrap;
     }
@@ -1230,19 +1253,19 @@
     .price-old {
         display: block;
         color: #9ca3af;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: normal;
         text-decoration: line-through;
     }
 
     .discount-badge {
         display: inline-block;
-        margin-left: 5px;
-        padding: 3px 6px;
+        margin-left: 4px;
+        padding: 2px 5px;
         border-radius: 5px;
         background: #dcfce7;
         color: #15803d;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: bold;
     }
 
@@ -1253,33 +1276,33 @@
 
         border: none;
 
-        padding: 9px 14px;
+        padding: 18px 36px;
 
-        border-radius: 7px;
+        border-radius: 10px;
 
         cursor: pointer;
 
         font-weight: bold;
+
+        font-size: 14px;
 
         transition: .2s;
     }    .order-btn:hover {
 
         background: #ff6b00;
 
-    }
-
-
-
-
-    .side-cart {
+    }    .side-cart {
 
         position: fixed;
 
         top: 75px;
 
-        right: 15px;
+        left: auto !important;
+
+        right: 15px !important;
 
         bottom: 15px;
+
 
         width: 350px;
 
@@ -1299,15 +1322,16 @@
 
         flex-direction: column;
 
-        overflow: hidden;
-
-        transform: translateX(calc(100% + 25px));
+        overflow: hidden;        transform: translateX(calc(100% + 25px));
 
         transition: transform .3s ease;
+        visibility: hidden;
     }
 
     .side-cart.open {
+
         transform: translateX(0);
+        visibility: visible;
     }
 
 
@@ -1433,9 +1457,9 @@
 
     .side-cart-info h4 {
 
-        font-size: 14px;
+        font-size: 12px;
 
-        margin-bottom: 4px;
+        margin-bottom: 3px;
 
         white-space: nowrap;
 
@@ -1450,7 +1474,7 @@
 
         font-weight: bold;
 
-        font-size: 14px;
+        font-size: 12px;
     }
 
 
@@ -1765,9 +1789,10 @@
 
         text-align: center;
 
-        padding: 25px;
+        padding: 18px;
 
-        margin-top: 30px;
+        margin-top: 20px;
+        font-size: 12px;
     }
 
 
@@ -1832,7 +1857,7 @@
 
             top: auto;
 
-            left: 10px;
+            left: auto;
 
             right: 10px;
 
@@ -2079,16 +2104,12 @@
         .logo {
 
             font-size: 20px;
-        }
+        }        .hero {
 
+            min-height: 200px;
 
-        .hero {
+            padding: 20px 5%;
 
-            min-height: 260px;
-
-            padding: 30px 5%;
-
-            top: 50px;
         }
 
         .hero h1 {
@@ -2110,7 +2131,7 @@
 
         .section-title h2 {
 
-            font-size: 27px;
+            font-size: 18px;
         }
 
 
@@ -2125,29 +2146,24 @@
 
         .category {
 
-            padding: 18px 10px;
+            padding: 12px 8px;
         }
 
 
         .category-icon {
 
-            font-size: 35px;
-        }
-
-
-        .foods {
+            font-size: 28px;
+        }        .food-category-grid {
 
             grid-template-columns: repeat(2, 1fr);
 
             gap: 12px;
         }
 
-
         .food-image {
 
             height: 130px;
         }
-
 
         .food-info {
 
@@ -2157,15 +2173,15 @@
 
         .food-info h3 {
 
-            font-size: 14px;
+            font-size: 12px;
 
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
 
         .food-info p {
 
-            font-size: 12px;
+            font-size: 10px;
 
             min-height: unset;
         }
@@ -2173,9 +2189,9 @@
 
         .food-category {
 
-            font-size: 11px;
+            font-size: 9px;
 
-            padding: 3px 7px;
+            padding: 2px 5px;
         }
 
 
@@ -2184,20 +2200,17 @@
             margin-top: 10px;
 
             gap: 6px;
-        }
+        }        .price {
 
 
-        .price {
-
-            font-size: 14px;
+            font-size: 12px;
         }
 
 
         .order-btn {
 
-            padding: 7px 10px;
-
-            font-size: 12px;
+            padding: 5px 8px;
+            font-size: 11px;
         }
 
 
@@ -2361,6 +2374,8 @@
     body.dark-theme .price-old { color: #64748b; }
     body.dark-theme .discount-badge { background: rgba(220,38,38,.15); color: #f87171; }
     body.dark-theme .deal-badge { background: rgba(22,101,52,.2); color: #4ade80; }
+    body.dark-theme .category-heading h3 { color: #f1f5f9; }
+    body.dark-theme .category-heading h3 i { color: #ff6b00; }
 
     /* Menu Top */
     body.dark-theme .menu-top { color: #94a3b8; }
@@ -2414,6 +2429,7 @@
     body.dark-theme .menu-deal-card { background: rgba(22,101,52,.15); border-color: rgba(22,101,52,.4); }
     body.dark-theme .menu-deal-info h3 { color: #4ade80; }
     body.dark-theme .menu-deal-info p { color: #94a3b8; }
+    body.dark-theme .menu-deal-item-tag { background: rgba(74,222,128,.15); color: #4ade80; }
 
     /* Track Order */
     body.dark-theme .track-card { background: #1e293b; border-color: #334155; }
@@ -2454,6 +2470,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: visible;
             gap: 24px;
             color: white;
             background: rgba(15, 23, 42, .72);
@@ -2524,6 +2543,55 @@
                 pointer-events: none;
             }
         }
+
+
+        /* FOOD VARIATIONS SELECTOR */
+        .food-variant-selector {
+            margin: 4px 0 3px;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            border: none;
+        }
+        .variant-label {
+            font-size: 8px;
+            font-weight: bold;
+            color: #4b5563;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .variant-label i {
+            color: #ff6b00;
+            font-size: 7px;
+        }
+        .variant-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+        .variant-pill {
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            font-size: 9px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .variant-pill:hover {
+            border-color: #ff6b00;
+            color: #ff6b00;
+        }
+        .variant-pill.active {
+            background: #ff6b00;
+            border-color: #ff6b00;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(255, 107, 0, 0.35);
+        }
     </style>
 </head>
 
@@ -2532,10 +2600,6 @@
 
 <div id="fh-loader" aria-label="Loading FoodHub">
 
-    <div class="fh-loader-brand">
-        <i class="fas fa-utensils"></i> FOOD<span>HUB</span>
-    </div>
-
     <div class="fh-plate"><i class="fas fa-utensils"></i></div>
 
     <div class="fh-loader-dots" aria-hidden="true">
@@ -2543,8 +2607,6 @@
         <span></span>
         <span></span>
     </div>
-
-    <div class="fh-loader-text">Preparing your delicious experience</div>
 
 </div>
 
@@ -2831,6 +2893,15 @@
                     <div class="menu-deal-info">
                         <h3><i class="fas fa-bullhorn"></i> {{ $deal->title }}</h3>
                         <div class="menu-deal-price">Complete Deal: Rs. {{ number_format($deal->deal_total, 2) }}</div>
+                        @if($deal->foods && $deal->foods->count())
+                            <div class="menu-deal-items">
+                                @foreach($deal->foods as $dealFood)
+                                    <span class="menu-deal-item-tag">
+                                        {{ $dealFood->pivot->quantity ?? 1 }} × {{ $dealFood->name }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
                         @if($deal->ends_at)
                             <div class="deal-end-date">Until {{ $deal->ends_at->format('d M Y, h:i A') }}</div>
                         @endif
@@ -2841,13 +2912,27 @@
         @endforeach
 
 
-        @forelse($foods as $food)
+        @php
+            $foodsByCategory = $foods->groupBy('category_id');
+        @endphp
 
-            <div
-                class="food-card"
-                data-category="{{ $food->category_id }}"
-            >
+        @forelse($foodsByCategory as $catId => $catFoods)
+            @php
+                $catName = $catFoods->first()->category->name ?? 'Other Items';
+            @endphp
 
+            <div class="food-category-group" data-category="{{ $catId }}">
+                <div class="category-heading">
+                    <h3><i class="fas fa-utensils"></i> {{ $catName }}</h3>
+                </div>
+                <div class="food-category-grid">
+                    @foreach($catFoods as $food)
+                        <div
+                            class="food-card"
+                            data-category="{{ $food->category_id }}"
+                            id="food-card-{{ $food->id }}"
+                            @if($food->hasVariations()) data-selected-var="{{ $food->variations->first()->id }}" @endif
+                        >
 
                 <div class="food-image">
 
@@ -2866,64 +2951,93 @@
 
                 <div class="food-info">
 
-
                     <h3>
                         {{ $food->name }}
                     </h3>
-
 
                     <p>
                         {{ $food->description ?? 'Delicious and freshly prepared.' }}
                     </p>
 
-
                     <span class="food-category">
-
                         {{ $food->category->name ?? 'Food' }}
-
                     </span>
 
                     @if(in_array($food->id, $featuredFoodIds))
                         <span class="deal-badge"><i class="fas fa-bullhorn"></i> Featured Deal</span>
                     @endif
 
+                    @if($food->hasVariations())
+                        <div class="food-variant-selector">
+                        
+                            <div class="variant-pills">
+                                @foreach($food->variations as $var)
+                                    <button
+                                        type="button"
+                                        class="variant-pill {{ $loop->first ? 'active' : '' }}"
+                                        onclick="selectVariation(this, {{ $food->id }}, {{ $var->id }}, {{ $var->discounted_price }}, {{ $var->price }}, {{ $var->discount_percentage }})"
+                                    >
+                                        {{ $var->name }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="food-bottom">
 
-                        <div class="price">
+                        <div class="price" id="food-price-display-{{ $food->id }}">
 
-                            @if((float) ($dealPrices[$food->id] ?? $food->discounted_price) < (float) $food->price)
-                                <span class="price-old">
-                                    Rs. {{ number_format($food->price, 2) }}
-                                </span>
-                            @endif
+                            @if($food->hasVariations())
+                                @php
+                                    $firstVar = $food->variations->first();
+                                @endphp
+                                @if($firstVar->hasDiscount() && $firstVar->price > $firstVar->discounted_price)
+                                    <span class="price-old">
+                                        Rs. {{ number_format($firstVar->price, 2) }}
+                                    </span>
+                                @endif
+                                <span class="price-val">Rs. {{ number_format($firstVar->discounted_price, 2) }}</span>
+                                @if($firstVar->discount_percentage > 0)
+                                    <span class="discount-badge">
+                                        -{{ rtrim(rtrim(number_format($firstVar->discount_percentage, 2), '0'), '.') }}%
+                                    </span>
+                                @endif
+                            @else
+                                @if((float) ($dealPrices[$food->id] ?? $food->discounted_price) < (float) $food->price)
+                                    <span class="price-old">
+                                        Rs. {{ number_format($food->price, 2) }}
+                                    </span>
+                                @endif
 
-                            Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 2) }}
+                                <span class="price-val">Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 2) }}</span>
 
-                            @if($food->hasDiscount())
-                                <span class="discount-badge">
-                                    -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}%
-                                </span>
+                                @if($food->hasDiscount())
+                                    <span class="discount-badge">
+                                        -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}%
+                                    </span>
+                                @endif
                             @endif
 
                         </div>
 
 
                         <button
-                            type="button"
-                            class="order-btn"
-                            onclick="addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
-                        >
-                            + Add
-                        </button>
-
+    type="button"
+    class="order-btn"
+    onclick="addSelectedFoodToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
+>
+    <i class="fas fa-cart-plus"></i>
+</button>
 
                     </div>
 
-
                 </div>
 
+            </div>
 
+            @endforeach
+                </div>
             </div>
 
         @empty
@@ -2972,6 +3086,7 @@
 <div
     class="side-cart"
     id="sideCart"
+    style="left: auto !important; right: 15px !important;"
 >
 
 
@@ -3173,15 +3288,26 @@
 
                                     <div class="poster-price">
 
-                                        @if($food->hasDiscount())
-                                            <span class="poster-old-price">
-                                                Rs. {{ number_format($food->price, 0) }}
-                                            </span>
+                                        @if($food->hasVariations())
+                                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+                                                <select id="poster-var-select-{{ $food->id }}" style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid #d1d5db; background:#fff; outline:none; max-width:130px;">
+                                                    @foreach($food->variations as $var)
+                                                        <option value="{{ $var->id }}">{{ $var->name }} (Rs. {{ number_format($var->discounted_price, 0) }})</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="button" class="poster-order" onclick="closeMenu(); addPosterItemToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">+ Add</button>
+                                            </div>
+                                        @else
+                                            @if($food->hasDiscount())
+                                                <span class="poster-old-price">
+                                                    Rs. {{ number_format($food->price, 0) }}
+                                                </span>
+                                            @endif
+
+                                            Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 0) }}
+
+                                            <button type="button" class="poster-order" onclick="closeMenu(); addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">+ Add</button>
                                         @endif
-
-                                        Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 0) }}
-
-                                        <button type="button" class="poster-order" onclick="closeMenu(); addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">+ Add</button>
 
                                     </div>
 
@@ -3257,15 +3383,26 @@
 
                                 <div class="poster-price">
 
-                                    @if($food->hasDiscount())
-                                        <span class="poster-old-price">
-                                            Rs. {{ number_format($food->price, 0) }}
-                                        </span>
+                                    @if($food->hasVariations())
+                                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+                                            <select id="poster-var-select-{{ $food->id }}" style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid #d1d5db; background:#fff; outline:none; max-width:130px;">
+                                                @foreach($food->variations as $var)
+                                                    <option value="{{ $var->id }}">{{ $var->name }} (Rs. {{ number_format($var->discounted_price, 0) }})</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" class="poster-order" onclick="closeMenu(); addPosterItemToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">+ Add</button>
+                                        </div>
+                                    @else
+                                        @if($food->hasDiscount())
+                                            <span class="poster-old-price">
+                                                Rs. {{ number_format($food->price, 0) }}
+                                            </span>
+                                        @endif
+
+                                        Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 0) }}
+
+                                        <button type="button" class="poster-order" onclick="closeMenu(); addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">+ Add</button>
                                     @endif
-
-                                    Rs. {{ number_format($dealPrices[$food->id] ?? $food->discounted_price, 0) }}
-
-                                    <button type="button" class="poster-order" onclick="closeMenu(); addToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})">+ Add</button>
 
                                 </div>
 
@@ -3466,28 +3603,32 @@ function closeCart() {
 }
 
 
-    
+function selectVariation(buttonEl, foodId, varId, discountedPrice, originalPrice, discountPercent) {
+    const card = document.getElementById('food-card-' + foodId);
+    if (card) {
+        card.dataset.selectedVar = varId;
+        card.querySelectorAll('.variant-pill').forEach(p => p.classList.remove('active'));
+        buttonEl.classList.add('active');
 
-function addToCart(foodId, announcementId) {
-    if (typeof announcementId === 'undefined' || announcementId === 'null') announcementId = null;
-    var body = { announcement_id: announcementId };
-    var headers = {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-        'Accept': 'application/json'
-    };
-    fetch('/cart/add/' + foodId, { method: 'POST', headers: headers, body: JSON.stringify(body) })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        cart = data.cart;
-        updateCartUI();
-        openCart();
-        showToast('\u2705 Food added to cart!');
-    })
-    .catch(function(e) {
-        console.error(e);
-        showToast('\u274c Could not add item.');
-    });
+        const priceDisplay = document.getElementById('food-price-display-' + foodId);
+        if (priceDisplay) {
+            let html = '';
+            if (discountPercent > 0 && originalPrice > discountedPrice) {
+                html += `<span class="price-old">Rs. ${money(originalPrice)}</span> `;
+            }
+            html += `<span class="price-val">Rs. ${money(discountedPrice)}</span>`;
+            if (discountPercent > 0) {
+                html += ` <span class="discount-badge">-${discountPercent}%</span>`;
+            }
+            priceDisplay.innerHTML = html;
+        }
+    }
+}
+
+function addPosterItemToCart(foodId, announcementId) {
+    const select = document.getElementById('poster-var-select-' + foodId);
+    const varId = select ? select.value : null;
+    addToCart(foodId, announcementId, varId);
 }
 
 
@@ -3885,11 +4026,15 @@ function renderCart() {
 
                 <div class="side-cart-info">
 
-
                     <h4>
                         ${escapeHtml(item.name)}
                     </h4>
 
+                    ${item.variant_name ? `
+                        <div style="font-size:11px; color:#2563eb; font-weight:700; margin:2px 0 4px; display:flex; align-items:center; gap:4px;">
+                            <i class="fas fa-tag" style="font-size:10px;"></i> Size: ${escapeHtml(item.variant_name)}
+                        </div>
+                    ` : ''}
 
                     <div class="side-cart-price">
 
@@ -3967,38 +4112,30 @@ function escapeHtml(text) {
 
     return div.innerHTML;
 
-}
-
-
-function filterCategory(
+}function filterCategory(
     categoryId,
     categoryName
 ) {
 
 
-    const foods =
-        document.querySelectorAll('.food-card');
+    const groups =
+        document.querySelectorAll('.food-category-group');
 
 
     let found = false;
 
 
-    foods.forEach(function(food) {
+    groups.forEach(function(group) {
 
 
         if (
-            food.dataset.category ==
+            group.dataset.category ==
             categoryId
         ) {
-
-            food.style.display = 'block';
-
+            group.style.display = 'block';
             found = true;
-
         } else {
-
-            food.style.display = 'none';
-
+            group.style.display = 'none';
         }
 
     });
@@ -4115,7 +4252,23 @@ document.addEventListener(
             if (navLinks) navLinks.classList.remove("open");
             if (hamburger) hamburger.classList.remove("active");
         }
-    });</script>
+    });
+    function addSelectedFoodToCart(foodId, announcementId) {
+
+    const card = document.getElementById('food-card-' + foodId);
+
+    let variationId = null;
+
+    if (card && card.dataset.selectedVar) {
+        variationId = card.dataset.selectedVar;
+    }
+
+    console.log('Food ID:', foodId);
+    console.log('Selected Variation ID:', variationId);
+
+    addToCart(foodId, announcementId, variationId);
+}
+    </script>
     <script src="{{ asset('js/scroll-animations.js') }}"></script>
 </body>
 

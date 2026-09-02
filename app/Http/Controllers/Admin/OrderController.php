@@ -154,7 +154,7 @@ class OrderController extends Controller
         $order->load(['items.food', 'table']);
 
         $availableFoods = Food::where('is_available', true)
-            ->with('category')
+            ->with(['category', 'variations'])
             ->orderBy('name')
             ->get();
 
@@ -546,7 +546,7 @@ class OrderController extends Controller
         $order->load(['items.food', 'table']);
 
         $availableFoods = Food::where('is_available', true)
-            ->with('category')
+            ->with(['category', 'variations'])
             ->orderBy('name')
             ->get();
 

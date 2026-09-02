@@ -212,6 +212,7 @@
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
 </head>
 
 <body>
@@ -358,102 +359,92 @@
 
         {{-- Details --}}
 
+        {{-- Details --}}
         <div class="details">
-
             <h2>
                 Food Information
             </h2>
 
-
             <div class="detail-grid">
-
-
                 <div class="detail">
-
                     <div class="detail-label">
                         Food ID
                     </div>
-
                     <div class="detail-value">
                         #{{ $food->id }}
                     </div>
-
                 </div>
 
-
                 <div class="detail">
-
                     <div class="detail-label">
                         Category
                     </div>
-
                     <div class="detail-value">
                         {{ $food->category->name ?? 'No Category' }}
                     </div>
-
                 </div>
 
-
                 <div class="detail">
-
                     <div class="detail-label">
                         Price
                     </div>
-
                     <div class="detail-value">
-                        Rs. {{ number_format($food->price, 2) }}
+                        {{ $food->price_range }}
                     </div>
-
                 </div>
 
-
                 <div class="detail">
-
                     <div class="detail-label">
                         Availability
                     </div>
-
                     <div class="detail-value">
-
                         {{ $food->is_available ? 'Available' : 'Unavailable' }}
-
                     </div>
-
                 </div>
 
-
                 <div class="detail">
-
                     <div class="detail-label">
                         Created
                     </div>
-
                     <div class="detail-value">
-
                         {{ $food->created_at->format('d M Y, h:i A') }}
-
                     </div>
-
                 </div>
 
-
                 <div class="detail">
-
                     <div class="detail-label">
                         Last Updated
                     </div>
-
                     <div class="detail-value">
-
                         {{ $food->updated_at->format('d M Y, h:i A') }}
-
                     </div>
-
                 </div>
-
-
             </div>
 
+            @if($food->hasVariations())
+                <div style="margin-top: 25px;">
+                    <h3 style="margin-bottom: 12px; font-size: 18px; color: #1e3a8a;">
+                        <i class="fas fa-layer-group"></i> Configured Sizes & Variations ({{ $food->variations->count() }})
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+                        @foreach($food->variations as $var)
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+                                <div style="font-weight: bold; font-size: 15px; color: #1e293b;">
+                                    {{ $var->name }}
+                                </div>
+                                <div style="color: #ff6b00; font-weight: bold; font-size: 16px; margin-top: 4px;">
+                                    Rs. {{ number_format($var->price, 2) }}
+                                </div>
+                                @if($var->discount_percentage > 0)
+                                    <div style="color: #16a34a; font-size: 12px; margin-top: 2px;">
+                                        -{{ rtrim(rtrim(number_format($var->discount_percentage, 2), '0'), '.') }}% off (Final: Rs. {{ number_format($var->discounted_price, 2) }})
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
 

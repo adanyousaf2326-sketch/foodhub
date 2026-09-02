@@ -406,6 +406,7 @@
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-dark-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
 </head>
 
 
@@ -615,16 +616,29 @@
 
 
                         <!-- PRICE -->
-
                         <td>
-
-                            <strong>
-
-                                Rs.
-                                {{ number_format($food->price, 2) }}
-
-                            </strong>
-
+                            @if($food->hasVariations())
+                                <div style="color:#ff6b00; font-weight:bold; font-size: 15px;">
+                                    {{ $food->price_range }}
+                                </div>
+                                <div style="margin-top: 4px;">
+                                    <span style="display:inline-block; font-size:11px; background:#e0e7ff; color:#3730a3; padding:2px 7px; border-radius:10px; font-weight:600;">
+                                        <i class="fas fa-layer-group"></i> {{ $food->variations->count() }} Sizes
+                                    </span>
+                                </div>
+                                <div style="color:#6b7280; font-size:11px; margin-top:2px;">
+                                    {{ $food->variations->pluck('name')->implode(', ') }}
+                                </div>
+                            @else
+                                <strong>
+                                    Rs. {{ number_format($food->price, 2) }}
+                                </strong>
+                                @if($food->hasDiscount())
+                                    <div style="color:#16a34a; font-size:12px;">
+                                        -{{ rtrim(rtrim(number_format($food->discount_percentage, 2), '0'), '.') }}% off
+                                    </div>
+                                @endif
+                            @endif
                         </td>
 
 
