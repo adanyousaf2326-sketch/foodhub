@@ -583,7 +583,6 @@
             url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=2000&q=85') center / cover fixed;
         color: #222;
         padding-bottom: 30px;
-        padding-top: 68px;
     }
 
 
@@ -597,10 +596,8 @@
         justify-content: space-between;
         align-items: center;
 
-        position: fixed;
+        position: sticky;
         top: 0;
-        left: 0;
-        right: 0;
 
         z-index: 10000;
     }
@@ -1276,33 +1273,35 @@
 
         border: none;
 
-        padding: 18px 36px;
+        padding: 9px 14px;
 
-        border-radius: 10px;
+        border-radius: 7px;
 
         cursor: pointer;
 
         font-weight: bold;
-
-        font-size: 14px;
 
         transition: .2s;
     }    .order-btn:hover {
 
         background: #ff6b00;
 
-    }    .side-cart {
+    }
+
+
+
+
+    .side-cart {
 
         position: fixed;
 
         top: 75px;
 
-        left: auto !important;
+        left: auto;
 
-        right: 15px !important;
+        right: 15px;
 
         bottom: 15px;
-
 
         width: 350px;
 
@@ -1322,16 +1321,15 @@
 
         flex-direction: column;
 
-        overflow: hidden;        transform: translateX(calc(100% + 25px));
+        overflow: hidden;
+
+        transform: translateX(calc(100% + 25px));
 
         transition: transform .3s ease;
-        visibility: hidden;
     }
 
     .side-cart.open {
-
         transform: translateX(0);
-        visibility: visible;
     }
 
 
@@ -1857,7 +1855,7 @@
 
             top: auto;
 
-            left: auto;
+            left: 10px;
 
             right: 10px;
 
@@ -2470,9 +2468,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100vw;
-            height: 100vh;
-            overflow: visible;
             gap: 24px;
             color: white;
             background: rgba(15, 23, 42, .72);
@@ -2544,7 +2539,6 @@
             }
         }
 
-
         /* FOOD VARIATIONS SELECTOR */
         .food-variant-selector {
             margin: 4px 0 3px;
@@ -2564,7 +2558,7 @@
         }
         .variant-label i {
             color: #ff6b00;
-            font-size: 7px;
+            font-size: 12px;
         }
         .variant-pills {
             display: flex;
@@ -2970,7 +2964,7 @@
                     @if($food->hasVariations())
                         <div class="food-variant-selector">
                         
-                            <div class="variant-pills">
+                            <div class="variant-pills" >
                                 @foreach($food->variations as $var)
                                     <button
                                         type="button"

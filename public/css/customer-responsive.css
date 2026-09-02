@@ -189,7 +189,7 @@ main, .section, .foods, .food-category-group, .hero {
 
     .order-btn {
         padding: 2px 4px !important;
-        font-size: 7px !important;
+        font-size: 11px !important;
         border-radius: 4px !important;
     }
 
@@ -344,14 +344,14 @@ main, .section, .foods, .food-category-group, .hero {
 
     .order-btn {
         padding: 2px 3px !important;
-        font-size: 7px !important;
+        font-size: 11px !important;
         border-radius: 3px !important;
     }
 
     /* Variant buttons - small phone */
     .food-variant-selector { margin: 1px 0 !important; padding: 0 !important; }
     .variant-pills { gap: 1px !important; }
-    .variant-pill { padding: 1px 2px !important; font-size: 6px !important; border-radius: 3px !important; border-width: 1px !important; }
+    .variant-pill { padding: 1px 2px !important; font-size: 9px !important; border-radius: 3px !important; border-width: 1px !important; }
     .variant-label { font-size: 5px !important; margin-bottom: 0 !important; }
 
     /* Categories */
