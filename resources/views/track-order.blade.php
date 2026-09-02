@@ -662,7 +662,7 @@
 
                     $orderDeadline = $order->created_at
                         ->copy()
-                        ->addMinutes(15);
+                        ->addMinutes(5);
 
                     $canModifyOrder =
                         !$isCancelled
@@ -925,7 +925,7 @@
                     @else
 
                         <div class="cancel-expired">
-                            &#9200; The 15-minute modification time has expired.
+                            &#9200; The 5-minute modification time has expired.
                             <br>
                             This order can no longer be updated or cancelled.
                         </div>
@@ -983,8 +983,8 @@
 
             <p>
                 Enter your order number to see its current status.
-                Within 15 minutes of placing an order, you can request changes.
-                After admin approval, you get 15 minutes to edit.
+                Within 5 minutes of placing an order, you can request changes.
+                After admin approval, you get 5 minutes to edit.
                 You can also chat with the restaurant while your order is active.
                 Cancelled orders will not be delivered or added to sales.
             </p>

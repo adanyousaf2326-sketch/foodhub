@@ -555,12 +555,12 @@
         <div class="timer-left">
             <div class="timer-icon">⏳</div>
             <div class="timer-text">
-                <h2>15-Minute Edit Window Active</h2>
+                <h2>5-Minute Edit Window Active</h2>
                 <p>
                     Order #{{ $order->id }} was placed at <strong>{{ $order->created_at->format('h:i A') }}</strong>.
-                    You can modify items, quantities, and delivery details within 15 minutes of initial placement.
+                    You can modify items, quantities, and delivery details within 5 minutes of initial placement.
                     <br>
-                    <small>⚠️ Note: Updating items does not reset the 15-minute timer.</small>
+                    <small>⚠️ Note: Updating items does not reset the 5-minute timer.</small>
                 </p>
             </div>
         </div>
@@ -573,7 +573,7 @@
 
     <!-- EXPIRED ALERT -->
     <div class="timer-expired-alert" id="timerExpiredAlert">
-        ⏰ The 15-minute update window has expired. Orders can only be modified within 15 minutes of placement.
+        ⏰ The 5-minute update window has expired. Orders can only be modified within 5 minutes of placement.
     </div>
 
     @if($errors->any())
@@ -760,7 +760,7 @@
 </div>
 
 <script>
-    // 15-minute countdown logic (strictly based on original created_at deadline)
+    // 5-minute countdown logic (strictly based on original created_at deadline)
     let remainingSeconds = {{ (int) $remainingSeconds }};
     const countdownTimerEl = document.getElementById('countdownTimer');
     const btnSubmitOrder = document.getElementById('btnSubmitOrder');

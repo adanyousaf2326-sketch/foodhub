@@ -456,14 +456,14 @@ class OrderController extends Controller
                 ->with('error', 'This order cannot be cancelled.');
         }
 
-        if ($order->created_at->lt(now()->subMinutes(15))) {
+        if ($order->created_at->lt(now()->subMinutes(5))) {
             return redirect()
                 ->route('track.order.search', [
                     'order_number' => $order->id,
                 ])
                 ->with(
                     'error',
-                    'Cancellation time expired. Orders can only be cancelled within 15 minutes.'
+                    'Cancellation time expired. Orders can only be cancelled within 5 minutes.'
                 );
         }
 
@@ -513,15 +513,15 @@ class OrderController extends Controller
                 );
         }
 
-        // Check for admin-approved edit request (15 min window from acceptance)
+        // Check for admin-approved edit request (5 min window from acceptance)
         $approvedRequest = \App\Models\OrderEditRequest::where('order_id', $order->id)
             ->where('status', 'accepted')
             ->where('expires_at', '>', now())
             ->latest()
             ->first();
 
-        // Also allow original 15-min window from order creation
-        $withinOriginalWindow = $order->created_at->gt(now()->subMinutes(15));
+        // Also allow original 5-min window from order creation
+        $withinOriginalWindow = $order->created_at->gt(now()->subMinutes(5));
 
         if (!$approvedRequest && !$withinOriginalWindow) {
             return redirect()
@@ -539,7 +539,7 @@ class OrderController extends Controller
             $deadline = $approvedRequest->expires_at;
             $remainingSeconds = max(0, $deadline->diffInSeconds(now(), false) * -1);
         } else {
-            $deadline = $order->created_at->copy()->addMinutes(15);
+            $deadline = $order->created_at->copy()->addMinutes(5);
             $remainingSeconds = max(0, $deadline->diffInSeconds(now(), false) * -1);
         }
 
@@ -587,7 +587,7 @@ class OrderController extends Controller
             ->latest()
             ->first();
 
-        $withinOriginalWindow = $order->created_at->gt(now()->subMinutes(15));
+        $withinOriginalWindow = $order->created_at->gt(now()->subMinutes(5));
 
         if (!$approvedRequest && !$withinOriginalWindow) {
             return redirect()
@@ -933,10 +933,10 @@ class OrderController extends Controller
         $editRequest->update([
             'status' => 'accepted',
             'accepted_at' => now(),
-            'expires_at' => now()->addMinutes(15),
+            'expires_at' => now()->addMinutes(5),
         ]);
 
-        return back()->with('success', 'Edit request accepted! Customer can now edit the order for 15 minutes.');
+        return back()->with('success', 'Edit request accepted! Customer can now edit the order for 5 minutes.');
     }
 
     /*
