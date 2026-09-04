@@ -542,7 +542,7 @@
                     <input
                         type="text"
                         name="customer_name"
-                        value="{{ old('customer_name') }}"
+                        value="{{ old('customer_name', session('customer_name', '')) }}"
                         placeholder="Enter customer name"
                         required
                     >
@@ -559,7 +559,7 @@
                     <input
                         type="text"
                         name="phone"
-                        value="{{ old('phone') }}"
+                        value="{{ old('phone', app('\App\Http\Controllers\CustomerAuthController')->getCurrentCustomerForCheckout()) }}"
                         placeholder="0300-1234567"
                         required
                     >
@@ -579,7 +579,7 @@
                     <input
                         type="email"
                         name="email"
-                        value="{{ old('email') }}"
+                        value="{{ old('email', app('\App\Http\Controllers\CustomerAuthController')->getCurrentEmailForCheckout()) }}"
                         placeholder="your@email.com"
                     >
 

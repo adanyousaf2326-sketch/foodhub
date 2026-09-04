@@ -51,12 +51,12 @@
 
             <div class="form-group">
                 <label><i class="fas fa-envelope"></i> Email</label>
-                <input type="email" name="email" value="{{ old('email') }}" placeholder="ahmed@email.com" required>
+                <input type="email" name="email" value="{{ old('email', session('prefill_email')) }}" placeholder="ahmed@email.com" required>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Phone Number</label>
-                <input type="text" name="phone" value="{{ old('phone') }}" placeholder="0300-1234567" required>
+                <input type="text" name="phone" value="{{ old('phone', session('prefill_phone')) }}" placeholder="0300-1234567" required>
             </div>
 
             <div class="form-group">

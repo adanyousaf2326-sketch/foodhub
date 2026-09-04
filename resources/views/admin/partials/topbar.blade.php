@@ -1,5 +1,21 @@
 {{-- ===== ADMIN TOPBAR — Clean Responsive ===== --}}
+{{-- PWA Meta Tags --}}
+<link rel="manifest" href="{{ asset('manifest.json') }}">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FoodHub Admin">
+<link rel="apple-touch-icon" href="{{ asset('icons/icon-192.svg') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+{{-- Service Worker Registration --}}
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+    });
+}
+</script>
 <nav class="admin-topbar" id="adminTopbar">
 
     {{-- Logo --}}
@@ -22,6 +38,7 @@
             <a href="{{ route('admin.riders.index') }}" style="background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.riders.*') ? 'atb-active' : '' }}"><i class="fas fa-motorcycle"></i> Riders</a>
             <a href="{{ route('admin.riders.cash') }}" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #111; font-weight: 700;" class="{{ request()->routeIs('admin.riders.cash') ? 'atb-active' : '' }}"><i class="fas fa-money-bill-wave"></i> Cash</a>
             <a href="{{ route('admin.rider-map') }}" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.rider-map') ? 'atb-active' : '' }}"><i class="fas fa-map-marked-alt"></i> Map</a>
+            <a href="{{ route('admin.customers.index') }}" style="background: linear-gradient(135deg, #f97316, #ea580c); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.customers.*') ? 'atb-active' : '' }}"><i class="fas fa-users"></i> Customers</a>
         @endif
         <a href="{{ url('/') }}" target="_blank" rel="noopener" class="atb-website"><i class="fas fa-globe"></i> Website</a>
     </div>
@@ -92,6 +109,7 @@
             <a href="{{ route('admin.riders.index') }}" style="color: #86efac;" class="{{ request()->routeIs('admin.riders.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-motorcycle"></i> Manage Riders</a>
             <a href="{{ route('admin.riders.cash') }}" style="color: #fcd34d;" class="{{ request()->routeIs('admin.riders.cash') ? 'atb-mm-active' : '' }}"><i class="fas fa-money-bill-wave"></i> Cash Collection</a>
             <a href="{{ route('admin.rider-map') }}" style="color: #93c5fd;" class="{{ request()->routeIs('admin.rider-map') ? 'atb-mm-active' : '' }}"><i class="fas fa-map-marked-alt"></i> Rider Map</a>
+            <a href="{{ route('admin.customers.index') }}" style="color: #fdba74;" class="{{ request()->routeIs('admin.customers.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-users"></i> Customers</a>
         @endif
         <a href="{{ url('/') }}" target="_blank" rel="noopener"><i class="fas fa-globe"></i> Website</a>
     </div>

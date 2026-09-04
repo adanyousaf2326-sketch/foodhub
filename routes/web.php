@@ -812,6 +812,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
 
         // Live Rider Tracking Map
         Route::get('/rider-map', [\App\Http\Controllers\TrackingMapController::class, 'adminRiderMap'])->name('rider-map');
+
+        // Customer Management (Admin only)
+        Route::get('/customers', [\App\Http\Controllers\CustomerAuthController::class, 'adminIndex'])->name('customers.index');
+        Route::get('/customers/{id}', [\App\Http\Controllers\CustomerAuthController::class, 'adminShow'])->name('customers.show');
+        Route::post('/customers/{id}/delete', [\App\Http\Controllers\CustomerAuthController::class, 'adminDelete'])->name('customers.delete');
     });
 
     Route::resource('orders', OrderController::class)
