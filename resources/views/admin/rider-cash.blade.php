@@ -138,9 +138,6 @@
                                 </div>
                                 <div style="display:flex;align-items:center;gap:6px;">
                                     <span class="order-amount">Rs. {{ number_format($order->total_amount, 2) }}</span>
-                                    <a href="{{ route('admin.orders.print', $order) }}" target="_blank"
-                                       onclick="event.preventDefault(); window.open('{{ route('admin.orders.print', $order) }}', '_blank', 'width=400,height=600');"
-                                       style="padding:4px 6px;border-radius:4px;background:#8b5cf6;color:white;font-size:11px;font-weight:700;text-decoration:none;">🖨️</a>
                                     <form method="POST" action="{{ route('admin.riders.receive-single-cash', $order->id) }}" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="single-close" onclick="return confirm('Close order #{{ $order->id }}?')">✓</button>

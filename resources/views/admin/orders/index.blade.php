@@ -910,13 +910,6 @@
 
         @endif
 
-        {{-- PRINT --}}
-        <a href="{{ route('admin.orders.print', $order) }}" target="_blank"
-           class="action-btn" style="background:#8b5cf6;color:white;text-decoration:none;"
-           onclick="event.preventDefault(); window.open('{{ route('admin.orders.print', $order) }}', '_blank', 'width=400,height=600');">
-            <i class="fas fa-print"></i> Print
-        </a>
-
         {{-- CANCEL --}}
         @if($order->status !== 'Completed' && $order->status !== 'Cancelled')
 

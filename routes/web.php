@@ -854,16 +854,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         Route::get('/stream-updates', [DashboardController::class, 'streamUpdates'])->name('stream-updates');
         Route::get('/latest-orders-json', [DashboardController::class, 'latestOrdersJson'])->name('latest-orders-json');
 
-        // Print Receipt
-        Route::get('/orders/{order}/print', function (Order $order) {
-            $order->load(['items.food', 'table', 'rider']);
-            return view('admin.print-receipt', compact('order'));
-        })->name('orders.print');
 
-        // Kitchen Printer
-        Route::get('/kitchen-printer', function () {
-            return view('admin.kitchen-printer');
-        })->name('kitchen-printer');
 
         // Inventory Management
         Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory');
