@@ -22,7 +22,7 @@ class PrepTimeCalculator
         if ($items->isEmpty()) return 10;
 
         $totalMinutes = 0;
-        $stationTime = []; // Track 3 kitchen stations
+        $stationTime = [0, 0, 0]; // Track 3 kitchen stations
 
         foreach ($items as $item) {
             $food = $item->food;
