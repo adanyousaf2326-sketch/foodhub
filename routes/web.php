@@ -21,19 +21,23 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
 
-    $categories = Category::where('is_active', true)
-        ->orderBy('name')
-        ->get();
+    // Cache categories for 5 minutes (reduces DB hits with many users)
+    $categories = \Cache::remember('home_categories', 300, function () {
+        return Category::where('is_active', true)->orderBy('name')->get();
+    });
 
-    $foods = Food::where('is_available', true)
-        ->with(['category', 'variations'])
-        ->latest()
-        ->get();
+    // Cache foods for 2 minutes
+    $foods = \Cache::remember('home_foods', 120, function () {
+        return Food::where('is_available', true)
+            ->with(['category', 'variations'])
+            ->latest()
+            ->get();
+    });
 
-    $announcements = Announcement::with('foods')
-        ->visible()
-        ->latest()
-        ->get();
+    // Cache announcements for 5 minutes
+    $announcements = \Cache::remember('home_announcements', 300, function () {
+        return Announcement::with('foods')->visible()->latest()->get();
+    });
 
     return view('home', compact('categories', 'foods', 'announcements'));
 
@@ -86,6 +90,10 @@ Route::get('/checkout', function () {
 
 })->name('checkout');
 Route::post('/order/place', function (Request $request) {
+    // Rate limit: max 5 orders per minute per IP to prevent abuse
+    if (throttle('order-place', 5, 1)->check() === false) {
+        return back()->withInput()->with('error', 'Too many orders! Please wait a moment.');
+    }
 
     $request->validate([
 

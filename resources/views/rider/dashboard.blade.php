@@ -362,8 +362,8 @@
             .catch(function() { showToast('Failed to update status'); });
         }
 
-        // Poll for new orders every 15 seconds
-        setInterval(function() { location.reload(); }, 15000);
+        // Poll for new orders every 30 seconds (reduced for performance)
+        setInterval(function() { location.reload(); }, 30000);
 
         // PWA Service Worker
         if ('serviceWorker' in navigator) {

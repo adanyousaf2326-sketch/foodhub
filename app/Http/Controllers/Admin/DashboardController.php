@@ -13,9 +13,10 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $totalCategories = Category::count();
-        $totalFood = Food::count();
-        $availableFood = Food::where('is_available', 1)->count();
+        // Cache counts for 60 seconds to reduce DB load with many users
+        $totalCategories = \Cache::remember('stats_categories', 60, fn() => Category::count());
+        $totalFood = \Cache::remember('stats_food', 60, fn() => Food::count());
+        $availableFood = \Cache::remember('stats_available_food', 60, fn() => Food::where('is_available', 1)->count());
 
         $dateQuery = Order::query();
 
