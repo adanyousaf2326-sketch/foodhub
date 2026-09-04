@@ -15,7 +15,6 @@
         <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-active' : '' }}"><i class="fas fa-layer-group"></i> Categories</a>
         <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-active' : '' }}"><i class="fas fa-bullhorn"></i> Deals</a>
         <a href="{{ route('admin.kitchen') }}" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.kitchen') ? 'atb-active' : '' }}"><i class="fas fa-fire"></i> Kitchen</a>
-        <a href="{{ route('admin.inventory') }}" class="{{ request()->routeIs('admin.inventory') ? 'atb-active' : '' }}"><i class="fas fa-boxes-stacked"></i> Stock</a>
         <a href="{{ route('admin.kitchen-printer') }}" style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.kitchen-printer') ? 'atb-active' : '' }}"><i class="fas fa-print"></i> Printer</a>
         {{-- Admin Only Links --}}
         @if(Auth::user()->role === 'Admin')
@@ -86,7 +85,6 @@
         <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-layer-group"></i> Categories</a>
         <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-bullhorn"></i> Deals</a>
         <a href="{{ route('admin.kitchen') }}" style="color: #fca5a5;" class="{{ request()->routeIs('admin.kitchen') ? 'atb-mm-active' : '' }}"><i class="fas fa-fire"></i> Kitchen Display</a>
-        <a href="{{ route('admin.inventory') }}" style="color: #86efac;" class="{{ request()->routeIs('admin.inventory') ? 'atb-mm-active' : '' }}"><i class="fas fa-boxes-stacked"></i> Inventory</a>
         <a href="{{ route('admin.kitchen-printer') }}" style="color: #c4b5fd;" class="{{ request()->routeIs('admin.kitchen-printer') ? 'atb-mm-active' : '' }}"><i class="fas fa-print"></i> Kitchen Printer</a>
         {{-- Admin Only Links --}}
         @if(Auth::user()->role === 'Admin')

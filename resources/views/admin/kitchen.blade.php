@@ -370,7 +370,7 @@
     }
 
     function loadStockItems() {
-        fetch('/admin/inventory?json=1')
+        fetch('/admin/inventory-json')
             .then(r => r.json())
             .then(data => {
                 var html = '';

@@ -795,12 +795,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
     Route::put('/change-password', [UserController::class, 'updatePassword'])->name('update-password');
 
     // Admin Only Routes
-    Route::middleware(function ($request, $next) {
-        if (Auth::user()->role !== 'Admin') {
-            abort(403, 'Only Admin can access this section.');
-        }
-        return $next($request);
-    })->group(function () {
+    Route::middleware([\App\Http\Middleware\AdminOnly::class])->group(function () {
         Route::resource('users', UserController::class)->except(['show']);
 
         // Rider Management
