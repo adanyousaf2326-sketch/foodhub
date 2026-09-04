@@ -692,6 +692,10 @@
                             </th>
 
                             <th>
+                                Rider
+                            </th>
+
+                            <th>
                                 Date
                             </th>
 <th>Table</th>
@@ -802,7 +806,7 @@
                                         'Preparing' =>
                                             'preparing',
 
-                                        'Out for Delivery' =>
+                                        'Out for Delivery', 'Assigned', 'Picked Up' =>
                                             'out-for-delivery',
 
                                         'Delivered' =>
@@ -828,6 +832,23 @@
                                 </span>
 
 
+                            </td>
+
+
+                            <!-- RIDER -->
+
+                            <td>
+                                @if($order->rider)
+                                    <div style="display:flex;align-items:center;gap:6px;">
+                                        <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#8b5cf620;color:#8b5cf6;font-size:12px;font-weight:800;">{{ strtoupper(substr($order->rider->name, 0, 1)) }}</span>
+                                        <div>
+                                            <div style="font-weight:700;font-size:13px;">{{ $order->rider->name }}</div>
+                                            <div style="font-size:11px;color:#6b7280;">{{ $order->rider->phone }}</div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <span style="color:#9ca3af;font-size:13px;">—</span>
+                                @endif
                             </td>
 
 

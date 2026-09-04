@@ -60,6 +60,7 @@ class OrderController extends Controller
         }
 
         $orders = $orders
+            ->with('rider')
             ->latest()
             ->get();
 
