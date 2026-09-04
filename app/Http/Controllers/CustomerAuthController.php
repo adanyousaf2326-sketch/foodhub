@@ -111,7 +111,12 @@ class CustomerAuthController extends Controller
         $customer = $this->getCurrentCustomer();
         if (!$customer) return redirect()->route('customer.login');
 
-        $orders = $customer->orders()->latest()->limit(10)->get();
+        // Orders are matched by phone (no customer_id in orders table)
+        $orders = \App\Models\Order::where('phone', $customer->phone)
+            ->orWhere('customer_name', $customer->name)
+            ->latest()
+            ->limit(20)
+            ->get();
         $wishlist = $customer->wishlist()->get();
 
         return view('customer.profile', compact('customer', 'orders', 'wishlist'));
@@ -136,13 +141,21 @@ class CustomerAuthController extends Controller
 
     /**
      * Admin: View all customer details
+     * Orders are matched by phone number (no customer_id in orders table)
      */
     public function adminIndex()
     {
-        $customers = Customer::withCount('orders')
-            ->withSum('orders', 'total_amount')
-            ->latest()
-            ->get();
+        $customers = Customer::all()->map(function ($customer) {
+            $phone = $customer->phone;
+            $name = $customer->name;
+            $customer->orders_count = \App\Models\Order::where('phone', $phone)
+                ->orWhere('customer_name', $name)
+                ->count();
+            $customer->orders_sum_total_amount = \App\Models\Order::where('phone', $phone)
+                ->orWhere('customer_name', $name)
+                ->sum('total_amount');
+            return $customer;
+        });
 
         $totalCustomers = Customer::count();
         $totalOrders = $customers->sum('orders_count');
@@ -158,14 +171,18 @@ class CustomerAuthController extends Controller
      */
     public function adminShow($id)
     {
-        $customer = Customer::with(['orders' => function ($q) {
-            $q->latest()->limit(20);
-        }])->findOrFail($id);
+        $customer = Customer::findOrFail($id);
 
-        $totalSpent = $customer->orders->sum('total_amount');
-        $totalOrders = $customer->orders()->count();
+        $orders = \App\Models\Order::where('phone', $customer->phone)
+            ->orWhere('customer_name', $customer->name)
+            ->latest()
+            ->limit(20)
+            ->get();
 
-        return view('admin.customer-detail', compact('customer', 'totalSpent', 'totalOrders'));
+        $totalSpent = $orders->sum('total_amount');
+        $totalOrders = $orders->count();
+
+        return view('admin.customer-detail', compact('customer', 'orders', 'totalSpent', 'totalOrders'));
     }
 
     /**

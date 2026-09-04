@@ -92,7 +92,7 @@
 
     <div class="orders-section">
         <h3><i class="fas fa-receipt"></i> Order History</h3>
-        @forelse($customer->orders as $order)
+        @forelse($orders as $order)
             <div class="order-item">
                 <div>
                     <span class="order-id">#{{ $order->id }}</span>

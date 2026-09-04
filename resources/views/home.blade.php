@@ -3127,6 +3127,15 @@
             <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count" id="navCartCount">0</span>
         </a>
+        @if(session('customer_id'))
+            <a href="{{ route('customer.profile') }}" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:linear-gradient(135deg,#ff6b00,#ff8c33);color:white;font-weight:700;font-size:13px;text-decoration:none;margin-left:6px;transition:all .25s ease;">
+                <i class="fas fa-user"></i> {{ session('customer_name', 'My Account') }}
+            </a>
+        @else
+            <a href="{{ route('customer.login') }}" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;font-weight:600;font-size:13px;text-decoration:none;margin-left:6px;transition:all .25s ease;">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        @endif
         <button type="button" class="theme-toggle-customer" onclick="toggleCustomerTheme()" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:17px;margin-left:6px;transition:all .25s ease;">
             <span class="theme-icon-customer"><i class="fas fa-moon"></i></span>
         </button>
