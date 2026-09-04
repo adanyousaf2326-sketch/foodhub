@@ -669,6 +669,7 @@
                         && !$isCompleted
                         && !$isDelivered
                         && !$order->has_edited
+                        && !$order->picked_up_at
                         && now()->lt($orderDeadline);
 
                     // Can edit if admin approved AND within edit window
@@ -681,7 +682,8 @@
                         && !$isDelivered
                         && !$pendingEditRequest
                         && !$approvedEditRequest
-                        && !$order->has_edited;
+                        && !$order->has_edited
+                        && !$order->picked_up_at;
 
                     $statusClass = match($order->status) {
                         'Preparing' => 'status-preparing',
@@ -868,6 +870,13 @@
                         <div class="cancel-expired" style="background:#fff7ed;border:2px solid #fdba74;">
                             &#9998; You have already edited this order once.
                             <br>You cannot edit it again. Please contact the restaurant directly if you need further changes.
+                        </div>
+
+                    @elseif($order->picked_up_at && in_array($order->status, ['Picked Up', 'Out for Delivery']))
+
+                        <div class="cancel-expired" style="background:#eff6ff;border:2px solid #93c5fd;">
+                            &#128666; Your order has been picked up by rider <strong>{{ $order->rider->name ?? 'N/A' }}</strong> and is on the way!
+                            <br>It cannot be cancelled at this stage.
                         </div>
 
                     @elseif($canEditNow)

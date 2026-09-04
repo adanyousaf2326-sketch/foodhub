@@ -26,11 +26,16 @@ class Order extends Model
     'delivery_time_min',
     'customer_lat',
     'customer_lng',
+    'rider_id',
+    'picked_up_at',
+    'returned_at',
 ];
 
     protected $casts = [
         'total_amount' => 'decimal:2',
         'delivery_charges' => 'decimal:2',
+        'picked_up_at' => 'datetime',
+        'returned_at' => 'datetime',
     ];
 
     public function items()
@@ -65,5 +70,23 @@ class Order extends Model
     public function location()
     {
         return $this->hasOne(OrderLocation::class);
+    }
+
+    public function rider()
+    {
+        return $this->belongsTo(Rider::class, 'rider_id');
+    }
+
+    public function canBeCancelled(): bool
+    {
+        // Can't cancel if already completed/delivered/cancelled
+        if (in_array($this->status, ['Completed', 'Delivered', 'Cancelled'])) {
+            return false;
+        }
+        // Can't cancel if rider has picked up the order
+        if ($this->picked_up_at) {
+            return false;
+        }
+        return true;
     }
 }

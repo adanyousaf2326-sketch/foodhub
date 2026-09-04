@@ -266,19 +266,23 @@
                     </div>
                 </div>
                 <div class="order-actions">
-                    @if($order->customer_lat && $order->customer_lng)
+                    @if($order->customer_lat && $order->customer_lng && $order->status !== 'Assigned')
                         <a href="https://www.google.com/maps/dir/?api=1&destination={{ $order->customer_lat }},{{ $order->customer_lng }}"
                            target="_blank" class="action-btn btn-navigate"><i class="fas fa-directions"></i> Navigate</a>
                     @endif
                     @if($order->status === 'Assigned')
-                        <a href="{{ route('rider.accept-order', $order->id) }}" class="action-btn btn-accept"
-                           onclick="return confirm('Accept this order?')">
-                            <i class="fas fa-check"></i> Accept
+                        <a href="{{ route('rider.pick-up', $order->id) }}" class="action-btn" style="background:#8b5cf6;color:white;"
+                           onclick="return confirm('Pick up this order from kitchen?')">
+                            <i class="fas fa-box-open"></i> Pick Up from Kitchen
                         </a>
-                    @elseif($order->status === 'Out for Delivery')
+                    @elseif($order->status === 'Picked Up')
                         <a href="{{ route('rider.mark-delivered', $order->id) }}" class="action-btn btn-deliver"
                            onclick="return confirm('Mark as delivered?')">
                             <i class="fas fa-check-double"></i> Mark Delivered
+                        </a>
+                        <a href="{{ route('rider.return-to-kitchen', $order->id) }}" class="action-btn" style="background:#ef4444;color:white;"
+                           onclick="return confirm('Return this order to kitchen? Customer cancelled.')">
+                            <i class="fas fa-undo"></i> Return
                         </a>
                     @endif
                 </div>

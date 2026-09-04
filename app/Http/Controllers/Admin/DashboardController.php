@@ -332,11 +332,32 @@ class DashboardController extends Controller
      */
     public function kitchen()
     {
-        $pendingOrders = Order::where('status', 'Pending')
-            ->with(['items.food', 'table'])
+        $activeStatuses = ['Pending', 'Assigned', 'Picked Up', 'Out for Delivery'];
+
+        $pendingOrders = Order::whereIn('status', ['Pending', 'Assigned'])
+            ->with(['items.food', 'table', 'rider'])
             ->latest()
             ->get();
 
-        return view('admin.kitchen', compact('pendingOrders'));
+        $pickedUpOrders = Order::whereIn('status', ['Picked Up', 'Out for Delivery'])
+            ->with(['items.food', 'table', 'rider'])
+            ->latest()
+            ->get();
+
+        $readyOrders = Order::where('status', 'Delivered')
+            ->whereDate('updated_at', today())
+            ->with(['rider'])
+            ->latest('updated_at')
+            ->limit(10)
+            ->get();
+
+        $cancelledOrders = Order::where('status', 'Cancelled')
+            ->whereDate('updated_at', today())
+            ->with(['rider'])
+            ->latest('updated_at')
+            ->limit(10)
+            ->get();
+
+        return view('admin.kitchen', compact('pendingOrders', 'pickedUpOrders', 'readyOrders', 'cancelledOrders'));
     }
 }

@@ -96,8 +96,8 @@ class RiderController extends Controller
         if (!$rider) return redirect()->route('rider.login');
 
         $assignedOrders = Order::where('rider_id', $rider->id)
-            ->whereIn('status', ['Assigned', 'Out for Delivery'])
-            ->with('restaurant_table')
+            ->whereIn('status', ['Assigned', 'Picked Up', 'Out for Delivery'])
+            ->with(['items.food', 'table'])
             ->latest()
             ->get();
 
@@ -168,7 +168,7 @@ class RiderController extends Controller
 
         $order = Order::where('id', $orderId)
             ->where('rider_id', $rider->id)
-            ->where('status', 'Out for Delivery')
+            ->whereIn('status', ['Out for Delivery', 'Picked Up'])
             ->first();
 
         if (!$order) {
@@ -179,6 +179,65 @@ class RiderController extends Controller
         $rider->increment('total_orders');
 
         return back()->with('success', 'Order #' . $orderId . ' delivered successfully! 🎉');
+    }
+
+    /**
+     * Rider picks up order from restaurant kitchen
+     */
+    public function pickUp($orderId)
+    {
+        $rider = $this->getCurrentRider();
+        if (!$rider || !$rider->is_on_duty) {
+            return back()->with('error', 'You must be on duty.');
+        }
+
+        $order = Order::where('id', $orderId)
+            ->where('rider_id', $rider->id)
+            ->where('status', 'Assigned')
+            ->first();
+
+        if (!$order) {
+            return back()->with('error', 'Order not found or already picked up.');
+        }
+
+        $order->update([
+            'status' => 'Picked Up',
+            'picked_up_at' => now(),
+        ]);
+
+        return back()->with('success', 'Order #' . $orderId . ' picked up from kitchen! 📦');
+    }
+
+    /**
+     * Rider returns order to kitchen (cancelled order)
+     */
+    public function returnToKitchen($orderId)
+    {
+        $rider = $this->getCurrentRider();
+        if (!$rider) return redirect()->route('rider.login');
+
+        $order = Order::where('id', $orderId)
+            ->where('rider_id', $rider->id)
+            ->whereIn('status', ['Picked Up', 'Out for Delivery'])
+            ->first();
+
+        if (!$order) {
+            return back()->with('error', 'Order not found.');
+        }
+
+        $order->update([
+            'status' => 'Cancelled',
+            'returned_at' => now(),
+        ]);
+
+        // Free the table if dine-in
+        if ($order->table_id) {
+            \App\Models\RestaurantTable::where('id', $order->table_id)
+                ->where('status', 'occupied')
+                ->update(['status' => 'available']);
+        }
+
+        return back()->with('success', 'Order #' . $orderId . ' returned to kitchen and cancelled.');
     }
 
     // ==================== ADMIN RIDER MANAGEMENT ====================

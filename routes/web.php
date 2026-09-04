@@ -907,6 +907,8 @@ Route::get('/rider/logout', [\App\Http\Controllers\RiderController::class, 'logo
 Route::get('/rider/dashboard', [\App\Http\Controllers\RiderController::class, 'dashboard'])->name('rider.dashboard');
 Route::post('/rider/toggle-duty', [\App\Http\Controllers\RiderController::class, 'toggleDuty'])->name('rider.toggle-duty');
 Route::get('/rider/accept-order/{id}', [\App\Http\Controllers\RiderController::class, 'acceptOrder'])->name('rider.accept-order');
+Route::get('/rider/pick-up/{id}', [\App\Http\Controllers\RiderController::class, 'pickUp'])->name('rider.pick-up');
+Route::get('/rider/return-to-kitchen/{id}', [\App\Http\Controllers\RiderController::class, 'returnToKitchen'])->name('rider.return-to-kitchen');
 Route::get('/rider/mark-delivered/{id}', [\App\Http\Controllers\RiderController::class, 'markDelivered'])->name('rider.mark-delivered');
 
 Route::get('/scan-table/{tableNumber}', function ($tableNumber) {
