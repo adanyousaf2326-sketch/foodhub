@@ -987,15 +987,30 @@ function calcDeliveryFromAddress() {
 
 function useFallbackCharges() {
     // Default: assume 3 km (base delivery charge)
+    // Calculate rough prep time from cart items shown on page
+    var items = document.querySelectorAll('.item');
+    var roughPrep = 15;
+    items.forEach(function(el) {
+        var qtyText = el.querySelector('.item-info');
+        if (qtyText) {
+            var match = qtyText.textContent.match(/(\d+)\s*×/);
+            if (match) {
+                var qty = parseInt(match[1]);
+                // Rough: batches of 3, each batch adds 40% of base 15 min
+                var batches = Math.ceil(qty / 3);
+                roughPrep = Math.max(roughPrep, 15 + ((batches - 1) * 6));
+            }
+        }
+    });
     var fallbackData = {
         distance_km: 3,
         delivery_charges: 50,
         delivery_message: 'Delivery charges: Rs. 50',
         is_free_delivery: false,
-        delivery_time_min: 35,
+        delivery_time_min: 35 + (roughPrep - 15),
         is_within_radius: true,
         max_km: 25,
-        estimated_ready_min: 15
+        estimated_ready_min: roughPrep
     };
     document.getElementById('customerLat').value = '';
     document.getElementById('customerLng').value = '';

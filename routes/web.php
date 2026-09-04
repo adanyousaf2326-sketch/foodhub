@@ -845,22 +845,14 @@ Route::get('/api/delivery-calc', function (\Illuminate\Http\Request $request) {
         'lng' => 'required|numeric|between:-180,180',
     ]);
 
-    // Calculate max prep time from cart
+    // Calculate realistic prep time from cart using PrepTimeCalculator
     $cart = session()->get('cart', []);
-    $maxPrep = 15;
-    foreach ($cart as $item) {
-        if (!empty($item['food_id'])) {
-            $food = \App\Models\Food::find($item['food_id']);
-            if ($food) {
-                $maxPrep = max($maxPrep, ($food->prep_time ?? 15) * ($item['quantity'] ?? 1));
-            }
-        }
-    }
+    $prepTime = \App\Services\PrepTimeCalculator::estimateFromCart($cart);
 
     $result = DeliveryCalculator::calculate(
         (float) $request->lat,
         (float) $request->lng,
-        $maxPrep
+        $prepTime
     );
 
     return response()->json($result);
