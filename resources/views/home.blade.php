@@ -3421,6 +3421,7 @@
                             data-category="{{ $food->category_id }}"
                             id="food-card-{{ $food->id }}"
                             @if($food->hasVariations()) data-selected-var="{{ $food->variations->first()->id }}" @endif
+                            @if(!$food->isOrderable()) style="opacity:0.7;pointer-events:none;position:relative;" @endif
                         >
 
                 <div class="food-image">
@@ -3511,13 +3512,20 @@
                         </div>
 
 
-                        <button
+                        @if($food->isOrderable())
+                            <button
     type="button"
     class="order-btn"
     onclick="addSelectedFoodToCart({{ $food->id }}, {{ $dealAnnouncementIds[$food->id] ?? 'null' }})"
 >
     <i class="fas fa-cart-plus"></i>
 </button>
+                        @else
+                            <div style="display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:rgba(239,68,68,.12);color:#fca5a5;font-size:11px;font-weight:600;white-space:nowrap;">
+                                <i class="fas fa-clock"></i>
+                                {{ $food->availability_message }}
+                            </div>
+                        @endif
 
                     </div>
 

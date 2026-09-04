@@ -369,17 +369,63 @@
     </button>
 </div>
 
-<div id="stockPanelContent" style="display:none;position:fixed;bottom:70px;right:20px;width:320px;max-height:60vh;background:#1e293b;border-radius:14px;border:2px solid #334155;overflow:hidden;z-index:999;box-shadow:0 10px 40px rgba(0,0,0,0.4);">
+<div id="stockPanelContent" style="display:none;position:fixed;bottom:70px;right:20px;width:380px;max-height:70vh;background:#1e293b;border-radius:14px;border:2px solid #334155;overflow:hidden;z-index:999;box-shadow:0 10px 40px rgba(0,0,0,0.4);">
     <div style="padding:12px 16px;background:#16a34a;color:white;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
-        <span><i class="fas fa-boxes-stacked"></i> Quick Stock Control</span>
-        <button onclick="toggleStockPanel()" style="background:none;border:none;color:white;font-size:16px;cursor:pointer;">×</button>
+        <span><i class="fas fa-boxes-stacked"></i> Stock Control</span>
+        <button onclick="toggleStockPanel()" style="background:none;border:none;color:white;font-size:18px;cursor:pointer;">×</button>
     </div>
-    <div id="stockList" style="padding:10px;overflow-y:auto;max-height:calc(60vh - 50px);">
+    <!-- Search Bar -->
+    <div style="padding:10px 12px;border-bottom:1px solid #334155;">
+        <div style="position:relative;">
+            <input type="text" id="stockSearch" placeholder="🔍 Search items..." oninput="filterStockItems()" style="width:100%;padding:10px 12px 10px 36px;background:#0f172a;border:1px solid #475569;border-radius:8px;color:#e2e8f0;font-size:13px;outline:none;">
+            <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#64748b;font-size:13px;"></i>
+        </div>
+    </div>
+    <!-- Time Picker Modal (hidden by default) -->
+    <div id="timeModal" style="display:none;padding:12px;border-bottom:1px solid #334155;background:#0f172a;">
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:8px;">⏰ When will this item be available again?</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <button onclick="setTimeQuick(30)" class="time-quick-btn">30 min</button>
+            <button onclick="setTimeQuick(60)" class="time-quick-btn">1 hour</button>
+            <button onclick="setTimeQuick(120)" class="time-quick-btn">2 hours</button>
+            <button onclick="setTimeQuick(240)" class="time-quick-btn">4 hours</button>
+            <button onclick="setTimeQuick(480)" class="time-quick-btn">8 hours</button>
+            <button onclick="setTimeQuick(1440)" class="time-quick-btn">Tomorrow</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <label style="font-size:11px;color:#94a3b8;white-space:nowrap;">Or set time:</label>
+            <input type="datetime-local" id="availableAt" style="flex:1;padding:6px 8px;background:#1e293b;border:1px solid #475569;border-radius:6px;color:#e2e8f0;font-size:12px;">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+            <button onclick="confirmDisable()" style="flex:1;padding:8px;background:#ef4444;color:white;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">✅ Confirm Disable</button>
+            <button onclick="cancelDisable()" style="padding:8px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;font-size:12px;cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+    <div id="stockList" style="padding:6px;overflow-y:auto;max-height:calc(70vh - 120px);">
         <div style="text-align:center;color:#64748b;padding:20px;">Loading items...</div>
     </div>
 </div>
 
+<style>
+    .time-quick-btn {
+        padding: 5px 10px;
+        background: #1e293b;
+        border: 1px solid #475569;
+        border-radius: 6px;
+        color: #94a3b8;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .time-quick-btn:hover { border-color: #ff6b00; color: #ff6b00; background: rgba(255,107,0,.1); }
+    .time-quick-btn.selected { border-color: #16a34a; color: #4ade80; background: rgba(22,163,74,.15); }
+</style>
+
 <script>
+    var stockAllItems = [];
+    var pendingDisableId = null;
+    var selectedMinutes = null;
+
     function toggleStockPanel() {
         var panel = document.getElementById('stockPanelContent');
         if (panel.style.display === 'none') {
@@ -387,6 +433,8 @@
             loadStockItems();
         } else {
             panel.style.display = 'none';
+            document.getElementById('timeModal').style.display = 'none';
+            pendingDisableId = null;
         }
     }
 
@@ -397,38 +445,111 @@
         fetch('/admin/inventory-json')
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                if (!data.foods || data.foods.length === 0) {
-                    stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">No food items found</div>';
-                    return;
-                }
-                var html = '';
-                data.foods.forEach(function(food) {
-                    var inStock = food.is_in_stock !== undefined ? food.is_in_stock : true;
-                    var stockQty = food.stock_quantity !== undefined ? food.stock_quantity : -1;
-                    var threshold = food.low_stock_threshold !== undefined ? food.low_stock_threshold : 5;
-                    var statusColor = !inStock ? '#ef4444' : (stockQty >= 0 && stockQty <= threshold ? '#f59e0b' : '#10b981');
-                    var statusText = !inStock ? 'OUT' : (stockQty == -1 ? '∞' : stockQty);
-                    html += '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #334155;">
-                        <div style="flex:1;font-size:13px;color:#e2e8f0;">' + food.name + '</div>
-                        <div style="color:' + statusColor + ';font-weight:700;font-size:13px;min-width:30px;text-align:center;">' + statusText + '</div>
-                        <button onclick="quickToggle(' + food.id + ', ' + (inStock ? 'false' : 'true') + ', this)" style="padding:4px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;background:' + (inStock ? 'rgba(239,68,68,.15);color:#fca5a5' : 'rgba(16,185,129,.15);color:#6ee7b7') + ';">
-                            ' + (inStock ? 'Disable' : 'Enable') + '
-                        </button>
-                    </div>';
-                });
-                stockList.innerHTML = html;
+                stockAllItems = data.foods || [];
+                renderStockList(stockAllItems);
             })
             .catch(function(err) {
                 console.error('Stock load error:', err);
-                stockList.innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;">Error loading items<br><small>Make sure migration is run</small></div>';
+                stockList.innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;">Error loading items</div>';
             });
     }
 
-    function quickToggle(foodId, inStock, btn) {
-        if (btn) {
-            btn.textContent = '...';
-            btn.disabled = true;
+    function renderStockList(items) {
+        var stockList = document.getElementById('stockList');
+        if (!items.length) {
+            stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">No items found</div>';
+            return;
         }
+        var html = '';
+        items.forEach(function(food) {
+            var inStock = food.is_in_stock !== undefined ? food.is_in_stock : true;
+            var stockQty = food.stock_quantity !== undefined ? food.stock_quantity : -1;
+            var threshold = food.low_stock_threshold !== undefined ? food.low_stock_threshold : 5;
+            var statusColor = !inStock ? '#ef4444' : (stockQty >= 0 && stockQty <= threshold ? '#f59e0b' : '#10b981');
+            var statusText = !inStock ? 'OUT' : (stockQty == -1 ? '∞' : stockQty);
+            var availMsg = food.available_at ? ' ⏰ ' + new Date(food.available_at).toLocaleString() : '';
+            html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #334155;transition:background 0.2s;" onmouseover="this.style.background=\'rgba(255,255,255,.03)\'" onmouseout="this.style.background=\'none\'">
+                <div style="flex:1;">
+                    <div style="font-size:13px;color:#e2e8f0;font-weight:600;">' + food.name + '</div>
+                    ' + (availMsg ? '<div style="font-size:10px;color:#f59e0b;margin-top:2px;">' + availMsg + '</div>' : '') + '
+                </div>
+                <div style="color:' + statusColor + ';font-weight:700;font-size:12px;min-width:28px;text-align:center;">' + statusText + '</div>
+                ' + (inStock
+                    ? '<button onclick="startDisable(' + food.id + ')" style="padding:5px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.12);color:#fca5a5;transition:all 0.2s;">Disable</button>'
+                    : '<button onclick="quickEnable(' + food.id + ', this)" style="padding:5px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(16,185,129,.12);color:#6ee7b7;">Enable</button>'
+                ) + '
+            </div>';
+        });
+        stockList.innerHTML = html;
+    }
+
+    function filterStockItems() {
+        var query = document.getElementById('stockSearch').value.toLowerCase();
+        var filtered = stockAllItems.filter(function(f) {
+            return f.name.toLowerCase().indexOf(query) !== -1;
+        });
+        renderStockList(filtered);
+    }
+
+    function startDisable(foodId) {
+        pendingDisableId = foodId;
+        selectedMinutes = null;
+        document.getElementById('availableAt').value = '';
+        document.querySelectorAll('.time-quick-btn').forEach(function(b) { b.classList.remove('selected'); });
+        document.getElementById('timeModal').style.display = 'block';
+    }
+
+    function cancelDisable() {
+        pendingDisableId = null;
+        document.getElementById('timeModal').style.display = 'none';
+    }
+
+    function setTimeQuick(minutes) {
+        selectedMinutes = minutes;
+        document.querySelectorAll('.time-quick-btn').forEach(function(b) { b.classList.remove('selected'); });
+        event.target.classList.add('selected');
+        // Also set the datetime input
+        var dt = new Date(Date.now() + minutes * 60000);
+        var formatted = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0') + 'T' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+        document.getElementById('availableAt').value = formatted;
+    }
+
+    function confirmDisable() {
+        if (!pendingDisableId) return;
+
+        var body = { is_in_stock: false };
+        var dtVal = document.getElementById('availableAt').value;
+
+        if (selectedMinutes) {
+            body.available_in_minutes = selectedMinutes;
+        } else if (dtVal) {
+            body.available_at = dtVal;
+        }
+        // else: no time set → null → "Currently unavailable"
+
+        fetch('/admin/food/' + pendingDisableId + '/toggle-stock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        .then(function(r) { return r.json(); })
+        .then(function() {
+            document.getElementById('timeModal').style.display = 'none';
+            pendingDisableId = null;
+            loadStockItems();
+        })
+        .catch(function(err) {
+            console.error('Toggle error:', err);
+            alert('Error updating stock.');
+        });
+    }
+
+    function quickEnable(foodId, btn) {
+        if (btn) { btn.textContent = '...'; btn.disabled = true; }
         fetch('/admin/food/' + foodId + '/toggle-stock', {
             method: 'POST',
             headers: {
@@ -436,14 +557,13 @@
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ is_in_stock: inStock })
+            body: JSON.stringify({ is_in_stock: true })
         })
         .then(function(r) { return r.json(); })
         .then(function() { loadStockItems(); })
         .catch(function(err) {
-            console.error('Toggle error:', err);
+            console.error('Enable error:', err);
             if (btn) { btn.textContent = 'Error'; btn.disabled = false; }
-            alert('Error updating stock. Check console for details.');
         });
     }
 </script>

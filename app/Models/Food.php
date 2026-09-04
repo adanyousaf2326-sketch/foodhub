@@ -10,6 +10,7 @@ class Food extends Model
         'category_id', 'name', 'description', 'price',
         'discount_percentage', 'image', 'is_available', 'prep_time',
         'stock_quantity', 'is_in_stock', 'low_stock_threshold',
+        'available_at',
     ];
 
 
@@ -18,6 +19,7 @@ class Food extends Model
         'price' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
         'is_available' => 'boolean',
+        'available_at' => 'datetime',
     ];
 
     public function category()
@@ -91,5 +93,44 @@ class Food extends Model
     public function hasDiscount(): bool
     {
         return (float) $this->discount_percentage > 0;
+    }
+
+    /**
+     * Check if food is currently orderable (in stock + available_at passed)
+     */
+    public function isOrderable(): bool
+    {
+        if (!$this->is_in_stock) {
+            // Check if available_at is set and in the future
+            if ($this->available_at && $this->available_at->isFuture()) {
+                return false;
+            }
+            // If available_at is past or null, item is disabled permanently until kitchen enables
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get availability message for customers
+     */
+    public function getAvailabilityMessage(): ?string
+    {
+        if ($this->is_in_stock) {
+            return null; // Available
+        }
+
+        if ($this->available_at && $this->available_at->isFuture()) {
+            $diff = now()->diff($this->available_at);
+            if ($diff->days > 0) {
+                return 'Available ' . $this->available_at->format('D, g:i A');
+            }
+            if ($diff->h > 0) {
+                return 'Available in ' . $diff->h . 'h ' . $diff->i . 'm';
+            }
+            return 'Available in ' . $diff->i . ' minutes';
+        }
+
+        return 'Currently unavailable';
     }
 }

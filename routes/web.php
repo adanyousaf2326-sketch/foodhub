@@ -26,7 +26,7 @@ Route::get('/', function () {
         return Category::where('is_active', true)->orderBy('name')->get();
     });
 
-    // Cache foods for 2 minutes
+    // Cache foods for 2 minutes — show all items including disabled ones
     $foods = \Cache::remember('home_foods', 120, function () {
         return Food::where('is_available', true)
             ->with(['category', 'variations'])
@@ -876,7 +876,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         // Inventory Management
         Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory');
         Route::get('/inventory-json', function () {
-            $foods = \App\Models\Food::select('id', 'name', 'is_in_stock', 'stock_quantity', 'low_stock_threshold')
+            $foods = \App\Models\Food::select('id', 'name', 'is_in_stock', 'stock_quantity', 'low_stock_threshold', 'available_at')
                 ->orderBy('name')
                 ->get();
             return response()->json(['foods' => $foods]);

@@ -40,7 +40,24 @@ class InventoryController extends Controller
     public function toggleInStock(Request $request, $id)
     {
         $food = Food::findOrFail($id);
-        $food->update(['is_in_stock' => $request->input('is_in_stock', true)]);
+
+        $data = ['is_in_stock' => $request->input('is_in_stock', true)];
+
+        // If disabling, set available_at time
+        if (!$request->input('is_in_stock', true)) {
+            $minutes = $request->input('available_in_minutes');
+            if ($minutes && $minutes > 0) {
+                $data['available_at'] = now()->addMinutes((int) $minutes);
+            } elseif ($request->input('available_at')) {
+                $data['available_at'] = $request->input('available_at');
+            } else {
+                $data['available_at'] = null; // No time set = available tomorrow
+            }
+        } else {
+            $data['available_at'] = null; // Clear when re-enabling
+        }
+
+        $food->update($data);
 
         return response()->json(['success' => true]);
     }
