@@ -1,4 +1,6 @@
-/* FoodHub Customer - Dark Theme (backup - main overrides in blade) */
+/* FoodHub Customer - Dark Theme + Mobile Responsive */
+
+/* ===== DARK THEME ===== */
 body.dark-theme { background: #0f172a; color: #e2e8f0; }
 body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, body.dark-theme h4,
 body.dark-theme strong, body.dark-theme label { color: #f1f5f9; }
@@ -73,8 +75,156 @@ body.dark-theme select option { background: #1e293b; color: #e2e8f0; }
 body.dark-theme ::-webkit-scrollbar { width: 8px; }
 body.dark-theme ::-webkit-scrollbar-track { background: #1e293b; }
 body.dark-theme ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+/* Dark theme for cards/boxes */
+body.dark-theme .card { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+body.dark-theme .summary { background: #1e293b; border-color: #334155; }
+body.dark-theme .container { color: #e2e8f0; }
+body.dark-theme .item { border-color: #334155; }
+body.dark-theme .empty-cart { color: #94a3b8; }
+
+/* Dark theme for order pages */
+body.dark-theme .timer-card { background: #1e293b; border-color: #334155; }
+body.dark-theme .status-card { background: #1e293b; border-color: #334155; }
+body.dark-theme .order-card { background: #1e293b; border-color: #334155; }
+
+/* Transition */
 body.dark-theme, body.dark-theme .food-card, body.dark-theme .category, body.dark-theme .side-cart,
 body.dark-theme .cart-footer, body.dark-theme .menu-poster, body.dark-theme .announcement-panel,
-body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+body.dark-theme input, body.dark-theme textarea, body.dark-theme select,
+body.dark-theme .card, body.dark-theme .summary, body.dark-theme .item {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ===== MOBILE RESPONSIVE — NAV BUTTONS ===== */
+
+/* Nav overflow handling */
+nav div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+nav div::-webkit-scrollbar { display: none; }
+
+/* Mobile: Smaller nav buttons */
+@media (max-width: 768px) {
+    nav {
+        padding: 12px 4% !important;
+        flex-wrap: wrap;
+    }
+    nav .logo {
+        font-size: 20px !important;
+    }
+    nav div {
+        gap: 4px;
+    }
+    nav div a {
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+        margin-left: 0 !important;
+        white-space: nowrap;
+    }
+    /* Hide text labels on small screens, show icons only */
+    nav div a span:not(.cart-count):not(.theme-icon-customer) {
+        display: none;
+    }
+    nav div button {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
+    }
+    /* My Account/Login button mobile */
+    nav div a[style*="linear-gradient"] {
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+    }
+    nav div a[style*="linear-gradient"] i {
+        font-size: 12px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    nav div a {
+        padding: 5px 6px !important;
+        font-size: 10px !important;
+    }
+    nav div button {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 12px !important;
+    }
+    nav div a[style*="linear-gradient"] {
+        padding: 5px 8px !important;
+        font-size: 10px !important;
+    }
+}
+
+/* ===== MOBILE RESPONSIVE — GENERAL PAGES ===== */
+
+/* Cart page mobile */
+@media (max-width: 700px) {
+    body { padding: 10px; }
+    .container { padding: 15px 10px !important; }
+    .header h1 { font-size: 20px !important; }
+    .item { padding: 12px !important; }
+    .item-name { font-size: 13px !important; }
+    .item-price { font-size: 14px !important; }
+    .summary { padding: 15px !important; }
+    .total { font-size: 18px !important; }
+}
+
+/* Checkout page mobile */
+@media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr !important; }
+    .order-types { grid-template-columns: 1fr !important; }
+    .form-group label { font-size: 13px !important; }
+    .form-group input, .form-group select, .form-group textarea { font-size: 14px !important; padding: 10px 12px !important; }
+}
+
+/* Order history mobile */
+@media (max-width: 700px) {
+    .container { padding: 10px !important; }
+    .card { padding: 20px 15px !important; }
+    .title h1 { font-size: 22px !important; }
+    .title .icon { font-size: 40px !important; }
+}
+
+/* Track order mobile */
+@media (max-width: 700px) {
+    .container { padding: 10px !important; }
+    .card { padding: 20px 15px !important; }
+}
+
+/* Profile page mobile */
+@media (max-width: 600px) {
+    .profile-container { padding: 10px !important; }
+    .profile-header { flex-direction: column; text-align: center; padding: 20px 15px !important; }
+    .tabs { overflow-x: auto; gap: 6px; }
+    .tab { white-space: nowrap; font-size: 12px !important; padding: 8px 12px !important; }
+    .wishlist-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* Order success mobile */
+@media (max-width: 600px) {
+    body { padding: 15px; }
+    .card { padding: 25px 15px !important; }
+    .icon { font-size: 50px !important; }
+    h1 { font-size: 22px !important; }
+}
+
+/* General form inputs mobile */
+@media (max-width: 600px) {
+    input, select, textarea {
+        font-size: 16px !important; /* Prevents iOS zoom */
+        padding: 12px !important;
+    }
+    button, .btn, .checkout, .back {
+        font-size: 14px !important;
+        padding: 10px 16px !important;
+    }
 }
