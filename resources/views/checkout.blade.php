@@ -786,13 +786,20 @@
             @endforeach
 
 
-            <!-- Estimated Time (always shown for delivery) -->
+            <!-- Food Prep Time (always visible for all order types) -->
+            <div id="summaryPrepTime" style="padding:10px 0;border-bottom:1px solid #eee;">
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:#6b7280;"><i class="fas fa-clock"></i> ⏱️ Food Prep Time</span>
+                    <span id="summaryReadyTime" style="color:#f59e0b;font-weight:600;">Calculating...</span>
+                </div>
+            </div>
+
+            <!-- Delivery Time (only for delivery orders) -->
             <div id="summaryTime" style="display:none;padding:10px 0;border-bottom:1px solid #eee;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:#6b7280;"><i class="fas fa-clock"></i> Estimated Delivery</span>
-                    <span id="summaryDeliveryTime" style="color:#2563eb;font-weight:600;">35 min</span>
+                    <span style="color:#6b7280;"><i class="fas fa-truck"></i> Estimated Delivery</span>
+                    <span id="summaryDeliveryTime" style="color:#2563eb;font-weight:600;">--</span>
                 </div>
-                <div id="summaryReadyTime" style="font-size:12px;color:#9ca3af;margin-top:3px;">Food ready in ~15 min</div>
             </div>
 
             <!-- Delivery Charges -->
@@ -804,14 +811,7 @@
                 <div id="summaryDeliveryDistance" style="font-size:12px;color:#9ca3af;margin-top:3px;"></div>
             </div>
 
-            <!-- Estimated Time -->
-            <div id="summaryTime" style="display:none;padding:10px 0;border-bottom:1px solid #eee;">
-                <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:#6b7280;"><i class="fas fa-clock"></i> Estimated Delivery</span>
-                    <span id="summaryDeliveryTime" style="color:#2563eb;font-weight:600;">--</span>
-                </div>
-                <div id="summaryReadyTime" style="font-size:12px;color:#9ca3af;margin-top:3px;"></div>
-            </div>
+
 
             <div class="total">
 
@@ -942,19 +942,45 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
 
     updateOrderType();
+    calcPrepTime(); // Show prep time for all order types
 
     document
         .querySelectorAll('input[name="order_type"]')
         .forEach(function (radio) {
 
             radio.addEventListener(
-                'change',
-                updateOrderType
+                'change', function() {
+                    updateOrderType();
+                    calcPrepTime();
+                }
             );
 
         });
 
 });
+
+// Calculate prep time for ALL order types (Dine In, Takeaway, Delivery)
+function calcPrepTime() {
+    var cartItems = @json(collect(session()->get('cart', [])));
+    var maxPrep = 15; // default 15 min
+
+    cartItems.forEach(function(item) {
+        var qty = item.quantity || 1;
+        var prepTime = item.prep_time || 15;
+        var batches = Math.ceil(qty / 3);
+        var totalTime = prepTime + ((batches - 1) * (prepTime * 0.4));
+        if (totalTime > maxPrep) maxPrep = totalTime;
+    });
+
+    maxPrep = Math.min(Math.max(maxPrep, 5), 120);
+
+    var readyEl = document.getElementById('summaryReadyTime');
+    if (readyEl) {
+        readyEl.textContent = '~' + maxPrep + ' min';
+        readyEl.style.color = '#f59e0b';
+        readyEl.style.fontWeight = '700';
+    }
+}
 
 // === DELIVERY CHARGE CALCULATION ===
 var cartTotal = {{ $total }};
