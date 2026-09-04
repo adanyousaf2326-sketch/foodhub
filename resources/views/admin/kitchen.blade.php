@@ -341,6 +341,70 @@
     </div>
 @endif
 
+<!-- STOCK CONTROL SIDEBAR -->
+<div id="stockPanel" style="position:fixed;bottom:20px;right:20px;z-index:1000;">
+    <button onclick="toggleStockPanel()" style="background:#16a34a;color:white;border:none;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(22,163,74,0.3);">
+        <i class="fas fa-boxes-stacked"></i> Stock Control
+    </button>
+</div>
+
+<div id="stockPanelContent" style="display:none;position:fixed;bottom:70px;right:20px;width:320px;max-height:60vh;background:#1e293b;border-radius:14px;border:2px solid #334155;overflow:hidden;z-index:999;box-shadow:0 10px 40px rgba(0,0,0,0.4);">
+    <div style="padding:12px 16px;background:#16a34a;color:white;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+        <span><i class="fas fa-boxes-stacked"></i> Quick Stock Control</span>
+        <button onclick="toggleStockPanel()" style="background:none;border:none;color:white;font-size:16px;cursor:pointer;">×</button>
+    </div>
+    <div id="stockList" style="padding:10px;overflow-y:auto;max-height:calc(60vh - 50px);">
+        <div style="text-align:center;color:#64748b;padding:20px;">Loading items...</div>
+    </div>
+</div>
+
+<script>
+    function toggleStockPanel() {
+        var panel = document.getElementById('stockPanelContent');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            loadStockItems();
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+
+    function loadStockItems() {
+        fetch('/admin/inventory?json=1')
+            .then(r => r.json())
+            .then(data => {
+                var html = '';
+                (data.foods || []).forEach(food => {
+                    var statusColor = !food.is_in_stock ? '#ef4444' : (food.stock_quantity >= 0 && food.stock_quantity <= food.low_stock_threshold ? '#f59e0b' : '#10b981');
+                    var statusText = !food.is_in_stock ? 'OUT' : (food.stock_quantity == -1 ? '∞' : food.stock_quantity);
+                    html += '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #334155;">
+                        <div style="flex:1;font-size:13px;">' + food.name + '</div>
+                        <div style="color:' + statusColor + ';font-weight:700;font-size:13px;min-width:30px;text-align:center;">' + statusText + '</div>
+                        <button onclick="quickToggle(' + food.id + ', ' + (food.is_in_stock ? 'false' : 'true') + ')" style="padding:3px 8px;border:none;border-radius:4px;font-size:11px;cursor:pointer;background:' + (food.is_in_stock ? '#ef444420;color:#fca5a5' : '#10b98120;color:#6ee7b7') + ';">
+                            ' + (food.is_in_stock ? 'Disable' : 'Enable') + '
+                        </button>
+                    </div>';
+                });
+                document.getElementById('stockList').innerHTML = html || '<div style="text-align:center;color:#64748b;padding:20px;">No items</div>';
+            })
+            .catch(() => {
+                document.getElementById('stockList').innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;">Error loading</div>';
+            });
+    }
+
+    function quickToggle(foodId, inStock) {
+        fetch('/admin/food/' + foodId + '/toggle-stock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ is_in_stock: inStock })
+        }).then(r => r.json()).then(() => loadStockItems());
+    }
+</script>
+
 <script>
     function updateTimers() {
         const now = Math.floor(Date.now() / 1000);

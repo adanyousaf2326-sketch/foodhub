@@ -705,6 +705,75 @@ Route::post('/login', [AuthController::class, 'login'])
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
+/*
+ * CUSTOMER AUTH
+ */
+Route::get('/customer/register', [\App\Http\Controllers\CustomerAuthController::class, 'showRegister'])->name('customer.register');
+Route::post('/customer/register', [\App\Http\Controllers\CustomerAuthController::class, 'register'])->name('customer.register.submit');
+Route::get('/customer/login', [\App\Http\Controllers\CustomerAuthController::class, 'showLogin'])->name('customer.login');
+Route::post('/customer/login', [\App\Http\Controllers\CustomerAuthController::class, 'login'])->name('customer.login.submit');
+Route::post('/customer/logout', [\App\Http\Controllers\CustomerAuthController::class, 'logout'])->name('customer.logout');
+Route::get('/customer/profile', [\App\Http\Controllers\CustomerAuthController::class, 'profile'])->name('customer.profile');
+Route::put('/customer/profile', [\App\Http\Controllers\CustomerAuthController::class, 'updateProfile'])->name('customer.update-profile');
+
+/*
+ * WISHLIST / FAVORITES
+ */
+Route::get('/api/wishlist', [\App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist.index');
+Route::post('/api/wishlist/{foodId}', [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::delete('/api/wishlist/{foodId}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
+/*
+ * LIVE TRACKING MAP
+ */
+Route::get('/track/{orderId}/map', [\App\Http\Controllers\TrackingMapController::class, 'customerMap'])->name('tracking.map');
+Route::get('/api/tracking/{orderId}/rider-location', [\App\Http\Controllers\TrackingMapController::class, 'riderLocation']);
+Route::post('/api/rider/update-location', [\App\Http\Controllers\TrackingMapController::class, 'updateRiderLocation']);
+Route::get('/api/admin/rider-locations', [\App\Http\Controllers\TrackingMapController::class, 'allRiderLocations']);
+
+/*
+ * KITCHEN PRINTER API
+ */
+Route::get('/api/kitchen/new-orders', function (Request $request) {
+    $lastId = $request->input('last_id', 0);
+    $orders = Order::where('id', '>', $lastId)
+        ->where('status', 'Pending')
+        ->with(['items.food', 'table'])
+        ->orderBy('id')
+        ->limit(10)
+        ->get()
+        ->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'customer_name' => $order->customer_name,
+                'phone' => $order->phone,
+                'address' => $order->address,
+                'order_type' => $order->order_type,
+                'total_amount' => $order->total_amount,
+                'notes' => $order->notes,
+                'table' => $order->table ? ['table_number' => $order->table->table_number] : null,
+                'items' => $order->items->map(function ($item) {
+                    return [
+                        'quantity' => $item->quantity,
+                        'food_name' => $item->food_name,
+                        'variant_name' => $item->variant_name,
+                    ];
+                }),
+            ];
+        });
+    return response()->json(['orders' => $orders]);
+})->middleware('web');
+
+/*
+ * CUSTOMER CHAT
+ */
+Route::get('/track-order/{order}/chat', function (Order $order) {
+    $messages = \App\Models\Message::where('order_id', $order->id)
+        ->orderBy('created_at')
+        ->get();
+    return view('customer.chat', compact('order', 'messages'));
+})->name('customer.chat');
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
@@ -784,6 +853,25 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
             $order->load(['items.food', 'table', 'rider']);
             return view('admin.print-receipt', compact('order'));
         })->name('orders.print');
+
+        // Live Rider Tracking Map
+        Route::get('/rider-map', [\App\Http\Controllers\TrackingMapController::class, 'adminRiderMap'])->name('rider-map');
+
+        // Kitchen Printer
+        Route::get('/kitchen-printer', function () {
+            return view('admin.kitchen-printer');
+        })->name('kitchen-printer');
+
+        // Inventory Management
+        Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory');
+        Route::get('/inventory-json', function () {
+            $foods = \App\Models\Food::select('id', 'name', 'is_in_stock', 'stock_quantity', 'low_stock_threshold')
+                ->orderBy('name')
+                ->get();
+            return response()->json(['foods' => $foods]);
+        });
+        Route::post('/food/{id}/stock', [\App\Http\Controllers\Admin\InventoryController::class, 'updateStock'])->name('food.update-stock');
+        Route::post('/food/{id}/toggle-stock', [\App\Http\Controllers\Admin\InventoryController::class, 'toggleInStock'])->name('food.toggle-stock');
 
 });
 

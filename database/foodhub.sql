@@ -147,6 +147,9 @@ CREATE TABLE `food` (
   `discount_percentage` decimal(5,2) NOT NULL DEFAULT 0.00,
   `image` varchar(255) DEFAULT NULL,
   `prep_time` int NOT NULL DEFAULT 15,
+  `stock_quantity` int NOT NULL DEFAULT -1 COMMENT '-1 = unlimited',
+  `is_in_stock` tinyint(1) NOT NULL DEFAULT 1,
+  `low_stock_threshold` int NOT NULL DEFAULT 5,
   `is_available` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -341,6 +344,39 @@ CREATE TABLE `order_locations` (
   PRIMARY KEY (`id`),
   KEY `order_locations_order_id_foreign` (`order_id`),
   CONSTRAINT `order_locations_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `customers` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `address` text,
+  `lat` decimal(10,7) DEFAULT NULL,
+  `lng` decimal(10,7) DEFAULT NULL,
+  `loyalty_points` int NOT NULL DEFAULT 0,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `customers_email_unique` (`email`),
+  UNIQUE KEY `customers_phone_unique` (`phone`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `wishlist` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `customer_id` bigint UNSIGNED NOT NULL,
+  `food_id` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `wishlist_customer_food_unique` (`customer_id`, `food_id`),
+  KEY `wishlist_food_id_foreign` (`food_id`),
+  CONSTRAINT `wishlist_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `wishlist_food_id_foreign` FOREIGN KEY (`food_id`) REFERENCES `food` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

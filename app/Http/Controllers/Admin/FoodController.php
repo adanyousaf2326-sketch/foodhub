@@ -35,6 +35,7 @@ class FoodController extends Controller
             'image' => 'nullable|url|max:2048',
             'prep_time' => 'required|integer|min:1|max:120',
             'is_available' => 'nullable|boolean',
+            'stock_quantity' => 'nullable|integer|min:-1',
             'variations' => $hasVariations ? 'required|array|min:1' : 'nullable|array',
             'variations.*.name' => 'required_with:variations|string|max:100',
             'variations.*.price' => 'required_with:variations|numeric|min:0',
@@ -60,6 +61,8 @@ class FoodController extends Controller
             'image' => $request->image,
             'prep_time' => $request->prep_time ?? 15,
             'is_available' => $request->has('is_available'),
+            'stock_quantity' => $request->stock_quantity ?? -1,
+            'is_in_stock' => ($request->stock_quantity ?? -1) != 0,
         ]);
 
         if ($hasVariations && $request->filled('variations')) {
@@ -104,6 +107,7 @@ class FoodController extends Controller
             'image' => 'nullable|string|max:255',
             'prep_time' => 'required|integer|min:1|max:120',
             'is_available' => 'nullable|boolean',
+            'stock_quantity' => 'nullable|integer|min:-1',
             'variations' => $hasVariations ? 'required|array|min:1' : 'nullable|array',
             'variations.*.name' => 'required_with:variations|string|max:100',
             'variations.*.price' => 'required_with:variations|numeric|min:0',
@@ -128,6 +132,8 @@ class FoodController extends Controller
             'image' => $request->image,
             'prep_time' => $request->prep_time ?? 15,
             'is_available' => $request->has('is_available'),
+            'stock_quantity' => $request->stock_quantity ?? -1,
+            'is_in_stock' => ($request->stock_quantity ?? -1) != 0,
         ]);
 
         // Sync variations

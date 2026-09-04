@@ -9,6 +9,7 @@ class Food extends Model
     protected $table = 'food';    protected $fillable = [
         'category_id', 'name', 'description', 'price',
         'discount_percentage', 'image', 'is_available', 'prep_time',
+        'stock_quantity', 'is_in_stock', 'low_stock_threshold',
     ];
 
 

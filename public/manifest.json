@@ -1,0 +1,38 @@
+{
+    "name": "FoodHub - Restaurant & Delivery",
+    "short_name": "FoodHub",
+    "description": "Order food online, track delivery, and enjoy delicious meals!",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ff6b00",
+    "orientation": "portrait-primary",
+    "categories": ["food", "restaurants", "delivery"],
+    "icons": [
+        {
+            "src": "/icons/icon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Track Order",
+            "url": "/track-order",
+            "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]
+        },
+        {
+            "name": "Cart",
+            "url": "/cart",
+            "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]
+        }
+    ]
+}

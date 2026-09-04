@@ -10,6 +10,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>FoodHub - Order Delicious Food</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#ff6b00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FoodHub">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.svg') }}">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script>
@@ -4971,6 +4980,17 @@ document.addEventListener(
             }, 100);
         }
     });
+    </script>
+
+    <!-- PWA Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js')
+                .then(function(reg) { console.log('SW registered:', reg.scope); })
+                .catch(function(err) { console.log('SW failed:', err); });
+        });
+    }
     </script>
 </body>
 

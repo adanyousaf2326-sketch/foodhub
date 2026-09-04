@@ -341,6 +341,20 @@
 
             <div class="form-group">
                 <label>
+                    <i class="fas fa-boxes-stacked"></i> Stock Quantity (-1 = Unlimited)
+                </label>
+                <input
+                    type="number"
+                    name="stock_quantity"
+                    value="{{ old('stock_quantity', $food->stock_quantity ?? -1) }}"
+                    min="-1"
+                    placeholder="-1 for unlimited"
+                >
+                <small style="color:#666;">Set to -1 for unlimited, 0 for out of stock.</small>
+            </div>
+
+            <div class="form-group">
+                <label>
                     Image URL
                 </label>
                 <input
