@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kitchen Display - FoodHub</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +44,7 @@
             letter-spacing: 1px;
         }
 
-        .orders-container { padding: 0 20px 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; }
+        .orders-container { padding: 0 20px 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
 
         .order-card {
             background: #1e293b;
@@ -149,9 +150,29 @@
         .no-orders i { font-size: 50px; margin-bottom: 10px; display: block; }
 
         @media (max-width: 768px) {
-            .orders-container { grid-template-columns: 1fr; padding: 0 12px 12px; }
-            .kitchen-topbar { flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
-            .kitchen-topbar .stats { flex-wrap: wrap; gap: 8px; }
+            .orders-container { grid-template-columns: 1fr 1fr; padding: 0 8px 8px; gap: 8px; }
+            .kitchen-topbar { flex-wrap: wrap; gap: 8px; padding: 8px 12px; }
+            .kitchen-topbar .stats { flex-wrap: wrap; gap: 6px; }
+            .stat-item { padding: 4px 8px; font-size: 11px; }
+            .stat-item .count { font-size: 14px; }
+            .order-header { padding: 8px 12px; }
+            .order-id { font-size: 16px; }
+            .order-body { padding: 8px 12px; }
+            .order-detail { font-size: 11px; margin-bottom: 3px; }
+            .order-items { font-size: 10px; padding: 6px 12px; }
+            .order-actions { padding: 6px 12px; }
+            .action-btn { padding: 6px 8px; font-size: 11px; }
+            .section-label { padding: 10px 12px 6px; font-size: 12px; }
+        }
+        @media (max-width: 480px) {
+            .orders-container { grid-template-columns: 1fr; gap: 6px; }
+            .order-card { border-radius: 10px; }
+            .order-header { padding: 6px 10px; }
+            .order-id { font-size: 14px; }
+            .order-body { padding: 6px 10px; }
+            .order-detail { font-size: 10px; }
+            .order-items { font-size: 9px; padding: 4px 10px; }
+            .action-btn { padding: 5px 6px; font-size: 10px; }
         }
     </style>
 </head>
@@ -370,38 +391,60 @@
     }
 
     function loadStockItems() {
+        var stockList = document.getElementById('stockList');
+        stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:15px;">Loading...</div>';
+
         fetch('/admin/inventory-json')
-            .then(r => r.json())
-            .then(data => {
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data.foods || data.foods.length === 0) {
+                    stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">No food items found</div>';
+                    return;
+                }
                 var html = '';
-                (data.foods || []).forEach(food => {
-                    var statusColor = !food.is_in_stock ? '#ef4444' : (food.stock_quantity >= 0 && food.stock_quantity <= food.low_stock_threshold ? '#f59e0b' : '#10b981');
-                    var statusText = !food.is_in_stock ? 'OUT' : (food.stock_quantity == -1 ? '∞' : food.stock_quantity);
+                data.foods.forEach(function(food) {
+                    var inStock = food.is_in_stock !== undefined ? food.is_in_stock : true;
+                    var stockQty = food.stock_quantity !== undefined ? food.stock_quantity : -1;
+                    var threshold = food.low_stock_threshold !== undefined ? food.low_stock_threshold : 5;
+                    var statusColor = !inStock ? '#ef4444' : (stockQty >= 0 && stockQty <= threshold ? '#f59e0b' : '#10b981');
+                    var statusText = !inStock ? 'OUT' : (stockQty == -1 ? '∞' : stockQty);
                     html += '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #334155;">
-                        <div style="flex:1;font-size:13px;">' + food.name + '</div>
+                        <div style="flex:1;font-size:13px;color:#e2e8f0;">' + food.name + '</div>
                         <div style="color:' + statusColor + ';font-weight:700;font-size:13px;min-width:30px;text-align:center;">' + statusText + '</div>
-                        <button onclick="quickToggle(' + food.id + ', ' + (food.is_in_stock ? 'false' : 'true') + ')" style="padding:3px 8px;border:none;border-radius:4px;font-size:11px;cursor:pointer;background:' + (food.is_in_stock ? '#ef444420;color:#fca5a5' : '#10b98120;color:#6ee7b7') + ';">
-                            ' + (food.is_in_stock ? 'Disable' : 'Enable') + '
+                        <button onclick="quickToggle(' + food.id + ', ' + (inStock ? 'false' : 'true') + ', this)" style="padding:4px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;background:' + (inStock ? 'rgba(239,68,68,.15);color:#fca5a5' : 'rgba(16,185,129,.15);color:#6ee7b7') + ';">
+                            ' + (inStock ? 'Disable' : 'Enable') + '
                         </button>
                     </div>';
                 });
-                document.getElementById('stockList').innerHTML = html || '<div style="text-align:center;color:#64748b;padding:20px;">No items</div>';
+                stockList.innerHTML = html;
             })
-            .catch(() => {
-                document.getElementById('stockList').innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;">Error loading</div>';
+            .catch(function(err) {
+                console.error('Stock load error:', err);
+                stockList.innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;">Error loading items<br><small>Make sure migration is run</small></div>';
             });
     }
 
-    function quickToggle(foodId, inStock) {
+    function quickToggle(foodId, inStock, btn) {
+        if (btn) {
+            btn.textContent = '...';
+            btn.disabled = true;
+        }
         fetch('/admin/food/' + foodId + '/toggle-stock', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '',
                 'Accept': 'application/json'
             },
             body: JSON.stringify({ is_in_stock: inStock })
-        }).then(r => r.json()).then(() => loadStockItems());
+        })
+        .then(function(r) { return r.json(); })
+        .then(function() { loadStockItems(); })
+        .catch(function(err) {
+            console.error('Toggle error:', err);
+            if (btn) { btn.textContent = 'Error'; btn.disabled = false; }
+            alert('Error updating stock. Check console for details.');
+        });
     }
 </script>
 
