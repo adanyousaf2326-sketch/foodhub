@@ -367,6 +367,9 @@ class DashboardController extends Controller
      */
     public function closeAll()
     {
+        // Auto-create columns if missing (SQLite fix)
+        $this->ensureFoodColumns();
+
         $log = [];
 
         // 1. 🛵 Turn off ALL riders
@@ -390,14 +393,19 @@ class DashboardController extends Controller
         $log[] = "✅ {$stuckClosed} stuck orders → Delivered";
 
         // 5. 🍕 Re-enable ALL disabled food items
-        $foodReenabled = \App\Models\Food::where('is_in_stock', false)
-            ->update(['is_in_stock' => true, 'available_at' => null]);
-        $log[] = "🍕 {$foodReenabled} food items re-enabled";
+        \App\Models\Food::where('is_in_stock', false)->update(['is_in_stock' => true]);
+        // Try to clear available_at if column exists
+        try {
+            \App\Models\Food::where('is_in_stock', true)->update(['available_at' => null]);
+        } catch (\Exception $e) { /* column may not exist */ }
+        $log[] = "🍕 Food items re-enabled";
 
         // 6. 🪑 Reset all occupied tables → available
-        $tablesReset = \App\Models\RestaurantTable::where('status', 'occupied')
-            ->update(['status' => 'available']);
-        $log[] = "🪑 {$tablesReset} tables freed";
+        try {
+            $tablesReset = \App\Models\RestaurantTable::where('status', 'occupied')
+                ->update(['status' => 'available']);
+            $log[] = "🪑 {$tablesReset} tables freed";
+        } catch (\Exception $e) { /* table may not exist */ }
 
         // 7. 🗑️ Clear all caches
         \Cache::forget('home_foods');
@@ -411,5 +419,27 @@ class DashboardController extends Controller
         $summary = implode(' • ', $log);
 
         return back()->with('success', "✅ New Day Started! {$summary}");
+    }
+
+    /**
+     * Ensure food table has stock columns (SQLite auto-create)
+     */
+    protected function ensureFoodColumns()
+    {
+        $columns = \DB::select('PRAGMA table_info(food)');
+        $columnNames = array_column($columns, 'name');
+
+        if (!in_array('stock_quantity', $columnNames)) {
+            \DB::statement('ALTER TABLE food ADD COLUMN stock_quantity INTEGER NOT NULL DEFAULT -1');
+        }
+        if (!in_array('is_in_stock', $columnNames)) {
+            \DB::statement('ALTER TABLE food ADD COLUMN is_in_stock BOOLEAN NOT NULL DEFAULT 1');
+        }
+        if (!in_array('low_stock_threshold', $columnNames)) {
+            \DB::statement('ALTER TABLE food ADD COLUMN low_stock_threshold INTEGER NOT NULL DEFAULT 5');
+        }
+        if (!in_array('available_at', $columnNames)) {
+            \DB::statement('ALTER TABLE food ADD COLUMN available_at TIMESTAMP NULL DEFAULT NULL');
+        }
     }
 }
