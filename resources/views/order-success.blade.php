@@ -12,6 +12,7 @@
 
     <title>Order Placed - FoodHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/customer-dark-theme.css') }}">
 
     <style>
 
@@ -145,6 +146,14 @@
 
 </div>
 
+<script>
+(function() {
+    var saved = localStorage.getItem('foodhub-theme');
+    if (saved === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+})();
+</script>
 </body>
 
 </html>

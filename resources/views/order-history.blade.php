@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/foodhub.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/customer-dark-theme.css') }}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
         body { background: #f8f9fa; color: #222; }
@@ -125,6 +126,18 @@
             <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count">{{ collect(session()->get('cart', []))->sum('quantity') }}</span>
         </a>
+        @if(session('customer_id'))
+            <a href="{{ route('customer.profile') }}" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:linear-gradient(135deg,#ff6b00,#ff8c33);color:white;font-weight:700;font-size:13px;text-decoration:none;">
+                <i class="fas fa-user"></i> {{ session('customer_name', 'My Account') }}
+            </a>
+        @else
+            <a href="{{ route('customer.login') }}" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.15);color:white;font-weight:600;font-size:13px;text-decoration:none;">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        @endif
+        <button type="button" onclick="toggleCustomerTheme()" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:17px;transition:all .25s ease;">
+            <span class="theme-icon-customer"><i class="fas fa-moon"></i></span>
+        </button>
     </div>
 </nav>
 
@@ -308,5 +321,28 @@
     </div>
 </div>
 
+<script>
+function toggleCustomerTheme() {
+    var body = document.body;
+    var icon = document.querySelector('.theme-icon-customer');
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        if (icon) icon.innerHTML = '<i class="fas fa-moon"></i>';
+        localStorage.setItem('foodhub-theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        if (icon) icon.innerHTML = '<i class="fas fa-sun"></i>';
+        localStorage.setItem('foodhub-theme', 'dark');
+    }
+}
+(function() {
+    var saved = localStorage.getItem('foodhub-theme');
+    var icon = document.querySelector('.theme-icon-customer');
+    if (saved === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (icon) icon.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+})();
+</script>
 </body>
 </html>
