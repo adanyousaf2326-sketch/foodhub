@@ -118,6 +118,18 @@
             .register-body { padding: 20px; }
         }
     </style>
+    <script>
+        function previewPhoto(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('photoPreview').style.display = 'block';
+                    document.getElementById('photoPreviewImg').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="register-card">
@@ -146,7 +158,7 @@
                 <i class="fas fa-info-circle"></i> After registration, admin will review and approve your account. You can then login and start delivering!
             </div>
 
-            <form method="POST" action="{{ route('rider.register.submit') }}">
+            <form method="POST" action="{{ route('rider.register.submit') }}" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group">
@@ -170,8 +182,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-camera"></i> Photo URL (optional)</label>
-                    <input type="url" name="photo" value="{{ old('photo') }}" placeholder="https://example.com/photo.jpg">
+                    <label><i class="fas fa-camera"></i> Profile Photo (optional)</label>
+                    <div id="photoPreview" style="display:none;margin-bottom:10px;text-align:center;">
+                        <img id="photoPreviewImg" src="" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #16a34a;">
+                    </div>
+                    <input type="file" name="photo" id="photoInput" accept="image/*" capture="user" onchange="previewPhoto(this)"
+                           style="padding:10px;border:2px dashed #d1d5db;border-radius:10px;background:#f9fafb;cursor:pointer;">
+                    <small style="color:#6b7280;font-size:11px;margin-top:4px;display:block;">Tap to take a selfie or choose from gallery</small>
                 </div>
 
                 <div class="form-group">

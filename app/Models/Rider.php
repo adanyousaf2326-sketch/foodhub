@@ -29,8 +29,12 @@ class Rider extends Authenticatable
 
     public function getPhotoUrlAttribute(): string
     {
-        if ($this->photo && str_starts_with($this->photo, 'http')) {
-            return $this->photo;
+        if ($this->photo) {
+            if (str_starts_with($this->photo, 'http')) {
+                return $this->photo;
+            }
+            // Uploaded file path
+            return asset('storage/' . $this->photo);
         }
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=ff6b00&color=fff&size=200';
     }

@@ -24,16 +24,23 @@ class RiderController extends Controller
             'phone' => 'required|string|unique:riders,phone|max:20',
             'cnic' => 'required|string|unique:riders,cnic|max:20',
             'address' => 'required|string',
-            'photo' => 'nullable|url|max:1000',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = 'rider_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $photoPath = $file->storeAs('riders', $filename, 'public');
+        }
 
         Rider::create([
             'name' => $request->name,
             'phone' => $request->phone,
             'cnic' => $request->cnic,
             'address' => $request->address,
-            'photo' => $request->photo,
+            'photo' => $photoPath,
             'password' => Hash::make($request->password),
             'status' => 'pending',
         ]);
