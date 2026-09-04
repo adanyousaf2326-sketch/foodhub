@@ -779,6 +779,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         Route::post('/riders/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveCash'])->name('riders.receive-cash');
         Route::post('/riders/order/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveSingleCash'])->name('riders.receive-single-cash');
 
+        // Print Receipt
+        Route::get('/orders/{order}/print', function (Order $order) {
+            $order->load(['items.food', 'table', 'rider']);
+            return view('admin.print-receipt', compact('order'));
+        })->name('orders.print');
+
 });
 
 Route::post(
