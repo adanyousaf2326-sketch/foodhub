@@ -282,10 +282,9 @@
 
 <body>
 
-@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="admin-main container">
+<div class="container">
 
     <div class="header fade-in" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:linear-gradient(135deg,#0f172a,#1e293b);padding:24px;border-radius:16px;color:white;margin-bottom:24px;">
         <h1 style="font-family:var(--font-display);font-size:24px;color:white;"><i class="fas fa-utensils"></i> FoodHub Hotel</h1>

@@ -504,10 +504,9 @@
 
 <body>
 
-@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="admin-main container">
+<div class="container">
 
     <div class="page-header">
         <h1><i class="fas fa-layer-group"></i> Add New Category</h1>

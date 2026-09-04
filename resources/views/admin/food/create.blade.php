@@ -358,11 +358,10 @@
 
 <body>
 
-@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
 
-<div class="admin-main container">
+<div class="container">
 
 
     <!-- HEADER -->

@@ -53,10 +53,9 @@
     </style>
 </head>
 <body>
-@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="admin-main container">
+<div class="container">
     <a href="{{ route('admin.customers.index') }}" class="back-link">
         <i class="fas fa-arrow-left"></i> Back to Customers
     </a>

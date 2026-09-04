@@ -18,18 +18,13 @@ if ('serviceWorker' in navigator) {
 </script>
 <nav class="admin-topbar" id="adminTopbar">
 
-    {{-- Hamburger Button --}}
-    <button type="button" onclick="openSidebar()" class="atb-hamburger" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:white;cursor:pointer;font-size:18px;flex-shrink:0;">
-        <i class="fas fa-bars"></i>
-    </button>
-
     {{-- Logo --}}
     <a href="{{ route('admin.dashboard') }}" class="atb-logo">
         <i class="fas fa-utensils"></i> Food<span style="color:#fff;">Hub</span>
     </a>
 
-    {{-- Desktop Nav Links (hidden - now in sidebar) --}}
-    <div class="atb-links" style="display:none;">
+    {{-- Desktop Nav Links --}}
+    <div class="atb-links">
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'atb-active' : '' }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'atb-active' : '' }}"><i class="fas fa-receipt"></i> Orders</a>
         <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'atb-active' : '' }}"><i class="fas fa-hamburger"></i> Food</a>
