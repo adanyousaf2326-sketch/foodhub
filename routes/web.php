@@ -774,6 +774,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         Route::get('/riders/{id}/toggle-duty', [\App\Http\Controllers\RiderController::class, 'toggleRiderDuty'])->name('riders.toggle-duty');
         Route::get('/riders/{id}/delete', [\App\Http\Controllers\RiderController::class, 'deleteRider'])->name('riders.delete');
 
+        // Rider Cash Collection
+        Route::get('/riders/cash', [\App\Http\Controllers\RiderController::class, 'adminCashCollection'])->name('riders.cash');
+        Route::post('/riders/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveCash'])->name('riders.receive-cash');
+        Route::post('/riders/order/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveSingleCash'])->name('riders.receive-single-cash');
+
 });
 
 Route::post(
@@ -910,6 +915,7 @@ Route::get('/rider/accept-order/{id}', [\App\Http\Controllers\RiderController::c
 Route::get('/rider/pick-up/{id}', [\App\Http\Controllers\RiderController::class, 'pickUp'])->name('rider.pick-up');
 Route::get('/rider/return-to-kitchen/{id}', [\App\Http\Controllers\RiderController::class, 'returnToKitchen'])->name('rider.return-to-kitchen');
 Route::get('/rider/mark-delivered/{id}', [\App\Http\Controllers\RiderController::class, 'markDelivered'])->name('rider.mark-delivered');
+Route::get('/rider/cash-summary', [\App\Http\Controllers\RiderController::class, 'cashSummary'])->name('rider.cash-summary');
 
 Route::get('/scan-table/{tableNumber}', function ($tableNumber) {
     $table = \App\Models\RestaurantTable::where('table_number', $tableNumber)->first();

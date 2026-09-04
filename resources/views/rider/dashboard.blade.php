@@ -195,6 +195,9 @@
         <div class="rider-info">
             <img src="{{ $rider->photo_url }}" alt="" class="rider-avatar">
             <span style="font-size:13px;font-weight:600;">{{ $rider->name }}</span>
+            <a href="{{ route('rider.cash-summary') }}" style="background:#fbbf24;color:#111;text-decoration:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;">
+                💰 Cash
+            </a>
             <a href="{{ route('rider.logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>

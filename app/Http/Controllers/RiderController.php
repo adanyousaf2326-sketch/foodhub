@@ -182,10 +182,33 @@ class RiderController extends Controller
             return back()->with('error', 'Order not found or already delivered.');
         }
 
-        $order->update(['status' => 'Delivered']);
-        $rider->increment('total_orders');
+        // Set to Cash Pending — order closes only when admin receives cash
+        $order->update(['status' => 'Cash Pending']);
 
-        return back()->with('success', 'Order #' . $orderId . ' delivered successfully! 🎉');
+        return back()->with('success', 'Order #' . $orderId . ' delivered! Cash pending collection. 💰');
+    }
+
+    /**
+     * Get cash collection summary for this rider
+     */
+    public function cashSummary()
+    {
+        $rider = $this->getCurrentRider();
+        if (!$rider) return redirect()->route('rider.login');
+
+        $cashPendingOrders = Order::where('rider_id', $rider->id)
+            ->where('status', 'Cash Pending')
+            ->with('items.food')
+            ->latest()
+            ->get();
+
+        $totalToCollect = $cashPendingOrders->sum('total_amount');
+        $totalCollected = Order::where('rider_id', $rider->id)
+            ->where('status', 'Delivered')
+            ->whereDate('updated_at', today())
+            ->sum('total_amount');
+
+        return view('rider.cash', compact('rider', 'cashPendingOrders', 'totalToCollect', 'totalCollected'));
     }
 
     /**
@@ -306,5 +329,73 @@ class RiderController extends Controller
         }
 
         return null;
+    }
+
+    // ==================== ADMIN CASH COLLECTION ====================
+
+    /**
+     * Admin: View all riders' cash collections
+     */
+    public function adminCashCollection()
+    {
+        $riders = Rider::where('status', 'approved')
+            ->withCount([
+                'orders as cash_pending_count' => function ($q) {
+                    $q->where('status', 'Cash Pending');
+                },
+            ])
+            ->withSum([
+                'orders as cash_pending_total' => function ($q) {
+                    $q->where('status', 'Cash Pending');
+                }
+            ], 'total_amount')
+            ->get();
+
+        $allCashPending = Order::where('status', 'Cash Pending')
+            ->with(['rider', 'items.food'])
+            ->latest()
+            ->get();
+
+        $grandTotal = $allCashPending->sum('total_amount');
+
+        return view('admin.rider-cash', compact('riders', 'allCashPending', 'grandTotal'));
+    }
+
+    /**
+     * Admin: Mark cash as received from a specific rider (closes all their pending orders)
+     */
+    public function receiveCash($riderId)
+    {
+        $rider = Rider::findOrFail($riderId);
+
+        $closedCount = Order::where('rider_id', $riderId)
+            ->where('status', 'Cash Pending')
+            ->update(['status' => 'Delivered']);
+
+        $rider->increment('total_orders', $closedCount);
+
+        return back()->with('success', "Received cash from {$rider->name}! {$closedCount} orders closed.");
+    }
+
+    /**
+     * Admin: Close a single cash-pending order
+     */
+    public function receiveSingleCash($orderId)
+    {
+        $order = Order::where('id', $orderId)
+            ->where('status', 'Cash Pending')
+            ->first();
+
+        if (!$order) {
+            return back()->with('error', 'Order not found or already closed.');
+        }
+
+        $order->update(['status' => 'Delivered']);
+
+        if ($order->rider) {
+            $order->rider->increment('total_orders');
+        }
+
+        return back()->with('success', "Order #{$orderId} closed! Cash received.");
     }
 }
