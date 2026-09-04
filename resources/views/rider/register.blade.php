@@ -139,6 +139,10 @@
             <p>Register to deliver food with FoodHub</p>
         </div>
         <div class="register-body">
+            @if(session('error'))
+                <div class="error-box"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div>
+            @endif
+
             @if($errors->any())
                 <div class="error-box">
                     <strong><i class="fas fa-exclamation-circle"></i> Please fix:</strong>
@@ -155,7 +159,7 @@
             @endif
 
             <div class="info-note">
-                <i class="fas fa-info-circle"></i> After registration, admin will review and approve your account. You can then login and start delivering!
+                <i class="fas fa-info-circle"></i> You can only register <strong>once</strong> with your phone number and CNIC. After registration, admin will review and approve your account.
             </div>
 
             <form method="POST" action="{{ route('rider.register.submit') }}" enctype="multipart/form-data">

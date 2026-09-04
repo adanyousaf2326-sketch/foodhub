@@ -19,10 +19,22 @@ class RiderController extends Controller
 
     public function register(Request $request)
     {
+        // Check if already registered by phone
+        if (Rider::where('phone', $request->phone)->exists()) {
+            return back()->withInput()
+                ->with('error', 'This phone number is already registered! Please login instead.');
+        }
+
+        // Check if already registered by CNIC
+        if ($request->filled('cnic') && Rider::where('cnic', $request->cnic)->exists()) {
+            return back()->withInput()
+                ->with('error', 'This CNIC is already registered! Please login instead.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:riders,phone|max:20',
-            'cnic' => 'required|string|unique:riders,cnic|max:20',
+            'phone' => 'required|string|max:20',
+            'cnic' => 'required|string|max:20',
             'address' => 'required|string',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'password' => 'required|string|min:6|confirmed',
