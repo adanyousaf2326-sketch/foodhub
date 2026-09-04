@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Food;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class InventoryController extends Controller
 {
     public function index()
     {
+        $this->ensureColumnsExist();
+
         $foods = Food::with('category')->orderBy('name')->get();
 
         $totalItems = $foods->count();
@@ -51,14 +55,37 @@ class InventoryController extends Controller
             } elseif ($request->input('available_at')) {
                 $data['available_at'] = $request->input('available_at');
             } else {
-                $data['available_at'] = null; // No time set = available tomorrow
+                $data['available_at'] = null;
             }
         } else {
-            $data['available_at'] = null; // Clear when re-enabling
+            $data['available_at'] = null;
         }
 
         $food->update($data);
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Ensure stock columns exist in the food table
+     */
+    protected function ensureColumnsExist()
+    {
+        $table = 'food';
+        $columns = DB::select("PRAGMA table_info({$table})");
+        $columnNames = array_column($columns, 'name');
+
+        if (!in_array('stock_quantity', $columnNames)) {
+            DB::statement("ALTER TABLE {$table} ADD COLUMN stock_quantity INTEGER NOT NULL DEFAULT -1");
+        }
+        if (!in_array('is_in_stock', $columnNames)) {
+            DB::statement("ALTER TABLE {$table} ADD COLUMN is_in_stock BOOLEAN NOT NULL DEFAULT 1");
+        }
+        if (!in_array('low_stock_threshold', $columnNames)) {
+            DB::statement("ALTER TABLE {$table} ADD COLUMN low_stock_threshold INTEGER NOT NULL DEFAULT 5");
+        }
+        if (!in_array('available_at', $columnNames)) {
+            DB::statement("ALTER TABLE {$table} ADD COLUMN available_at TIMESTAMP NULL DEFAULT NULL");
+        }
     }
 }
