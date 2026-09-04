@@ -757,6 +757,47 @@
                                 </div>
                             @endif
                         </div>
+
+                        {{-- DELIVERY ETA (only for Delivery orders) --}}
+                        @if($order->order_type === 'Delivery' && $order->delivery_time_min)
+                            <div style="margin-top:14px;padding:16px;border-radius:12px;text-align:center;background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;">
+                                @php
+                                    $deliveryEnd = $order->created_at->copy()->addMinutes($order->delivery_time_min);
+                                    $delRemaining = max(0, $deliveryEnd->diffInSeconds(now(), false));
+                                    $delReady = $delRemaining <= 0;
+                                @endphp
+                                @if($delReady)
+                                    <div style="font-size:36px;margin-bottom:6px;">🛵</div>
+                                    <div style="font-size:17px;font-weight:800;color:#92400e;">Delivery arriving soon!</div>
+                                @else
+                                    <div style="font-size:36px;margin-bottom:6px;">🛵</div>
+                                    <div style="font-size:15px;font-weight:700;color:#92400e;margin-bottom:6px;">Estimated Delivery Time</div>
+                                    <div id="deliveryCountdown" data-delivery-end="{{ $deliveryEnd->timestamp * 1000 }}"
+                                         style="font-size:34px;font-weight:900;color:#d97706;font-variant-numeric:tabular-nums;letter-spacing:3px;">
+                                        --:--
+                                    </div>
+                                    <div style="font-size:12px;color:#92400e;margin-top:6px;">
+                                        <i class="fas fa-truck"></i> Delivery by {{ $deliveryEnd->format('h:i A') }}
+                                        &nbsp;·&nbsp; {{ $order->delivery_distance_km }} km away
+                                    </div>
+                                    <div style="width:100%;height:6px;background:#fde68a;border-radius:3px;margin-top:10px;overflow:hidden;">
+                                        <div id="deliveryProgress" data-delivery-total="{{ $order->delivery_time_min * 60 }}" data-delivery-created="{{ $order->created_at->timestamp }}"
+                                             style="height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:3px;transition:width 1s linear;width:100%;"></div>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+
+                        {{-- DELIVERY CHARGES INFO --}}
+                        @if($order->order_type === 'Delivery')
+                            <div style="margin-top:10px;padding:10px 14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;color:#6b7280;display:flex;justify-content:space-between;">
+                                <span><i class="fas fa-truck"></i> Delivery</span>
+                                <span style="font-weight:700;color:#111827;">
+                                    {{ $order->delivery_charges > 0 ? 'Rs. ' . number_format($order->delivery_charges, 2) : 'FREE' }}
+                                </span>
+                            </div>
+                        @endif
+
                     @endif
 
                     @if($isCancelled)
@@ -1077,6 +1118,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateCountdown();
         var timer = setInterval(updateCountdown, 1000);
+    }
+
+    // Delivery Countdown
+    var delCD = document.getElementById('deliveryCountdown');
+    if (delCD) {
+        var delEnd = Number(delCD.dataset.deliveryEnd);
+        function updateDelCountdown() {
+            var rem = delEnd - Date.now();
+            if (rem <= 0) {
+                delCD.innerHTML = '<i class="fas fa-motorcycle"></i> ARRIVING!';
+                delCD.style.color = '#16a34a';
+                return;
+            }
+            var mins = Math.floor(rem / 60000);
+            var secs = Math.floor((rem % 60000) / 1000);
+            delCD.textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+        }
+        updateDelCountdown();
+        setInterval(updateDelCountdown, 1000);
+    }
+    var delBar = document.getElementById('deliveryProgress');
+    if (delBar) {
+        var delTotal = Number(delBar.dataset.deliveryTotal);
+        var delCreated = Number(delBar.dataset.deliveryCreated) * 1000;
+        function updateDelBar() {
+            var elapsed = (Date.now() - delCreated) / 1000;
+            var pct = Math.max(0, ((delTotal - elapsed) / delTotal) * 100);
+            delBar.style.width = pct + '%';
+        }
+        updateDelBar();
+        setInterval(updateDelBar, 1000);
     }
 
     // Ready Time Countdown

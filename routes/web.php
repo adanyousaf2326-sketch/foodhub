@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Services\DeliveryCalculator;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\UserController;
@@ -172,6 +173,24 @@ Route::post('/order/place', function (Request $request) {
              * CREATE ORDER
              */
 
+            // Calculate delivery charges
+            $deliveryCharges = 0;
+            $deliveryDistance = null;
+            $deliveryTime = null;
+            $customerLat = null;
+            $customerLng = null;
+
+            if ($request->order_type === 'Delivery' && $request->filled('customer_lat') && $request->filled('customer_lng')) {
+                $customerLat = (float) $request->customer_lat;
+                $customerLng = (float) $request->customer_lng;
+                $deliveryResult = \App\Services\DeliveryCalculator::calculate($customerLat, $customerLng);
+                $deliveryCharges = $deliveryResult['delivery_charges'];
+                $deliveryDistance = $deliveryResult['distance_km'];
+                $deliveryTime = $deliveryResult['delivery_time_min'];
+            }
+
+            $grandTotal = $total + $deliveryCharges;
+
             $order = \App\Models\Order::create([
 
                 'customer_name' => $request->customer_name,
@@ -184,7 +203,7 @@ Route::post('/order/place', function (Request $request) {
                     ? $request->address
                     : null,
 
-                'total_amount' => $total,
+                'total_amount' => $grandTotal,
 
                 'payment_method' => $request->payment_method,
 
@@ -195,6 +214,11 @@ Route::post('/order/place', function (Request $request) {
                 'order_type' => $request->order_type,
 
                 'table_id' => $table?->id,
+                'delivery_charges' => $deliveryCharges,
+                'delivery_distance_km' => $deliveryDistance,
+                'delivery_time_min' => $deliveryTime,
+                'customer_lat' => $customerLat,
+                'customer_lng' => $customerLng,
 
             ]);
 
@@ -787,6 +811,36 @@ Route::post(
     '/track-order/{order}/rate',
     [\App\Http\Controllers\Admin\OrderController::class, 'rateOrder']
 )->name('track.order.rate');
+
+/*
+ * DELIVERY CHARGE CALCULATION API
+ */
+Route::get('/api/delivery-calc', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'lat' => 'required|numeric|between:-90,90',
+        'lng' => 'required|numeric|between:-180,180',
+    ]);
+
+    // Calculate max prep time from cart
+    $cart = session()->get('cart', []);
+    $maxPrep = 15;
+    foreach ($cart as $item) {
+        if (!empty($item['food_id'])) {
+            $food = \App\Models\Food::find($item['food_id']);
+            if ($food) {
+                $maxPrep = max($maxPrep, ($food->prep_time ?? 15) * ($item['quantity'] ?? 1));
+            }
+        }
+    }
+
+    $result = DeliveryCalculator::calculate(
+        (float) $request->lat,
+        (float) $request->lng,
+        $maxPrep
+    );
+
+    return response()->json($result);
+})->middleware('web');
 
 Route::get('/sql', function () {
     $path = database_path('foodhub.sql');

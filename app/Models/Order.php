@@ -21,10 +21,16 @@ class Order extends Model
     'change_amount',
     'paid_at',
     'has_edited',
+    'delivery_charges',
+    'delivery_distance_km',
+    'delivery_time_min',
+    'customer_lat',
+    'customer_lng',
 ];
 
     protected $casts = [
         'total_amount' => 'decimal:2',
+        'delivery_charges' => 'decimal:2',
     ];
 
     public function items()

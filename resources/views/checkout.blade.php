@@ -601,7 +601,32 @@
                         name="address"
                         id="address"
                         placeholder="Enter complete delivery address"
+                        oninput="debounceCalcDelivery()"
                     >{{ old('address') }}</textarea>
+
+                    <input type="hidden" name="customer_lat" id="customerLat" value="{{ old('customer_lat') }}">
+                    <input type="hidden" name="customer_lng" id="customerLng" value="{{ old('customerLng') }}">
+
+                    <!-- Delivery Info Box -->
+                    <div id="deliveryInfo" style="display:none;margin-top:12px;padding:14px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                            <i class="fas fa-truck" style="color:#16a34a;font-size:18px;"></i>
+                            <strong style="color:#166534;">Delivery Details</strong>
+                        </div>
+                        <div id="deliveryDetails" style="font-size:13px;color:#374151;line-height:1.8;"></div>
+                    </div>
+
+                    <!-- Free delivery banner -->
+                    <div id="freeDeliveryBanner" style="display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:#dcfce7;color:#166534;font-size:13px;font-weight:600;text-align:center;">
+                        🎉 Free delivery within {{ \App\Services\DeliveryCalculator::FREE_DELIVERY_KM }} km!
+                    </div>
+
+                    <!-- Map Picker -->
+                    <div style="margin-top:10px;">
+                        <button type="button" onclick="useMyLocation()" style="padding:8px 14px;border:1px solid #d1d5db;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#374151;">
+                            <i class="fas fa-location-crosshairs" style="color:#ff6b00;"></i> Use My Current Location
+                        </button>
+                    </div>
 
                 </div>
 
@@ -745,15 +770,37 @@
             @endforeach
 
 
+            <!-- Delivery Charges -->
+            <div id="summaryDelivery" style="display:none;padding:10px 0;border-bottom:1px solid #eee;">
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:#6b7280;"><i class="fas fa-truck"></i> Delivery Charges</span>
+                    <span id="summaryDeliveryCharges" style="color:#16a34a;font-weight:600;">--</span>
+                </div>
+                <div id="summaryDeliveryDistance" style="font-size:12px;color:#9ca3af;margin-top:3px;"></div>
+            </div>
+
+            <!-- Estimated Time -->
+            <div id="summaryTime" style="display:none;padding:10px 0;border-bottom:1px solid #eee;">
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:#6b7280;"><i class="fas fa-clock"></i> Estimated Delivery</span>
+                    <span id="summaryDeliveryTime" style="color:#2563eb;font-weight:600;">--</span>
+                </div>
+                <div id="summaryReadyTime" style="font-size:12px;color:#9ca3af;margin-top:3px;"></div>
+            </div>
+
             <div class="total">
 
                 <span>Total</span>
 
                 <span>
-                    Rs. {{ number_format($total, 2) }}
+                    Rs. <span id="grandTotal">{{ number_format($total, 2) }}</span>
                 </span>
 
             </div>
+
+            <input type="hidden" name="delivery_charges" id="deliveryChargesInput" value="0">
+            <input type="hidden" name="delivery_time_min" id="deliveryTimeInput" value="">
+            <input type="hidden" name="delivery_distance_km" id="deliveryDistanceInput" value="">
 
         </div>
 
@@ -883,6 +930,131 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 });
+
+// === DELIVERY CHARGE CALCULATION ===
+var cartTotal = {{ $total }};
+var deliveryDebounce = null;
+
+function debounceCalcDelivery() {
+    clearTimeout(deliveryDebounce);
+    deliveryDebounce = setTimeout(calcDeliveryFromAddress, 800);
+}
+
+function calcDeliveryFromAddress() {
+    var address = document.getElementById('address').value.trim();
+    if (address.length < 5) return;
+
+    // Use Nominatim (OpenStreetMap) for free geocoding
+    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address) + '&limit=1', {
+        headers: { 'Accept-Language': 'en' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data && data.length > 0) {
+            var lat = parseFloat(data[0].lat);
+            var lng = parseFloat(data[0].lon);
+            document.getElementById('customerLat').value = lat;
+            document.getElementById('customerLng').value = lng;
+            fetchDeliveryCharges(lat, lng);
+        }
+    })
+    .catch(function() {});
+}
+
+function useMyLocation() {
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser.');
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+        document.getElementById('customerLat').value = lat;
+        document.getElementById('customerLng').value = lng;
+
+        // Reverse geocode to fill address
+        fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng, {
+            headers: { 'Accept-Language': 'en' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data && data.display_name) {
+                document.getElementById('address').value = data.display_name;
+            }
+        })
+        .catch(function() {});
+
+        fetchDeliveryCharges(lat, lng);
+    }, function(err) {
+        alert('Unable to get your location. Please enter your address manually.');
+    });
+}
+
+function fetchDeliveryCharges(lat, lng) {
+    fetch('/api/delivery-calc?lat=' + lat + '&lng=' + lng, {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        updateDeliveryUI(data);
+    })
+    .catch(function() {});
+}
+
+function updateDeliveryUI(data) {
+    var infoBox = document.getElementById('deliveryInfo');
+    var details = document.getElementById('deliveryDetails');
+    var summaryDelivery = document.getElementById('summaryDelivery');
+    var summaryTime = document.getElementById('summaryTime');
+    var freeBanner = document.getElementById('freeDeliveryBanner');
+
+    if (!data.is_within_radius) {
+        infoBox.style.display = 'block';
+        infoBox.style.background = '#fef2f2';
+        infoBox.style.borderColor = '#fecaca';
+        details.innerHTML = '<span style="color:#dc2626;">🚫 Sorry, delivery is only available within ' + data.max_km + ' km of the restaurant.</span>';
+        summaryDelivery.style.display = 'none';
+        summaryTime.style.display = 'none';
+        freeBanner.style.display = 'none';
+        return;
+    }
+
+    infoBox.style.display = 'block';
+    infoBox.style.background = '#f0fdf4';
+    infoBox.style.borderColor = '#bbf7d0';
+
+    var chargesText = data.is_free_delivery
+        ? '<span style="color:#16a34a;font-weight:700;">🎉 FREE Delivery!</span>'
+        : '<span style="color:#ea580c;font-weight:700;">Rs. ' + data.delivery_charges + '</span>';
+
+    details.innerHTML =
+        '<div>📍 Distance: <strong>' + data.distance_km + ' km</strong></div>' +
+        '<div>🚚 Delivery: ' + chargesText + '</div>' +
+        '<div>⏱️ Estimated delivery: <strong>' + data.delivery_time_min + ' min</strong></div>' +
+        '<div>👨‍🍳 Food ready in: <strong>' + data.estimated_ready_min + ' min</strong></div>';
+
+    // Update summary
+    summaryDelivery.style.display = 'block';
+    document.getElementById('summaryDeliveryCharges').textContent = data.is_free_delivery ? 'FREE' : 'Rs. ' + data.delivery_charges;
+    document.getElementById('summaryDeliveryCharges').style.color = data.is_free_delivery ? '#16a34a' : '#ea580c';
+    document.getElementById('summaryDeliveryDistance').textContent = data.distance_km + ' km away';
+
+    summaryTime.style.display = 'block';
+    document.getElementById('summaryDeliveryTime').textContent = data.delivery_time_min + ' min';
+    document.getElementById('summaryReadyTime').textContent = 'Food ready in ~' + data.estimated_ready_min + ' min';
+
+    // Free delivery banner
+    freeBanner.style.display = data.is_free_delivery ? 'block' : 'none';
+
+    // Update hidden inputs
+    document.getElementById('deliveryChargesInput').value = data.delivery_charges;
+    document.getElementById('deliveryTimeInput').value = data.delivery_time_min;
+    document.getElementById('deliveryDistanceInput').value = data.distance_km;
+
+    // Update grand total
+    var grandTotal = cartTotal + data.delivery_charges;
+    document.getElementById('grandTotal').textContent = grandTotal.toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
 
 </script>
