@@ -3421,7 +3421,7 @@
                             data-category="{{ $food->category_id }}"
                             id="food-card-{{ $food->id }}"
                             @if($food->hasVariations()) data-selected-var="{{ $food->variations->first()->id }}" @endif
-                            @if(!$food->isOrderable()) style="opacity:0.7;pointer-events:none;position:relative;" @endif
+                            @if(!$food->isOrderable()) style="opacity:0.7;position:relative;" data-available-at="{{ $food->available_at_iso ?? '' }}" @endif
                         >
 
                 <div class="food-image">
@@ -3523,7 +3523,7 @@
                         @else
                             <div style="display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:rgba(239,68,68,.12);color:#fca5a5;font-size:11px;font-weight:600;white-space:nowrap;">
                                 <i class="fas fa-clock"></i>
-                                {{ $food->availability_message }}
+                                <span class="countdown-timer" data-target="{{ $food->available_at ? $food->available_at->timestamp : 0 }}">{{ $food->availability_message }}</span>
                             </div>
                         @endif
 
@@ -5011,6 +5011,46 @@ document.addEventListener(
         });
     }
     </script>
+
+<script>
+/* ===== LIVE COUNTDOWN TIMER FOR DISABLED ITEMS ===== */
+function updateCountdowns() {
+    var now = Math.floor(Date.now() / 1000);
+    document.querySelectorAll('.countdown-timer').forEach(function(el) {
+        var target = parseInt(el.dataset.target);
+        if (!target || target <= 0) return;
+
+        var remaining = target - now;
+        if (remaining <= 0) {
+            // Item is now available — reload to show it
+            el.innerHTML = '<i class="fas fa-check-circle"></i> Available now!';
+            el.style.color = '#4ade80';
+            // Reload after 2 seconds so customer sees it
+            setTimeout(function() { location.reload(); }, 2000);
+            return;
+        }
+
+        var days = Math.floor(remaining / 86400);
+        var hours = Math.floor((remaining % 86400) / 3600);
+        var mins = Math.floor((remaining % 3600) / 60);
+        var secs = remaining % 60;
+
+        var text = '';
+        if (days > 0) {
+            text = days + 'd ' + hours + 'h ' + mins + 'm';
+        } else if (hours > 0) {
+            text = hours + 'h ' + mins + 'm ' + secs + 's';
+        } else {
+            text = mins + 'm ' + secs + 's';
+        }
+        el.textContent = '⏰ Available in ' + text;
+    });
+}
+
+// Run immediately + every second
+updateCountdowns();
+setInterval(updateCountdowns, 1000);
+</script>
 </body>
 
 </html>

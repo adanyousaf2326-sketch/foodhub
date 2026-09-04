@@ -114,7 +114,10 @@ class Food extends Model
     /**
      * Get availability message for customers
      */
-    public function getAvailabilityMessage(): ?string
+    /**
+     * Get availability message for customers (accessor: $food->availability_message)
+     */
+    public function getAvailabilityMessageAttribute(): ?string
     {
         if ($this->is_in_stock) {
             return null; // Available
@@ -132,5 +135,13 @@ class Food extends Model
         }
 
         return 'Currently unavailable';
+    }
+
+    /**
+     * Get available_at as ISO string for JS countdown
+     */
+    public function getAvailableAtIsoAttribute(): ?string
+    {
+        return $this->available_at ? $this->available_at->toIso8601String() : null;
     }
 }
