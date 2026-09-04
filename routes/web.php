@@ -34,10 +34,8 @@ Route::get('/', function () {
             ->get();
     });
 
-    // Cache announcements for 5 minutes
-    $announcements = \Cache::remember('home_announcements', 300, function () {
-        return Announcement::with('foods')->visible()->latest()->get();
-    });
+    // Announcements (not cached — relationships break in cache)
+    $announcements = Announcement::with('foods')->visible()->latest()->get();
 
     return view('home', compact('categories', 'foods', 'announcements'));
 
