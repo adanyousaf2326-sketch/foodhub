@@ -588,7 +588,7 @@
 
 
     nav {
-        background: #111827;
+        background: transparent;
 
         padding: 14px 7%;
 
@@ -997,21 +997,21 @@
 
         grid-template-columns:
             repeat(
-                auto-fit,
-                minmax(180px, 1fr)
-            );
+                6,
+                1fr
+            ) !important;
 
-        gap: 20px;
+        gap: 12px;
     }
 
     .category {
         background: white;
 
-        padding: 25px;
+        padding: 12px 8px;
 
         text-align: center;
 
-        border-radius: 15px;
+        border-radius: 70px;
 
         box-shadow:
             0 5px 20px rgba(0,0,0,.06);
@@ -1038,8 +1038,8 @@
     }
 
     .category-icon {
-        font-size: 35px;
-        margin-bottom: 8px;
+        font-size: 22px;
+        margin-bottom: 3px;
 
         display: flex;
         justify-content: center;
@@ -1047,13 +1047,14 @@
     }
 
     .category h3 {
-        margin-bottom: 5px;
-        font-size: 13px;
+        margin-bottom: 2px;
+        font-size: 10px;
     }
 
     .category p {
         color: #777;
-        font-size: 11px;
+        font-size: 8px;
+        display: none;
     }
 
 
@@ -1158,7 +1159,7 @@
 
 
     .food-image {
-        height: 180px;
+        height: 420px;
 
         background: #eee;
 
@@ -1191,7 +1192,7 @@
     .food-info h3 {
         margin-bottom: 4px;
 
-        font-size: 14px;
+        font-size: 11px;
     }
 
     .food-info p {
@@ -1699,11 +1700,19 @@
 
             grid-template-columns:
                 repeat(
-                    auto-fit,
-                    minmax(160px, 1fr)
-                );
+                    6,
+                    1fr
+                ) !important;
 
-            gap: 18px;
+            gap: 10px !important;
+        }
+
+        /* Cart always visible on laptop */
+        .side-cart {
+            transform: translateX(0) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
         }
 
     }
@@ -2136,31 +2145,30 @@
         .categories {
 
             grid-template-columns:
-                repeat(2, 1fr);
+                repeat(3, 1fr) !important;
 
-            gap: 12px;
+            gap: 8px;
         }
 
 
         .category {
 
-            padding: 12px 8px;
+            padding: 8px 6px;
         }
 
 
         .category-icon {
 
-            font-size: 28px;
+            font-size: 20px;
         }        .food-category-grid {
 
             grid-template-columns: repeat(2, 1fr);
 
             gap: 12px;
-        }
+        }        .food-image {
 
-        .food-image {
+            height: 340px;
 
-            height: 130px;
         }
 
         .food-info {
@@ -2286,12 +2294,10 @@
             grid-template-columns: repeat(2, 1fr);
 
             gap: 10px;
-        }
+        }        .food-image {
 
+            height: 280px;
 
-        .food-image {
-
-            height: 110px;
         }
 
 
@@ -2562,19 +2568,22 @@
         }
         .variant-pills {
             display: flex;
-            flex-wrap: wrap;
             gap: 3px;
+            width: 100%;
         }
         .variant-pill {
-            padding: 2px 6px;
+            flex: 1;
+            padding: 10px 8px;
             border-radius: 10px;
             border: 1px solid #d1d5db;
             background: #ffffff;
             color: #374151;
-            font-size: 9px;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-align: center;
+            min-height: 4px;
         }
         .variant-pill:hover {
             border-color: #ff6b00;
@@ -2586,6 +2595,472 @@
             color: #ffffff;
             box-shadow: 0 2px 6px rgba(255, 107, 0, 0.35);
         }
+
+    /* ==================== FULL ANIMATIONS ==================== */
+
+    /* Keyframes */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.85); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes bounceIn {
+        0% { opacity: 0; transform: scale(0.3); }
+        50% { opacity: 1; transform: scale(1.08); }
+        70% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+    }
+    @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(40px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInBottom {
+        from { opacity: 0; transform: translateY(50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    @keyframes ripple {
+        0% { transform: scale(0); opacity: 0.6; }
+        100% { transform: scale(4); opacity: 0; }
+    }
+    @keyframes cartBounce {
+        0% { transform: scale(1); }
+        30% { transform: scale(1.25); }
+        50% { transform: scale(0.9); }
+        70% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-3deg); }
+        75% { transform: rotate(3deg); }
+    }
+    @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 0, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(255, 107, 0, 0.6); }
+    }
+
+    /* Hero animations */
+    .hero-content {
+        animation: fadeInLeft 0.8s ease-out;
+    }
+    .hero h1 {
+        animation: fadeInDown 0.6s ease-out;
+    }
+    .hero p {
+        animation: fadeInUp 0.7s ease-out 0.2s both;
+    }
+    .hero-btn {
+        animation: fadeInUp 0.7s ease-out 0.4s both;
+    }
+    .hero-btn:hover {
+        animation: pulse 0.4s ease;
+    }
+
+    /* Nav animations */
+    nav {
+        animation: fadeInDown 0.5s ease-out;
+    }
+    nav .logo {
+        transition: transform 0.3s ease;
+    }
+    nav .logo:hover {
+        transform: scale(1.08);
+        animation: wiggle 0.4s ease;
+    }
+
+    /* Category animations */
+    .category {
+        transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .category:hover {
+        animation: bounceIn 0.5s ease;
+        transform: translateY(-8px) scale(1.03);
+        box-shadow: 0 12px 30px rgba(255, 107, 0, 0.2);
+    }
+    .category-icon {
+        transition: transform 0.3s ease;
+    }
+    .category:hover .category-icon {
+        transform: scale(1.2) rotate(-5deg);
+        animation: float 1.5s ease-in-out infinite;
+    }
+
+    /* Food card animations */
+    .food-card {
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .food-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    .food-card:hover .food-image img {
+        transform: scale(1.1);
+    }
+    .food-image {
+        overflow: hidden;
+    }
+    .food-image img {
+        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .food-card:hover .food-info h3 {
+        color: #ff6b00;
+        transition: color 0.3s ease;
+    }
+
+    /* Staggered food card entrance */
+    .food-category-grid .food-card:nth-child(1) { animation-delay: 0.05s; }
+    .food-category-grid .food-card:nth-child(2) { animation-delay: 0.1s; }
+    .food-category-grid .food-card:nth-child(3) { animation-delay: 0.15s; }
+    .food-category-grid .food-card:nth-child(4) { animation-delay: 0.2s; }
+    .food-category-grid .food-card:nth-child(5) { animation-delay: 0.25s; }
+    .food-category-grid .food-card:nth-child(6) { animation-delay: 0.3s; }
+    .food-category-grid .food-card:nth-child(7) { animation-delay: 0.35s; }
+    .food-category-grid .food-card:nth-child(8) { animation-delay: 0.4s; }
+    .food-category-grid .food-card:nth-child(9) { animation-delay: 0.45s; }
+    .food-category-grid .food-card:nth-child(10) { animation-delay: 0.5s; }
+
+    /* Variant pill animations */
+    .variant-pill {
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .variant-pill:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 3px 10px rgba(255, 107, 0, 0.25);
+    }
+    .variant-pill.active {
+        animation: bounceIn 0.4s ease;
+    }
+
+    /* Order button / Cart button animations */
+    .order-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .order-btn:hover {
+        animation: pulse 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+    }
+    .order-btn:active {
+        transform: scale(0.92);
+    }
+    .order-btn .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        width: 20px;
+        height: 20px;
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    /* Draggable cart button */
+    .draggable-cart-btn {
+        animation: bounceIn 0.6s ease-out 0.5s both;
+        transition: all 0.2s ease;
+    }
+    .draggable-cart-btn:active {
+        transform: scale(0.9);
+    }
+    .draggable-cart-btn .fab-count {
+        animation: cartBounce 0.4s ease;
+    }
+
+    /* Section titles */
+    .section-title h2 {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    .section-title p {
+        animation: fadeInUp 0.6s ease-out 0.15s both;
+    }
+    .category-heading {
+        animation: fadeInLeft 0.5s ease-out;
+    }
+
+    /* Announcement animations */
+    .announcement-overlay.is-open .announcement-panel {
+        animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .announcement-food {
+        transition: all 0.3s ease;
+    }
+    .announcement-food:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Menu poster animation */
+    .full-menu-section.is-open .menu-poster {
+        animation: slideInBottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Price animation */
+    .price {
+        transition: all 0.3s ease;
+    }
+    .food-card:hover .price {
+        transform: scale(1.05);
+        display: inline-block;
+    }
+    .price-old {
+        animation: fadeInLeft 0.3s ease;
+    }
+    .discount-badge {
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Toast animation */
+    .toast.show {
+        animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Deal badge */
+    .deal-badge {
+        animation: glowPulse 2s ease-in-out infinite;
+    }
+
+    /* Scroll reveal class */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .reveal-left {
+        opacity: 0;
+        transform: translateX(-40px);
+        transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal-left.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    .reveal-right {
+        opacity: 0;
+        transform: translateX(40px);
+        transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal-right.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    .reveal-scale {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal-scale.active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* ==================== ADVANCED ANIMATIONS ==================== */
+
+    /* Scroll progress bar */
+    .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff6b00, #e85f00, #ff8c42);
+        z-index: 999999;
+        transition: width 0.1s linear;
+        box-shadow: 0 0 10px rgba(255, 107, 0, 0.6);
+    }
+
+    /* Hero parallax */
+    .hero {
+        overflow: hidden;
+        position: relative;
+    }
+    .hero-bg-particles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .hero-particle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 107, 0, 0.3);
+        border-radius: 50%;
+        animation: floatParticle 4s ease-in-out infinite;
+    }
+    @keyframes floatParticle {
+        0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+        50% { transform: translateY(-30px) rotate(180deg); opacity: 0.8; }
+    }
+
+    /* 3D tilt on food cards */
+    .food-card-3d {
+        perspective: 800px;
+    }
+    .food-card-3d .food-card {
+        transform-style: preserve-3d;
+        will-change: transform;
+        transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+    }
+    .food-card-3d .food-card.tilted {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+    }
+    .food-card-3d .food-card.tilted .food-info,
+    .food-card-3d .food-card.tilted .food-bottom,
+    .food-card-3d .food-card.tilted .food-variant-selector {
+        transform: translateZ(15px);
+    }
+    .food-info, .food-bottom, .food-variant-selector {
+        transform: translateZ(0);
+        transition: transform 0.3s ease;
+    }
+
+    /* Magnetic cursor effect */
+    .magnetic-btn {
+        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .magnetic-btn.magnetic {
+        transition: transform 0.15s ease-out;
+    }
+
+    /* Typing text effect */
+    .typing-text {
+        display: inline-block;
+        border-right: 3px solid #ff6b00;
+        animation: blink 0.8s step-end infinite;
+    }
+    @keyframes blink {
+        from, to { border-color: transparent; }
+        50% { border-color: #ff6b00; }
+    }
+
+    /* Confetti particle on add to cart */
+    .confetti-container {
+        position: fixed;
+        pointer-events: none;
+        z-index: 999998;
+        overflow: hidden;
+    }
+    .confetti-piece {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        animation: confettiFall 1s ease-out forwards;
+    }
+    @keyframes confettiFall {
+        0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+        100% { transform: translateY(200px) rotate(720deg) scale(0); opacity: 0; }
+    }
+
+    /* Image lazy load blur up */
+    .blur-load {
+        transition: filter 0.6s ease, transform 0.6s ease;
+    }
+    .blur-load.loaded {
+        filter: blur(0);
+        transform: scale(1);
+    }
+
+    /* Smooth counter animation */
+    .cart-count-animated {
+        animation: cartBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Gradient border glow on hover */
+    .food-card::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 17px;
+        background: linear-gradient(135deg, transparent 40%, rgba(255, 107, 0, 0.4), transparent 60%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+    }
+    .food-card {
+        position: relative;
+    }
+    .food-card:hover::after {
+        opacity: 1;
+        animation: shimmer 2s linear infinite;
+    }
+    @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+
+    /* Smooth elastic hover on categories */
+    .category {
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Nav shrink on scroll */
+    nav.scrolled {
+        padding: 8px 7% !important;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+    nav.scrolled .logo {
+        font-size: 17px;
+    }
+
+    /* Cart panel enhanced transitions */
+    .side-cart {
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .side-cart-item {
+        animation: fadeInUp 0.3s ease both;
+    }
+    .side-cart-item:nth-child(1) { animation-delay: 0.05s; }
+    .side-cart-item:nth-child(2) { animation-delay: 0.1s; }
+    .side-cart-item:nth-child(3) { animation-delay: 0.15s; }
+    .side-cart-item:nth-child(4) { animation-delay: 0.2s; }
+    .side-cart-item:nth-child(5) { animation-delay: 0.25s; }
+
+    /* Floating badge bounce */
+    .fab-count {
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .fab-count.bump {
+        animation: cartBounce 0.4s ease;
+    }
+
+    /* Smooth image zoom on page load */
+    .food-image img {
+        opacity: 1;
+        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
     </style>
 </head>
 
@@ -4263,7 +4738,240 @@ document.addEventListener(
     addToCart(foodId, announcementId, variationId);
 }
     </script>
-    <script src="{{ asset('js/scroll-animations.js') }}"></script>
+    <script>
+    /* ===== SCROLL REVEAL ===== */
+    function initScrollReveal() {
+        const reveals = document.querySelectorAll('.category, .section-title, .category-heading, .food-category-group');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                    }, i * 60);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        reveals.forEach((el, i) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(25px) scale(0.97)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ' + (i % 5) * 0.08 + 's';
+            observer.observe(el);
+        });
+    }
+
+    /* ===== BUTTON RIPPLE EFFECT ===== */
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.order-btn, .checkout-btn, .hero-btn, .variant-pill, .qty-btn');
+        if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple-effect';
+        ripple.style.left = (e.clientX - rect.left) + 'px';
+        ripple.style.top = (e.clientY - rect.top) + 'px';
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+
+    /* ===== CART BOUNCE + CONFETTI ON ADD ===== */
+    const origAddToCart = window.addToCart;
+    if (typeof origAddToCart === 'function') {
+        window.addToCart = function() {
+            origAddToCart.apply(this, arguments);
+            const fab = document.querySelector('.draggable-cart-btn');
+            if (fab) {
+                fab.style.animation = 'none';
+                fab.offsetHeight;
+                fab.style.animation = 'cartBounce 0.5s ease';
+                const fr = fab.getBoundingClientRect();
+                spawnConfetti(fr.left + fr.width/2, fr.top + fr.height/2);
+            }
+            const cartNav = document.querySelector('.cart-nav');
+            if (cartNav) {
+                cartNav.style.animation = 'none';
+                cartNav.offsetHeight;
+                cartNav.style.animation = 'cartBounce 0.5s ease';
+                const cr = cartNav.getBoundingClientRect();
+                spawnConfetti(cr.left + cr.width/2, cr.top + cr.height/2);
+            }
+            /* Bump cart count */
+            const countEl = document.querySelector('.cart-count, .fab-count');
+            if (countEl) {
+                countEl.classList.remove('bump');
+                countEl.offsetHeight;
+                countEl.classList.add('bump');
+            }
+        };
+    }
+
+    /* ===== SCROLL PROGRESS BAR ===== */
+    function initScrollProgress() {
+        const bar = document.createElement('div');
+        bar.className = 'scroll-progress';
+        document.body.prepend(bar);
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement.scrollHeight - window.innerHeight;
+            const p = (window.scrollY / h) * 100;
+            bar.style.width = p + '%';
+        }, { passive: true });
+    }
+
+    /* ===== NAV SHRINK ON SCROLL ===== */
+    function initNavShrink() {
+        const nav = document.querySelector('nav');
+        if (!nav) return;
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 80);
+        }, { passive: true });
+    }
+
+    /* ===== 3D TILT ON FOOD CARDS ===== */
+    function init3DTilt() {
+        document.querySelectorAll('.food-category-grid').forEach(grid => {
+            grid.classList.add('food-card-3d');
+        });
+        document.querySelectorAll('.food-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                const tiltX = ((y - cy) / cy) * -8;
+                const tiltY = ((x - cx) / cx) * 8;
+                this.style.transform = 'perspective(800px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) translateY(-5px) scale(1.02)';
+                this.classList.add('tilted');
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.classList.remove('tilted');
+            });
+        });
+    }
+
+    /* ===== MAGNETIC CURSOR ON BUTTONS ===== */
+    function initMagnetic() {
+        document.querySelectorAll('.order-btn, .hero-btn, .checkout-btn, .variant-pill').forEach(btn => {
+            btn.classList.add('magnetic-btn');
+            btn.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                this.style.transform = 'translate(' + (x * 0.25) + 'px, ' + (y * 0.25) + 'px) scale(1.05)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    }
+
+    /* ===== HERO FLOATING PARTICLES ===== */
+    function initParticles() {
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        const container = document.createElement('div');
+        container.className = 'hero-bg-particles';
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'hero-particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.width = (3 + Math.random() * 6) + 'px';
+            p.style.height = p.style.width;
+            p.style.animationDuration = (2 + Math.random() * 4) + 's';
+            p.style.animationDelay = (Math.random() * 3) + 's';
+            p.style.opacity = 0.15 + Math.random() * 0.35;
+            container.appendChild(p);
+        }
+        hero.appendChild(container);
+    }
+
+    /* ===== CONFETTI ON ADD TO CART ===== */
+    function spawnConfetti(x, y) {
+        const colors = ['#ff6b00', '#16a34a', '#3b82f6', '#eab308', '#dc2626', '#8b5cf6', '#ec4899'];
+        const container = document.createElement('div');
+        container.className = 'confetti-container';
+        container.style.left = x + 'px';
+        container.style.top = y + 'px';
+        document.body.appendChild(container);
+        for (let i = 0; i < 18; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.left = (Math.random() * 120 - 60) + 'px';
+            piece.style.top = (Math.random() * -20) + 'px';
+            piece.style.width = (4 + Math.random() * 6) + 'px';
+            piece.style.height = (4 + Math.random() * 6) + 'px';
+            piece.style.animationDuration = (0.6 + Math.random() * 0.6) + 's';
+            piece.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+            container.appendChild(piece);
+        }
+        setTimeout(() => container.remove(), 1500);
+    }
+
+    /* ===== LAZY LOAD IMAGES WITH BLUR-UP ===== */
+    function initLazyImages() {
+        document.querySelectorAll('.food-image img').forEach(img => {
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', () => img.classList.add('loaded'));
+                img.addEventListener('error', () => img.classList.add('loaded'));
+            }
+        });
+    }
+
+    /* ===== PARALLAX ON SCROLL ===== */
+    function initParallax() {
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            if (scrolled < 600) {
+                hero.style.backgroundPositionY = (scrolled * 0.4) + 'px';
+                hero.querySelector('.hero-content').style.transform = 'translateY(' + (scrolled * 0.15) + 'px)';
+            }
+        }, { passive: true });
+    }
+
+    /* ===== INIT ALL ===== */
+    document.addEventListener('DOMContentLoaded', function() {
+        initScrollReveal();
+        initScrollProgress();
+        initNavShrink();
+        init3DTilt();
+        initMagnetic();
+        initParticles();
+        initLazyImages();
+        initParallax();
+
+        /* Stagger category entrance */
+        document.querySelectorAll('.categories .category').forEach((cat, i) => {
+            cat.style.opacity = '0';
+            cat.style.transform = 'translateY(20px) scale(0.9)';
+            setTimeout(() => {
+                cat.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                cat.style.opacity = '1';
+                cat.style.transform = 'translateY(0) scale(1)';
+            }, 200 + i * 100);
+        });
+
+        /* Hero entrance */
+        const hero = document.querySelector('.hero-content');
+        if (hero) {
+            hero.style.opacity = '0';
+            hero.style.transform = 'translateX(-30px)';
+            setTimeout(() => {
+                hero.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                hero.style.opacity = '1';
+                hero.style.transform = 'translateX(0)';
+            }, 100);
+        }
+    });
+    </script>
 </body>
 
 </html>

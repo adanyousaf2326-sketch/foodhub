@@ -677,10 +677,11 @@ Route::post('/login', [AuthController::class, 'login'])
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+        Route::get('/kitchen', [DashboardController::class, 'kitchen'])
+            ->name('kitchen');
 
     Route::get('/dashboard/orders-json', [DashboardController::class, 'ordersJson'])->name('dashboard.orders-json');
 
@@ -802,3 +803,41 @@ Route::get('/sql/download', function () {
 
     return response()->download($path, 'foodhub.sql');
 })->name('sql.download');
+
+/*
+ * QR CODE TABLE SCAN
+ */
+Route::get('/scan/{tableNumber}', function ($tableNumber) {
+    $table = \App\Models\RestaurantTable::where('table_number', $tableNumber)->first();
+
+    if (!$table) {
+        abort(404);
+    }
+
+    // If table is available, store it in session and redirect to menu
+    if ($table->status === 'available') {
+        session()->put('scanned_table_id', $table->id);
+        session()->put('scanned_table_number', $table->table_number);
+        return redirect()->route('home')->with('table_message', 'Table #' . $table->table_number . ' selected! Choose your food.');
+    }
+
+    // Table is booked — show available tables
+    $availableTables = \App\Models\RestaurantTable::where('status', 'available')
+        ->orderBy('table_number')
+        ->get();
+
+    return view('scan', compact('table', 'availableTables'));
+})->name('scan.table');
+
+Route::get('/scan-table/{tableNumber}', function ($tableNumber) {
+    $table = \App\Models\RestaurantTable::where('table_number', $tableNumber)->first();
+
+    if (!$table || $table->status !== 'available') {
+        return back()->with('error', 'This table is not available.');
+    }
+
+    session()->put('scanned_table_id', $table->id);
+    session()->put('scanned_table_number', $table->table_number);
+
+    return redirect()->route('home')->with('table_message', 'Table #' . $table->table_number . ' selected! Choose your food.');
+})->name('scan.select');

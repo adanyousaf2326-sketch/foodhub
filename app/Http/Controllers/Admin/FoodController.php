@@ -33,6 +33,7 @@ class FoodController extends Controller
             'price' => $hasVariations ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'image' => 'nullable|url|max:2048',
+            'prep_time' => 'required|integer|min:1|max:120',
             'is_available' => 'nullable|boolean',
             'variations' => $hasVariations ? 'required|array|min:1' : 'nullable|array',
             'variations.*.name' => 'required_with:variations|string|max:100',
@@ -57,6 +58,7 @@ class FoodController extends Controller
             'price' => $basePrice,
             'discount_percentage' => $request->discount_percentage ?? 0,
             'image' => $request->image,
+            'prep_time' => $request->prep_time ?? 15,
             'is_available' => $request->has('is_available'),
         ]);
 
@@ -100,6 +102,7 @@ class FoodController extends Controller
             'price' => $hasVariations ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'image' => 'nullable|string|max:255',
+            'prep_time' => 'required|integer|min:1|max:120',
             'is_available' => 'nullable|boolean',
             'variations' => $hasVariations ? 'required|array|min:1' : 'nullable|array',
             'variations.*.name' => 'required_with:variations|string|max:100',
@@ -123,6 +126,7 @@ class FoodController extends Controller
             'price' => $basePrice,
             'discount_percentage' => $request->discount_percentage ?? 0,
             'image' => $request->image,
+            'prep_time' => $request->prep_time ?? 15,
             'is_available' => $request->has('is_available'),
         ]);
 

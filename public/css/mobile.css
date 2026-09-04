@@ -26,7 +26,7 @@ input,
 select,
 textarea {
     min-height: 44px;
-}
+    font-size: 11px;
 a {
     min-height: auto;
 }

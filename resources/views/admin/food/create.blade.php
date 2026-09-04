@@ -568,6 +568,24 @@
 
             <div class="form-group">
                 <label>
+                    <i class="fas fa-clock"></i> Prep Time (minutes)
+                </label>
+                <input
+                    type="number"
+                    name="prep_time"
+                    value="{{ old('prep_time', 15) }}"
+                    min="1"
+                    max="120"
+                    placeholder="15"
+                    required
+                >
+                <span class="image-help">
+                    Kitchen will use this time to estimate when the order will be ready.
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label>
                     <i class="fas fa-image"></i> Food Image URL
                 </label>
                 <input

@@ -6,16 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Food extends Model
 {
-    protected $table = 'food';
-
-    protected $fillable = [
-        'category_id',
-        'name',
-        'description',
-        'price',
-        'discount_percentage',
-        'image',
-        'is_available',
+    protected $table = 'food';    protected $fillable = [
+        'category_id', 'name', 'description', 'price',
+        'discount_percentage', 'image', 'is_available', 'prep_time',
     ];
 
 

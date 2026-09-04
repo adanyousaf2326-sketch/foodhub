@@ -325,6 +325,22 @@
 
             <div class="form-group">
                 <label>
+                    Prep Time (minutes)
+                </label>
+                <input
+                    type="number"
+                    name="prep_time"
+                    value="{{ old('prep_time', $food->prep_time ?? 15) }}"
+                    min="1"
+                    max="120"
+                    placeholder="15"
+                    required
+                >
+                <small style="color:#666;">Kitchen will use this to estimate order ready time.</small>
+            </div>
+
+            <div class="form-group">
+                <label>
                     Image URL
                 </label>
                 <input

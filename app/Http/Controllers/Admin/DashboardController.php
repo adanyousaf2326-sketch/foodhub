@@ -326,4 +326,17 @@ class DashboardController extends Controller
             'server_time' => now()->toIso8601String(),
         ]);
     }
+
+    /*
+     * Kitchen Display System
+     */
+    public function kitchen()
+    {
+        $pendingOrders = Order::where('status', 'Pending')
+            ->with(['items.food', 'restaurant_table'])
+            ->latest()
+            ->get();
+
+        return view('admin.kitchen', compact('pendingOrders'));
+    }
 }

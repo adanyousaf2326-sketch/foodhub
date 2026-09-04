@@ -721,6 +721,44 @@
                         {{ $order->created_at->format('d M Y, h:i A') }}
                     </p>
 
+                    {{-- ESTIMATED READY TIME --}}
+                    @if(in_array($order->status, ['Pending', 'Preparing']))
+                        @php
+                            $maxPrepTime = 0;
+                            foreach ($order->items as $item) {
+                                $food = $item->food;
+                                $itemPrep = $food ? ($food->prep_time ?? 15) : 15;
+                                $maxPrepTime = max($maxPrepTime, $itemPrep * $item->quantity);
+                            }
+                            $maxPrepTime = max($maxPrepTime, 5);
+                            $estimatedEnd = $order->created_at->copy()->addMinutes($maxPrepTime);
+                            $remaining = max(0, $estimatedEnd->diffInSeconds(now(), false));
+                            $isReady = $remaining <= 0;
+                        @endphp
+                        <div style="margin-top:18px;padding:18px;border-radius:12px;text-align:center;{{ $isReady ? 'background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #22c55e;' : 'background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #3b82f6;' }}">
+                            @if($isReady)
+                                <div style="font-size:40px;margin-bottom:8px;">✅</div>
+                                <div style="font-size:18px;font-weight:800;color:#166534;">Your order is ready!</div>
+                                <div style="font-size:13px;color:#15803d;margin-top:4px;">Please collect your order.</div>
+                            @else
+                                <div style="font-size:40px;margin-bottom:8px;">👨‍🍳</div>
+                                <div style="font-size:15px;font-weight:700;color:#1e40af;margin-bottom:6px;">Estimated Ready Time</div>
+                                <div id="readyCountdown" data-end="{{ $estimatedEnd->timestamp * 1000 }}"
+                                     style="font-size:36px;font-weight:900;color:#2563eb;font-variant-numeric:tabular-nums;letter-spacing:3px;">
+                                    --:--
+                                </div>
+                                <div style="font-size:12px;color:#6b7280;margin-top:6px;">
+                                    <i class="fas fa-clock"></i> Ready by {{ $estimatedEnd->format('h:i A') }}
+                                    &nbsp;·&nbsp; {{ $maxPrepTime }} min total prep time
+                                </div>
+                                <div style="width:100%;height:6px;background:#e5e7eb;border-radius:3px;margin-top:12px;overflow:hidden;">
+                                    <div id="readyProgress" data-total="{{ $maxPrepTime * 60 }}" data-created="{{ $order->created_at->timestamp }}"
+                                         style="height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;transition:width 1s linear;width:100%;"></div>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
                     @if($isCancelled)
 
                         <div class="cancel-expired">
@@ -1039,6 +1077,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateCountdown();
         var timer = setInterval(updateCountdown, 1000);
+    }
+
+    // Ready Time Countdown
+    var readyCD = document.getElementById('readyCountdown');
+    var readyBar = document.getElementById('readyProgress');
+    if (readyCD) {
+        var readyEnd = Number(readyCD.dataset.end);
+        function updateReadyCountdown() {
+            var now = Date.now();
+            var rem = readyEnd - now;
+            if (rem <= 0) {
+                readyCD.innerHTML = '<i class="fas fa-check-circle"></i> READY!';
+                readyCD.style.color = '#16a34a';
+                readyCD.parentElement.style.background = 'linear-gradient(135deg,#dcfce7,#bbf7d0)';
+                readyCD.parentElement.style.borderColor = '#22c55e';
+                if (readyBar) readyBar.style.width = '0%';
+                return;
+            }
+            var mins = Math.floor(rem / 60000);
+            var secs = Math.floor((rem % 60000) / 1000);
+            readyCD.textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+        }
+        updateReadyCountdown();
+        setInterval(updateReadyCountdown, 1000);
+    }
+    if (readyBar) {
+        var totalSecs = Number(readyBar.dataset.total);
+        var createdTs = Number(readyBar.dataset.created) * 1000;
+        function updateReadyBar() {
+            var elapsed = (Date.now() - createdTs) / 1000;
+            var pct = Math.max(0, ((totalSecs - elapsed) / totalSecs) * 100);
+            readyBar.style.width = pct + '%';
+            if (pct > 50) readyBar.style.background = 'linear-gradient(90deg,#3b82f6,#60a5fa)';
+            else if (pct > 20) readyBar.style.background = 'linear-gradient(90deg,#f59e0b,#fbbf24)';
+            else readyBar.style.background = 'linear-gradient(90deg,#ef4444,#f87171)';
+        }
+        updateReadyBar();
+        setInterval(updateReadyBar, 1000);
     }
 
     // Chat functionality
