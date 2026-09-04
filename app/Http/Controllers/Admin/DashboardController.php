@@ -360,4 +360,27 @@ class DashboardController extends Controller
 
         return view('admin.kitchen', compact('pendingOrders', 'pickedUpOrders', 'readyOrders', 'cancelledOrders'));
     }
+
+    /**
+     * Close All — Admin manually resets the day
+     * - Turns off all riders
+     * - Resets assigned orders back to Pending
+     * - Marks delivered/cash-pending orders as closed
+     */
+    public function closeAll()
+    {
+        // 1. Turn off all riders
+        \App\Models\Rider::where('is_on_duty', true)->update(['is_on_duty' => false]);
+
+        // 2. Reset assigned orders (not picked up) back to Pending
+        Order::whereIn('status', ['Assigned'])
+            ->whereNull('picked_up_at')
+            ->update(['status' => 'Pending', 'rider_id' => null]);
+
+        // 3. Mark all Cash Pending orders as Delivered (closed)
+        Order::where('status', 'Cash Pending')
+            ->update(['status' => 'Delivered']);
+
+        return back()->with('success', '✅ All orders closed! New day started. Riders turned off.');
+    }
 }

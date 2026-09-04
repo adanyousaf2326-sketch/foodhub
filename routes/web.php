@@ -781,6 +781,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         Route::get('/kitchen', [DashboardController::class, 'kitchen'])
             ->name('kitchen');
 
+        // Admin: Close All / New Day Reset
+        Route::post('/close-all', [DashboardController::class, 'closeAll'])
+            ->name('close-all');
+
     Route::get('/dashboard/orders-json', [DashboardController::class, 'ordersJson'])->name('dashboard.orders-json');
 
     Route::resource('categories', CategoryController::class);
