@@ -1034,6 +1034,8 @@
         color: #222;
 
         border: 2px solid transparent;
+
+        overflow: hidden;
     }
 
     .category:hover {
@@ -2371,11 +2373,11 @@
     body.dark-theme .section-title p { color: #94a3b8; }
 
     /* Categories */
-    body.dark-theme .category { background: #1e293b; color: #e2e8f0; border: 2px solid #334155; border-radius: 70px; }
-    body.dark-theme .category:hover { border-color: #ff6b00; }
+    body.dark-theme .category { background: #1e293b; color: #e2e8f0; border: 2px solid #334155; border-radius: 70px; box-shadow: 0 5px 20px rgba(0,0,0,.2); }
+    body.dark-theme .category:hover { border-color: #ff6b00; box-shadow: 0 8px 25px rgba(255,107,0,.2); }
     body.dark-theme .category h3 { color: #f1f5f9; }
     body.dark-theme .category p { color: #94a3b8; }
-    body.dark-theme .category-icon { background: #1e293b; }
+    body.dark-theme .category-icon { background: transparent; border-radius: 50%; overflow: hidden; }
 
     /* Food Cards */
     body.dark-theme .food-card { background: #1e293b; border-color: #334155; }
