@@ -280,6 +280,10 @@ Route::post('/order/place', function (Request $request) {
 
         ]);
 
+        /* AUTO-ASSIGN RIDER for delivery orders */
+        if ($order->order_type === 'Delivery') {
+            \App\Http\Controllers\RiderController::autoAssignRider($order);
+        }
 
 
         /* Send email if provided */
@@ -755,11 +759,16 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
     // Notifications JSON for bell
     Route::get('/notifications-json', [DashboardController::class, 'notificationsJson'])
         ->name('notifications-json');    // Analytics JSON for charts
-    Route::get('/analytics-json', [DashboardController::class, 'analyticsJson'])->name('analytics-json');
+    Route::get('/analytics-json', [DashboardController::class, 'analyticsJson'])->name('analytics-json');        // Real-time updates (SSE + polling)
+        Route::get('/stream-updates', [DashboardController::class, 'streamUpdates'])->name('stream-updates');
+        Route::get('/latest-orders-json', [DashboardController::class, 'latestOrdersJson'])->name('latest-orders-json');
 
-    // Real-time updates (SSE + polling)
-    Route::get('/stream-updates', [DashboardController::class, 'streamUpdates'])->name('stream-updates');
-    Route::get('/latest-orders-json', [DashboardController::class, 'latestOrdersJson'])->name('latest-orders-json');
+        // Rider Management
+        Route::get('/riders', [\App\Http\Controllers\RiderController::class, 'adminIndex'])->name('riders.index');
+        Route::get('/riders/{id}/approve', [\App\Http\Controllers\RiderController::class, 'approveRider'])->name('riders.approve');
+        Route::get('/riders/{id}/reject', [\App\Http\Controllers\RiderController::class, 'rejectRider'])->name('riders.reject');
+        Route::get('/riders/{id}/toggle-duty', [\App\Http\Controllers\RiderController::class, 'toggleRiderDuty'])->name('riders.toggle-duty');
+        Route::get('/riders/{id}/delete', [\App\Http\Controllers\RiderController::class, 'deleteRider'])->name('riders.delete');
 
 });
 
@@ -882,6 +891,19 @@ Route::get('/scan/{tableNumber}', function ($tableNumber) {
 
     return view('scan', compact('table', 'availableTables'));
 })->name('scan.table');
+
+/*
+ * RIDER ROUTES
+ */
+Route::get('/rider/register', [\App\Http\Controllers\RiderController::class, 'showRegister'])->name('rider.register');
+Route::post('/rider/register', [\App\Http\Controllers\RiderController::class, 'register'])->name('rider.register.submit');
+Route::get('/rider/login', [\App\Http\Controllers\RiderController::class, 'showLogin'])->name('rider.login');
+Route::post('/rider/login', [\App\Http\Controllers\RiderController::class, 'login'])->name('rider.login.submit');
+Route::get('/rider/logout', [\App\Http\Controllers\RiderController::class, 'logout'])->name('rider.logout');
+Route::get('/rider/dashboard', [\App\Http\Controllers\RiderController::class, 'dashboard'])->name('rider.dashboard');
+Route::post('/rider/toggle-duty', [\App\Http\Controllers\RiderController::class, 'toggleDuty'])->name('rider.toggle-duty');
+Route::get('/rider/accept-order/{id}', [\App\Http\Controllers\RiderController::class, 'acceptOrder'])->name('rider.accept-order');
+Route::get('/rider/mark-delivered/{id}', [\App\Http\Controllers\RiderController::class, 'markDelivered'])->name('rider.mark-delivered');
 
 Route::get('/scan-table/{tableNumber}', function ($tableNumber) {
     $table = \App\Models\RestaurantTable::where('table_number', $tableNumber)->first();

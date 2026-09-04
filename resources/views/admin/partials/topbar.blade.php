@@ -16,6 +16,7 @@
         <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-active' : '' }}"><i class="fas fa-bullhorn"></i> Deals</a>
         <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'atb-active' : '' }}"><i class="fas fa-users"></i> Users</a>
         <a href="{{ route('admin.kitchen') }}" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.kitchen') ? 'atb-active' : '' }}"><i class="fas fa-fire"></i> Kitchen</a>
+        <a href="{{ route('admin.riders.index') }}" style="background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight: 700;" class="{{ request()->routeIs('admin.riders.*') ? 'atb-active' : '' }}"><i class="fas fa-motorcycle"></i> Riders</a>
         <a href="{{ url('/') }}" target="_blank" rel="noopener" class="atb-website"><i class="fas fa-globe"></i> Website</a>
     </div>
 
@@ -79,6 +80,7 @@
         <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-bullhorn"></i> Deals</a>
         <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-users"></i> Users</a>
         <a href="{{ route('admin.kitchen') }}" style="color: #fca5a5;" class="{{ request()->routeIs('admin.kitchen') ? 'atb-mm-active' : '' }}"><i class="fas fa-fire"></i> Kitchen Display</a>
+        <a href="{{ route('admin.riders.index') }}" style="color: #86efac;" class="{{ request()->routeIs('admin.riders.*') ? 'atb-mm-active' : '' }}"><i class="fas fa-motorcycle"></i> Manage Riders</a>
         <a href="{{ url('/') }}" target="_blank" rel="noopener"><i class="fas fa-globe"></i> Website</a>
     </div>
     <div class="atb-mm-footer">
