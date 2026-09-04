@@ -740,12 +740,13 @@
 
                                 </div>
 
-
+                                @if(Auth::user()->role === 'Admin')
                                 <div class="phone">
 
                                     📞 {{ $order->phone }}
 
                                 </div>
+                                @endif
 
                             </td>
 
@@ -761,7 +762,11 @@
                                     "
                                 >
 
-                                    {{ Str::limit($order->address, 50) }}
+                                    @if(Auth::user()->role === 'Admin')
+                                        {{ Str::limit($order->address, 50) }}
+                                    @else
+                                        —
+                                    @endif
 
                                 </div>
 

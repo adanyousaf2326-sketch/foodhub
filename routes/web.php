@@ -16,6 +16,7 @@ use App\Services\DeliveryCalculator;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\UserController;
+use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', function () {
@@ -789,12 +790,34 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
     Route::resource('announcements', AnnouncementController::class)
         ->except(['show']);
 
-    Route::resource('users', UserController::class)
-        ->except(['show']);
-
     // Change Password (any logged-in user)
     Route::get('/change-password', [UserController::class, 'changePassword'])->name('change-password');
     Route::put('/change-password', [UserController::class, 'updatePassword'])->name('update-password');
+
+    // Admin Only Routes
+    Route::middleware(function ($request, $next) {
+        if (Auth::user()->role !== 'Admin') {
+            abort(403, 'Only Admin can access this section.');
+        }
+        return $next($request);
+    })->group(function () {
+        Route::resource('users', UserController::class)->except(['show']);
+
+        // Rider Management
+        Route::get('/riders', [\App\Http\Controllers\RiderController::class, 'adminIndex'])->name('riders.index');
+        Route::get('/riders/{id}/approve', [\App\Http\Controllers\RiderController::class, 'approveRider'])->name('riders.approve');
+        Route::get('/riders/{id}/reject', [\App\Http\Controllers\RiderController::class, 'rejectRider'])->name('riders.reject');
+        Route::get('/riders/{id}/toggle-duty', [\App\Http\Controllers\RiderController::class, 'toggleRiderDuty'])->name('riders.toggle-duty');
+        Route::get('/riders/{id}/delete', [\App\Http\Controllers\RiderController::class, 'deleteRider'])->name('riders.delete');
+
+        // Rider Cash Collection
+        Route::get('/riders/cash', [\App\Http\Controllers\RiderController::class, 'adminCashCollection'])->name('riders.cash');
+        Route::post('/riders/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveCash'])->name('riders.receive-cash');
+        Route::post('/riders/order/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveSingleCash'])->name('riders.receive-single-cash');
+
+        // Live Rider Tracking Map
+        Route::get('/rider-map', [\App\Http\Controllers\TrackingMapController::class, 'adminRiderMap'])->name('rider-map');
+    });
 
     Route::resource('orders', OrderController::class)
         ->only(['index', 'show', 'update', 'destroy']);
@@ -836,26 +859,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         Route::get('/stream-updates', [DashboardController::class, 'streamUpdates'])->name('stream-updates');
         Route::get('/latest-orders-json', [DashboardController::class, 'latestOrdersJson'])->name('latest-orders-json');
 
-        // Rider Management
-        Route::get('/riders', [\App\Http\Controllers\RiderController::class, 'adminIndex'])->name('riders.index');
-        Route::get('/riders/{id}/approve', [\App\Http\Controllers\RiderController::class, 'approveRider'])->name('riders.approve');
-        Route::get('/riders/{id}/reject', [\App\Http\Controllers\RiderController::class, 'rejectRider'])->name('riders.reject');
-        Route::get('/riders/{id}/toggle-duty', [\App\Http\Controllers\RiderController::class, 'toggleRiderDuty'])->name('riders.toggle-duty');
-        Route::get('/riders/{id}/delete', [\App\Http\Controllers\RiderController::class, 'deleteRider'])->name('riders.delete');
-
-        // Rider Cash Collection
-        Route::get('/riders/cash', [\App\Http\Controllers\RiderController::class, 'adminCashCollection'])->name('riders.cash');
-        Route::post('/riders/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveCash'])->name('riders.receive-cash');
-        Route::post('/riders/order/{id}/receive-cash', [\App\Http\Controllers\RiderController::class, 'receiveSingleCash'])->name('riders.receive-single-cash');
-
         // Print Receipt
         Route::get('/orders/{order}/print', function (Order $order) {
             $order->load(['items.food', 'table', 'rider']);
             return view('admin.print-receipt', compact('order'));
         })->name('orders.print');
-
-        // Live Rider Tracking Map
-        Route::get('/rider-map', [\App\Http\Controllers\TrackingMapController::class, 'adminRiderMap'])->name('rider-map');
 
         // Kitchen Printer
         Route::get('/kitchen-printer', function () {
