@@ -177,9 +177,10 @@
 
 <body>
 
+@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="container">
+<div class="admin-main container">
 
     <div class="header">
 

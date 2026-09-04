@@ -52,8 +52,9 @@
     </style>
 </head>
 <body>
+@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
-<div class="container">
+<div class="admin-main container">
     <div class="header">
         <div><h1><i class="fas fa-bullhorn"></i> New Deals & Announcements</h1></div>
         <a class="button" href="{{ route('admin.announcements.create') }}">＋ New Announcement</a>

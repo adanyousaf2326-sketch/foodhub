@@ -72,9 +72,10 @@
     <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
 </head>
 <body>
+@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="container">
+<div class="admin-main container">
     <div class="page-header">
         <h1><i class="fas fa-motorcycle"></i> Manage Riders</h1>
         <p class="subtitle">View and manage all delivery riders</p>

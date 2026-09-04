@@ -78,9 +78,10 @@
     <link rel="stylesheet" href="{{ asset('css/admin-mobile.css') }}">
 </head>
 <body>
+@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="container">
+<div class="admin-main container">
     <div class="page-header">
         <h1><i class="fas fa-money-bill-wave"></i> Rider Cash Collection</h1>
         <p class="subtitle">Receive cash from riders — one click closes all orders</p>

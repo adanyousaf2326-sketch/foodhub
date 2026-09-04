@@ -3,7 +3,7 @@
         <span class="logo-icon">🍔</span>
         <div>
             <span class="brand">Food<span class="brand-accent">Hub</span></span>
-            <span style="display:block;font-size:11px;color:#64748b;font-weight:400;">Admin Panel</span>
+            <span style="display:block;font-size:10px;color:#64748b;font-weight:400;">Admin Panel</span>
         </div>
     </div>
 
@@ -14,8 +14,11 @@
         <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
             <span class="nav-icon">🛒</span> Orders
         </a>
+        <a href="{{ route('admin.kitchen') }}" class="{{ request()->routeIs('admin.kitchen') ? 'active' : '' }}">
+            <span class="nav-icon" style="color:#ef4444;">🔥</span> Kitchen
+        </a>
         <a href="{{ route('admin.food.index') }}" class="{{ request()->routeIs('admin.food.*') ? 'active' : '' }}">
-            <span class="nav-icon">🍔</span> Food Items
+            <span class="nav-icon">🍔</span> Food
         </a>
         <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
             <span class="nav-icon">📂</span> Categories
@@ -23,9 +26,31 @@
         <a href="{{ route('admin.announcements.index') }}" class="{{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
             <span class="nav-icon">📣</span> Deals
         </a>
-        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-            <span class="nav-icon">👥</span> Users
-        </a>
+
+        {{-- Admin Only Links --}}
+        @if(Auth::user()->role === 'Admin')
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section-title">Admin Only</div>
+
+            <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                <span class="nav-icon">👥</span> Users
+            </a>
+            <a href="{{ route('admin.riders.index') }}" class="{{ request()->routeIs('admin.riders.*') && !request()->routeIs('admin.riders.cash') ? 'active' : '' }}">
+                <span class="nav-icon" style="color:#4ade80;">🛵</span> Riders
+            </a>
+            <a href="{{ route('admin.riders.cash') }}" class="{{ request()->routeIs('admin.riders.cash') ? 'active' : '' }}">
+                <span class="nav-icon" style="color:#fbbf24;">💰</span> Cash
+            </a>
+            <a href="{{ route('admin.rider-map') }}" class="{{ request()->routeIs('admin.rider-map') ? 'active' : '' }}">
+                <span class="nav-icon" style="color:#60a5fa;">🗺️</span> Rider Map
+            </a>
+            <a href="{{ route('admin.customers.index') }}" class="{{ request()->routeIs('admin.customers.*') ? 'active' : '' }}">
+                <span class="nav-icon" style="color:#f97316;">👤</span> Customers
+            </a>
+        @endif
+
+        <div class="sidebar-divider"></div>
+
         <a href="{{ url('/') }}" target="_blank" rel="noopener">
             <span class="nav-icon">🌐</span> View Website
         </a>
@@ -33,50 +58,37 @@
 
     <div class="sidebar-bottom">
         {{-- Chat Button --}}
-        <div style="position:relative;margin-bottom:10px;" id="chatWrapper">
-            <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:var(--radius-md);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:white;cursor:pointer;font-size:14px;font-weight:500;transition:all .25s;position:relative;">
+        <div style="position:relative;margin-bottom:8px;" id="chatWrapper">
+            <button type="button" id="chatToggleBtn" onclick="toggleChatDropdown()" class="sidebar-btn">
                 💬 Chat
-                <span id="chatTotalBadge" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:10px;font-weight:bold;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #0f172a;"></span>
+                <span id="chatTotalBadge" class="sidebar-badge"></span>
             </button>
 
-            {{-- Chat Dropdown (desktop: popup, mobile: bottom sheet) --}}
             <div id="chatDropdown" class="chat-dropdown">
-                <div style="padding:14px 16px;background:linear-gradient(135deg,#1e40af,#7c3aed);color:white;display:flex;justify-content:space-between;align-items:center;border-radius:16px 16px 0 0;">
-                    <strong style="font-size:15px;">💬 Chat</strong>
-                    <button onclick="closeChatDropdown()" style="background:none;border:none;color:#c7d2fe;cursor:pointer;font-size:20px;padding:4px 8px;">✕</button>
+                <div style="padding:12px 16px;background:linear-gradient(135deg,#1e40af,#7c3aed);color:white;display:flex;justify-content:space-between;align-items:center;border-radius:12px 12px 0 0;">
+                    <strong style="font-size:14px;">💬 Chat</strong>
+                    <button onclick="closeChatDropdown()" style="background:none;border:none;color:#c7d2fe;cursor:pointer;font-size:18px;">✕</button>
                 </div>
                 <div style="display:flex;border-bottom:2px solid #334155;background:#0f172a;">
-                    <button onclick="switchChatTab('editReqs')" id="tabEditReqs" class="chat-tab active-tab" data-color="#f59e0b">
-                        ✏️ <span class="tab-label">Requests</span> <span id="tabEditReqsCount" class="tab-badge" style="display:none;background:#f59e0b;"></span>
-                    </button>
-                    <button onclick="switchChatTab('messages')" id="tabMessages" class="chat-tab" data-color="#3b82f6">
-                        💬 <span class="tab-label">Messages</span> <span id="tabMessagesCount" class="tab-badge" style="display:none;background:#3b82f6;"></span>
-                    </button>
-                    <button onclick="switchChatTab('updates')" id="tabUpdates" class="chat-tab" data-color="#ef4444">
-                        🔄 <span class="tab-label">Updates</span> <span id="tabUpdatesCount" class="tab-badge" style="display:none;background:#ef4444;"></span>
-                    </button>
+                    <button onclick="switchChatTab('editReqs')" id="tabEditReqs" class="chat-tab active-tab">✏️ <span class="tab-label">Requests</span> <span id="tabEditReqsCount" class="tab-badge" style="display:none;background:#f59e0b;"></span></button>
+                    <button onclick="switchChatTab('messages')" id="tabMessages" class="chat-tab">💬 <span class="tab-label">Messages</span> <span id="tabMessagesCount" class="tab-badge" style="display:none;background:#3b82f6;"></span></button>
+                    <button onclick="switchChatTab('updates')" id="tabUpdates" class="chat-tab">🔄 <span class="tab-label">Updates</span> <span id="tabUpdatesCount" class="tab-badge" style="display:none;background:#ef4444;"></span></button>
                 </div>
-                <div id="chatEditReqsPanel" class="chat-panel">
-                    <div class="chat-empty">No pending requests</div>
-                </div>
-                <div id="chatMessagesPanel" class="chat-panel" style="display:none;">
-                    <div class="chat-empty">No unread messages</div>
-                </div>
-                <div id="chatUpdatesPanel" class="chat-panel" style="display:none;">
-                    <div class="chat-empty">No order updates</div>
-                </div>
+                <div id="chatEditReqsPanel" class="chat-panel"><div class="chat-empty">No pending requests</div></div>
+                <div id="chatMessagesPanel" class="chat-panel" style="display:none;"><div class="chat-empty">No unread messages</div></div>
+                <div id="chatUpdatesPanel" class="chat-panel" style="display:none;"><div class="chat-empty">No order updates</div></div>
             </div>
         </div>
 
         {{-- Theme Toggle --}}
-        <button type="button" onclick="toggleTheme()" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:var(--radius-md);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:white;cursor:pointer;font-size:14px;font-weight:500;transition:all .25s;">
+        <button type="button" onclick="toggleTheme()" class="sidebar-btn">
             <span class="theme-icon">🌙</span> <span class="theme-label">Dark Mode</span>
         </button>
 
         {{-- Logout --}}
-        <form method="POST" action="{{ route('logout') }}" style="margin-top:8px;">
+        <form method="POST" action="{{ route('logout') }}" style="margin-top:6px;">
             @csrf
-            <button type="submit" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:var(--radius-md);background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5;cursor:pointer;font-size:14px;font-weight:500;transition:all .25s;">
+            <button type="submit" class="sidebar-btn sidebar-logout">
                 ↪ Logout
             </button>
         </form>
@@ -87,28 +99,135 @@
 <div class="mobile-menu-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <style>
-/* Chat dropdown styles */
+/* ===== SIDEBAR ===== */
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100vh;
+    background: #0f172a;
+    border-right: 1px solid #1e293b;
+    display: flex;
+    flex-direction: column;
+    z-index: 10001;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.admin-sidebar::-webkit-scrollbar { width: 4px; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #1e293b;
+}
+.sidebar-logo .logo-icon { font-size: 28px; }
+.sidebar-logo .brand { font-size: 18px; font-weight: 800; color: white; }
+.sidebar-logo .brand-accent { color: #ff6b00; }
+
+.sidebar-nav {
+    flex: 1;
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.sidebar-nav a:hover { background: rgba(255,255,255,.06); color: #e2e8f0; }
+.sidebar-nav a.active { background: rgba(255,107,0,.12); color: #ff6b00; }
+.sidebar-nav a .nav-icon { font-size: 16px; width: 22px; text-align: center; }
+
+.sidebar-divider { height: 1px; background: #1e293b; margin: 8px 14px; }
+.sidebar-section-title { font-size: 10px; color: #475569; text-transform: uppercase; letter-spacing: 1px; padding: 4px 14px; font-weight: 700; }
+
+.sidebar-bottom { padding: 10px; border-top: 1px solid #1e293b; }
+
+.sidebar-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.06);
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    position: relative;
+}
+.sidebar-btn:hover { background: rgba(255,255,255,.08); color: #e2e8f0; }
+
+.sidebar-logout { color: #f87171; border-color: rgba(239,68,68,.15); background: rgba(239,68,68,.06); }
+.sidebar-logout:hover { background: rgba(239,68,68,.15); }
+
+.sidebar-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* ===== MOBILE OVERLAY ===== */
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+.mobile-menu-overlay.active { display: block; }
+
+/* ===== CHAT DROPDOWN ===== */
 .chat-dropdown {
     display: none;
     position: absolute;
     bottom: 50px;
     left: 0;
-    width: 380px;
-    max-height: 500px;
+    width: 340px;
+    max-height: 450px;
     background: #1e293b;
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0,0,0,.5);
-    z-index: 10001;
+    z-index: 10002;
     overflow: hidden;
     border: 1px solid #334155;
 }
-
 .chat-tab {
     flex: 1;
-    padding: 10px 8px;
+    padding: 8px 6px;
     border: none;
     background: transparent;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
     color: #64748b;
@@ -117,37 +236,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 3px;
     transition: all 0.2s;
 }
+.chat-tab.active-tab { color: #f59e0b; border-bottom-color: #f59e0b; }
+.tab-badge { color: white; font-size: 9px; padding: 1px 5px; border-radius: 8px; font-weight: bold; }
+.chat-panel { max-height: 340px; overflow-y: auto; }
+.chat-empty { text-align: center; padding: 24px; color: #64748b; font-size: 12px; }
 
-.chat-tab.active-tab {
-    color: #f59e0b;
-    border-bottom-color: #f59e0b;
-}
-
-.tab-badge {
-    color: white;
-    font-size: 9px;
-    padding: 1px 5px;
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-.chat-panel {
-    max-height: 380px;
-    overflow-y: auto;
-}
-
-.chat-empty {
-    text-align: center;
-    padding: 30px;
-    color: #64748b;
-    font-size: 13px;
-}
-
-/* Mobile: chat as bottom sheet */
+/* ===== MOBILE ===== */
 @media (max-width: 1024px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+    }
+    .admin-sidebar.open { transform: translateX(0); }
     .chat-dropdown {
         position: fixed !important;
         bottom: 0 !important;
@@ -155,29 +258,23 @@
         right: 0 !important;
         top: auto !important;
         width: 100% !important;
-        max-height: 75vh !important;
-        border-radius: 20px 20px 0 0 !important;
-        z-index: 10002 !important;
+        max-height: 70vh !important;
+        border-radius: 16px 16px 0 0 !important;
+        z-index: 10003 !important;
         transform: translateY(100%);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    .chat-dropdown.open { transform: translateY(0) !important; }
+    .chat-panel { max-height: 50vh !important; }
+}
 
-    .chat-dropdown.open {
-        transform: translateY(0) !important;
-    }
-
-    .chat-panel {
-        max-height: 55vh !important;
-    }
-
-    .tab-label {
-        font-size: 11px;
-    }
+/* ===== MAIN CONTENT OFFSET ===== */
+@media (min-width: 1025px) {
+    .admin-main { margin-left: 230px; }
 }
 </style>
 
 <script>
-// Sidebar toggle (mobile)
 function openSidebar() {
     document.getElementById('adminSidebar').classList.add('open');
     document.getElementById('sidebarOverlay').classList.add('active');
@@ -189,16 +286,12 @@ function closeSidebar() {
     document.body.style.overflow = '';
 }
 
-// Close sidebar when clicking nav links on mobile
 document.querySelectorAll('#sidebarNav a').forEach(function(link) {
     link.addEventListener('click', function() {
-        if (window.innerWidth <= 1024) {
-            closeSidebar();
-        }
+        if (window.innerWidth <= 1024) closeSidebar();
     });
 });
 
-// Theme toggle
 function toggleTheme() {
     var body = document.body;
     var icon = document.querySelector('.theme-icon');
@@ -217,175 +310,101 @@ function toggleTheme() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    var savedTheme = localStorage.getItem('theme');
-    var icon = document.querySelector('.theme-icon');
-    var label = document.querySelector('.theme-label');
-    if (savedTheme === 'dark') {
+    if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
+        var icon = document.querySelector('.theme-icon');
+        var label = document.querySelector('.theme-label');
         if (icon) icon.textContent = '☀️';
         if (label) label.textContent = 'Light Mode';
     }
 });
 
-// Chat dropdown
+// Chat
 var activeTab = 'editReqs';
-
 function closeChatDropdown() {
     var dd = document.getElementById('chatDropdown');
     dd.classList.remove('open');
     dd.style.display = 'none';
 }
-
 function toggleChatDropdown() {
     var dd = document.getElementById('chatDropdown');
-    if (dd.style.display === 'block') {
-        closeChatDropdown();
-    } else {
-        dd.style.display = 'block';
-        // Add open class for mobile animation
-        setTimeout(function() { dd.classList.add('open'); }, 10);
-        loadChatNotifications();
-    }
+    if (dd.style.display === 'block') { closeChatDropdown(); }
+    else { dd.style.display = 'block'; setTimeout(function() { dd.classList.add('open'); }, 10); loadChatNotifications(); }
 }
-
 function switchChatTab(tab) {
     activeTab = tab;
     var panels = { editReqs:'chatEditReqsPanel', messages:'chatMessagesPanel', updates:'chatUpdatesPanel' };
     var tabs = { editReqs:'tabEditReqs', messages:'tabMessages', updates:'tabUpdates' };
-    var colors = { editReqs:'#f59e0b', messages:'#3b82f6', updates:'#ef4444' };
     Object.keys(panels).forEach(function(k) {
         document.getElementById(panels[k]).style.display = k===tab ? 'block' : 'none';
-        var t = document.getElementById(tabs[k]);
-        if (k === tab) {
-            t.classList.add('active-tab');
-            t.style.color = colors[k];
-            t.style.borderBottomColor = colors[k];
-        } else {
-            t.classList.remove('active-tab');
-            t.style.color = '#64748b';
-            t.style.borderBottomColor = 'transparent';
-        }
+        document.getElementById(tabs[k]).classList.toggle('active-tab', k===tab);
     });
 }
-
 var editReqCount = 0, msgCount = 0, updateCount = 0;
-
 function renderChatEditRequests(reqs) {
     var panel = document.getElementById('chatEditReqsPanel');
     var badge = document.getElementById('tabEditReqsCount');
-    if (reqs.length === 0) {
-        panel.innerHTML = '<div class="chat-empty">No pending requests</div>';
-        badge.style.display = 'none';
-        editReqCount = 0;
-        return;
-    }
-    editReqCount = reqs.length;
-    badge.textContent = editReqCount;
-    badge.style.display = 'inline';
+    if (!reqs.length) { panel.innerHTML = '<div class="chat-empty">No pending requests</div>'; badge.style.display = 'none'; editReqCount = 0; return; }
+    editReqCount = reqs.length; badge.textContent = editReqCount; badge.style.display = 'inline';
     var html = '';
     reqs.forEach(function(r) {
-        html += '<div style="padding:12px 16px;border-bottom:1px solid #334155;background:#1a1a2e;">';
-        html += '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="color:#f59e0b;font-size:13px;">✏️ Order #' + r.order_id + '</strong><span style="font-size:11px;color:#94a3b8;">' + timeAgo(r.created_at) + '</span></div>';
-        html += '<div style="font-size:12px;color:#94a3b8;margin-bottom:8px;">' + (r.customer_name||'Customer') + ': ' + (r.message||'Wants to edit') + '</div>';
-        html += '<div style="display:flex;gap:6px;">';
-        html += '<form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:8px;border:none;border-radius:8px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:12px;">✅ Accept</button></form>';
-        html += '<form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected."><button type="submit" style="width:100%;padding:8px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:12px;">❌ Reject</button></form>';
-        html += '</div></div>';
+        html += '<div style="padding:12px 16px;border-bottom:1px solid #334155;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><strong style="color:#f59e0b;font-size:13px;">✏️ Order #' + r.order_id + '</strong><span style="font-size:10px;color:#94a3b8;">' + timeAgo(r.created_at) + '</span></div><div style="font-size:12px;color:#94a3b8;margin-bottom:8px;">' + (r.customer_name||'Customer') + ': ' + (r.message||'Edit request') + '</div><div style="display:flex;gap:6px;"><form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/accept" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" style="width:100%;padding:6px;border:none;border-radius:6px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;font-size:11px;">✅ Accept</button></form><form method="POST" action="/admin/orders/' + r.order_id + '/edit-requests/' + r.id + '/reject" style="flex:1;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="admin_response" value="Rejected"><button type="submit" style="width:100%;padding:6px;border:none;border-radius:6px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;font-size:11px;">❌ Reject</button></form></div></div>';
     });
     panel.innerHTML = html;
 }
-
 function renderChatMessages(msgs) {
     var panel = document.getElementById('chatMessagesPanel');
     var badge = document.getElementById('tabMessagesCount');
-    if (msgs.length === 0) {
-        panel.innerHTML = '<div class="chat-empty">No unread messages</div>';
-        badge.style.display = 'none';
-        msgCount = 0;
-        return;
-    }
-    msgCount = msgs.length;
-    badge.textContent = msgCount;
-    badge.style.display = 'inline';
+    if (!msgs.length) { panel.innerHTML = '<div class="chat-empty">No unread messages</div>'; badge.style.display = 'none'; msgCount = 0; return; }
+    msgCount = msgs.length; badge.textContent = msgCount; badge.style.display = 'inline';
     var html = '';
     msgs.forEach(function(m) {
-        html += '<a href="/admin/orders/' + m.order_id + '" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #334155;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#1e3a5f\';" onmouseout="this.style.background=\'transparent\';">';
-        html += '<div style="width:36px;height:36px;border-radius:10px;background:#1e3a5f;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💬</div>';
-        html += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#60a5fa;margin-bottom:2px;">Order #' + m.order_id + '</div>';
-        html += '<div style="font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (m.sender_name||'Customer') + ': ' + m.message + '</div></div></a>';
+        html += '<a href="/admin/orders/' + m.order_id + '" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #334155;text-decoration:none;color:inherit;">';
+        html += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:12px;color:#60a5fa;">Order #' + m.order_id + '</div>';
+        html += '<div style="font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.message + '</div></div></a>';
     });
     panel.innerHTML = html;
 }
-
 function renderChatUpdates(updates) {
     var panel = document.getElementById('chatUpdatesPanel');
     var badge = document.getElementById('tabUpdatesCount');
-    if (updates.length === 0) {
-        panel.innerHTML = '<div class="chat-empty">No order updates</div>';
-        badge.style.display = 'none';
-        updateCount = 0;
-        return;
-    }
-    updateCount = updates.length;
-    badge.textContent = updateCount;
-    badge.style.display = 'inline';
+    if (!updates.length) { panel.innerHTML = '<div class="chat-empty">No updates</div>'; badge.style.display = 'none'; updateCount = 0; return; }
+    updateCount = updates.length; badge.textContent = updateCount; badge.style.display = 'inline';
     var html = '';
     updates.forEach(function(o) {
-        html += '<a href="/admin/orders/' + o.id + '" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #334155;text-decoration:none;color:inherit;transition:background .15s;" onmouseover="this.style.background=\'#422006\';" onmouseout="this.style.background=\'transparent\';">';
-        html += '<div style="width:36px;height:36px;border-radius:10px;background:#422006;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔄</div>';
-        html += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#fbbf24;margin-bottom:2px;">Order #' + o.id + ' Updated</div>';
-        html += '<div style="font-size:12px;color:#94a3b8;">' + (o.customer_name||'Customer') + ' - Rs. ' + parseFloat(o.total_amount).toFixed(2) + '</div></div></a>';
+        html += '<a href="/admin/orders/' + o.id + '" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #334155;text-decoration:none;color:inherit;">';
+        html += '<div style="flex:1;"><div style="font-weight:600;font-size:12px;color:#fbbf24;">Order #' + o.id + '</div>';
+        html += '<div style="font-size:11px;color:#94a3b8;">Rs. ' + parseFloat(o.total_amount).toFixed(0) + '</div></div></a>';
     });
     panel.innerHTML = html;
 }
-
 function updateChatTotalBadge() {
     var t = editReqCount + msgCount + updateCount;
     var b = document.getElementById('chatTotalBadge');
-    if (t > 0) { b.textContent = t; b.style.display = 'flex'; }
-    else { b.style.display = 'none'; }
+    if (t > 0) { b.textContent = t; b.style.display = 'flex'; } else { b.style.display = 'none'; }
 }
-
 function timeAgo(d) {
-    var n = new Date(), t = new Date(d), s = Math.floor((n - t) / 1000);
-    if (s < 60) return 'just now';
-    if (s < 3600) return Math.floor(s/60) + 'm ago';
-    if (s < 86400) return Math.floor(s/3600) + 'h ago';
-    return Math.floor(s/86400) + 'd ago';
+    var s = Math.floor((new Date() - new Date(d)) / 1000);
+    if (s < 60) return 'now';
+    if (s < 3600) return Math.floor(s/60) + 'm';
+    if (s < 86400) return Math.floor(s/3600) + 'h';
+    return Math.floor(s/86400) + 'd';
 }
-
 function loadChatNotifications() {
-    fetch('/admin/notifications-json', {
-        credentials: 'same-origin',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(function(r) { if (r.status === 401 || r.redirected) return null; return r.json(); })
-    .then(function(d) {
-        if (!d) return;
-        renderChatEditRequests(d.edit_requests || []);
-        renderChatMessages(d.unread_messages || []);
-        renderChatUpdates(d.recently_updated_orders || []);
-        updateChatTotalBadge();
-    })
+    fetch('/admin/notifications-json', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+    .then(function(r) { return (r.status === 401) ? null : r.json(); })
+    .then(function(d) { if (!d) return; renderChatEditRequests(d.edit_requests || []); renderChatMessages(d.unread_messages || []); renderChatUpdates(d.recently_updated_orders || []); updateChatTotalBadge(); })
     .catch(function() {});
 }
 setInterval(loadChatNotifications, 8000);
 loadChatNotifications();
 
-// Close chat dropdown on outside click
 document.addEventListener('click', function(e) {
     var dd = document.getElementById('chatDropdown');
     var btn = document.getElementById('chatToggleBtn');
-    if (dd && dd.style.display === 'block' && !dd.contains(e.target) && !btn.contains(e.target)) {
-        closeChatDropdown();
-    }
+    if (dd && dd.style.display === 'block' && !dd.contains(e.target) && !btn.contains(e.target)) closeChatDropdown();
 });
-
-// Close sidebar on escape key
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeSidebar();
-        closeChatDropdown();
-    }
+    if (e.key === 'Escape') { closeSidebar(); closeChatDropdown(); }
 });
 </script>

@@ -42,9 +42,10 @@
 </head>
 <body>
 
+@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
 
-<div class="container">
+<div class="admin-main container">
     <div class="card">
         <h1><i class="fas fa-lock"></i> Change Password</h1>
         <p class="subtitle">Update your account password</p>

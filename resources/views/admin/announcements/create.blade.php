@@ -59,8 +59,9 @@
     </style>
 </head>
 <body>
+@include('admin.partials.sidebar')
 @include('admin.partials.topbar')
-<div class="container"><div class="card">
+<div class="admin-main container"><div class="card">
     <h1>{!! isset($announcement) ? '<i class="fas fa-pen"></i> Edit Announcement' : '<i class="fas fa-bullhorn"></i> New Announcement' !!}</h1>
     <p>Show new items, deals, or restaurant updates on the customer home page.</p>
     @if($errors->any())<div class="error"><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
