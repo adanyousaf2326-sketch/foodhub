@@ -37,7 +37,17 @@ Route::get('/', function () {
     // Announcements (not cached — relationships break in cache)
     $announcements = Announcement::with('foods')->visible()->latest()->get();
 
-    return view('home', compact('categories', 'foods', 'announcements'));
+    // Wishlist IDs for logged-in customers
+    $wishlistIds = [];
+    $customerId = session('customer_id');
+    if ($customerId) {
+        $wishlistIds = \DB::table('wishlist')
+            ->where('customer_id', $customerId)
+            ->pluck('food_id')
+            ->toArray();
+    }
+
+    return view('home', compact('categories', 'foods', 'announcements', 'wishlistIds'));
 
 })->name('home');
 

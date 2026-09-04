@@ -277,14 +277,22 @@
                            target="_blank" class="action-btn btn-navigate"><i class="fas fa-directions"></i> Navigate</a>
                     @endif
                     @if($order->status === 'Assigned')
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=33.6844,73.0479&travelmode=driving" target="_blank" class="action-btn" style="background:#3b82f6;color:white;">
+                            <i class="fas fa-diamond-turn-right"></i> Navigate to Restaurant
+                        </a>
                         <a href="{{ route('rider.pick-up', $order->id) }}" class="action-btn" style="background:#8b5cf6;color:white;"
                            onclick="return confirm('Pick up this order from kitchen?')">
                             <i class="fas fa-box-open"></i> Pick Up from Kitchen
                         </a>
                     @elseif($order->status === 'Picked Up')
+                        @if($order->customer_lat && $order->customer_lng)
+                            <a href="https://www.google.com/maps/dir/?api=1&destination={{ $order->customer_lat }},{{ $order->customer_lng }}&travelmode=driving" target="_blank" class="action-btn" style="background:#3b82f6;color:white;">
+                                <i class="fas fa-diamond-turn-right"></i> Navigate
+                            </a>
+                        @endif
                         <a href="{{ route('rider.mark-delivered', $order->id) }}" class="action-btn btn-deliver"
                            onclick="return confirm('Mark as delivered?')">
-                            <i class="fas fa-check-double"></i> Mark Delivered
+                            <i class="fas fa-check-double"></i> Delivered
                         </a>
                         <a href="{{ route('rider.return-to-kitchen', $order->id) }}" class="action-btn" style="background:#ef4444;color:white;"
                            onclick="return confirm('Return this order to kitchen? Customer cancelled.')">
@@ -364,6 +372,28 @@
 
         // Poll for new orders every 30 seconds (reduced for performance)
         setInterval(function() { location.reload(); }, 30000);
+
+        /* ===== AUTO LOCATION TRACKING ===== */
+        if ('geolocation' in navigator) {
+            var watchId = navigator.geolocation.watchPosition(
+                function(pos) {
+                    var lat = pos.coords.latitude;
+                    var lng = pos.coords.longitude;
+                    fetch('/api/rider/update-location', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ lat: lat, lng: lng }),
+                        credentials: 'same-origin'
+                    }).catch(function() {});
+                },
+                function(err) { console.log('Location error:', err.message); },
+                { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
+            );
+        }
 
         // PWA Service Worker
         if ('serviceWorker' in navigator) {

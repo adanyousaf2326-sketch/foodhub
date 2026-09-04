@@ -3424,7 +3424,7 @@
                             @if(!$food->isOrderable()) style="opacity:0.7;position:relative;" data-available-at="{{ $food->available_at_iso ?? '' }}" @endif
                         >
 
-                <div class="food-image">
+                <div class="food-image" style="position:relative;">
 
                     @if($food->image)
 
@@ -3435,6 +3435,12 @@
                         <i class="fas fa-utensils" style="font-size:50px;color:#d1d5db;"></i>
 
                     @endif
+
+                    <!-- Wishlist Heart Button -->
+                    <button type="button" class="wishlist-btn" onclick="toggleWishlist({{ $food->id }}, this, event)" data-food-id="{{ $food->id }}"
+                        style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);color:white;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:5;">
+                        <i class="{{ in_array($food->id, $wishlistIds ?? []) ? 'fas' : 'far' }} fa-heart" style="color:{{ in_array($food->id, $wishlistIds ?? []) ? '#ef4444' : 'white' }};"></i>
+                    </button>
 
                 </div>
 
@@ -4702,6 +4708,42 @@ document.addEventListener(
 
 
 <script>
+    /* ===== WISHLIST ===== */
+    function toggleWishlist(foodId, btn, event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch('/api/wishlist/' + foodId, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(function(r) {
+            if (r.status === 401) {
+                window.location.href = '/customer/login';
+                throw new Error('Login required');
+            }
+            return r.json();
+        })
+        .then(function(data) {
+            var icon = btn.querySelector('i');
+            if (data.action === 'added') {
+                icon.className = 'fas fa-heart';
+                icon.style.color = '#ef4444';
+                btn.style.transform = 'scale(1.3)';
+                setTimeout(function() { btn.style.transform = 'scale(1)'; }, 200);
+            } else {
+                icon.className = 'far fa-heart';
+                icon.style.color = 'white';
+            }
+        })
+        .catch(function() {});
+    }
+
     function toggleCustomerTheme() {
         var body = document.body;
         var icon = document.querySelector(".theme-icon-customer");

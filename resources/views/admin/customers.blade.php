@@ -67,7 +67,6 @@
 <div class="container">
     <div class="page-header">
         <h1><i class="fas fa-users"></i> Customer Management</h1>
-        <p class="subtitle">View all registered customers — Admin only</p>
     </div>
 
     @if(session('success'))

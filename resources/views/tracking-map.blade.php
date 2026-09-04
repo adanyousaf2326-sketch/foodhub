@@ -130,6 +130,33 @@ function updateStatusSteps(status) {
     });
 }
 
+// Route line between rider and customer
+var routeLine = null;
+
+// ETA display
+var etaEl = document.createElement('div');
+etaEl.id = 'etaDisplay';
+etaEl.style.cssText = 'display:none;background:white;padding:10px 16px;border-top:1px solid #e5e7eb;font-size:13px;font-weight:600;color:#111;text-align:center;';
+document.querySelector('.tracking-bar').after(etaEl);
+
+function calcDistance(lat1, lng1, lat2, lng2) {
+    var R = 6371;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLng = (lng2 - lng1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng/2) * Math.sin(dLng/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function updateRouteLine(riderLat, riderLng, custLat, custLng) {
+    if (routeLine) map.removeLayer(routeLine);
+    routeLine = L.polyline([[riderLat, riderLng], [custLat, custLng]], {
+        color: '#3b82f6', weight: 3, dashArray: '8, 8', opacity: 0.8
+    }).addTo(map);
+}
+
+var customerLat = {{ $order->customer_lat ?? 'null' }};
+var customerLng = {{ $order->customer_lng ?? 'null' }};
+
 // Poll rider location every 5 seconds
 function pollLocation() {
     fetch('/api/tracking/{{ $order->id }}/rider-location')
@@ -140,7 +167,30 @@ function pollLocation() {
 
             if (data.rider_location) {
                 updateRiderPosition(data.rider_location.lat, data.rider_location.lng);
-                map.setView([data.rider_location.lat, data.rider_location.lng], 14);
+
+                // Calculate distance and ETA
+                if (customerLat && customerLng) {
+                    var distKm = calcDistance(data.rider_location.lat, data.rider_location.lng, customerLat, customerLng);
+                    var distM = Math.round(distKm * 1000);
+                    var etaMin = Math.ceil(distKm / 30 * 60); // avg 30km/h city speed
+
+                    updateRouteLine(data.rider_location.lat, data.rider_location.lng, customerLat, customerLng);
+
+                    var etaDiv = document.getElementById('etaDisplay');
+                    if (distM < 1000) {
+                        etaDiv.innerHTML = '🛵 <span style="color:#ff6b00;">' + distM + 'm</span> away • ETA: <span style="color:#16a34a;">' + etaMin + ' min</span>';
+                    } else {
+                        etaDiv.innerHTML = '🛵 <span style="color:#ff6b00;">' + distKm.toFixed(1) + ' km</span> away • ETA: <span style="color:#16a34a;">' + etaMin + ' min</span>';
+                    }
+                    etaDiv.style.display = 'block';
+
+                    // Fit map to show both markers
+                    var bounds = L.latLngBounds([
+                        [data.rider_location.lat, data.rider_location.lng],
+                        [customerLat, customerLng]
+                    ]);
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                }
             }
 
             if (data.rider_name) {

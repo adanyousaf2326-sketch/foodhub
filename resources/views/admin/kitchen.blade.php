@@ -717,11 +717,8 @@ function clearOrder(orderId) {
 }
 
 /* ===== AUTO REFRESH (AJAX, no page reload) ===== */
-// Check for new orders every 15 seconds
 setInterval(function() {
-    // Don't refresh if stock panel is open (avoid disrupting user)
     if (stockPanelOpen) return;
-
     fetch('/admin/kitchen', { credentials: 'same-origin', headers: { 'Accept': 'text/html' } })
     .then(function(r) { return r.text(); })
     .then(function(html) {
@@ -733,11 +730,11 @@ setInterval(function() {
             var newCount = newContainer.querySelectorAll('.order-card').length;
             var oldCount = oldContainer.querySelectorAll('.order-card').length;
             if (newCount !== oldCount) {
-                // Orders changed - do a soft reload to keep timers
+                // Auto-print new orders before reload
+                autoPrintNewOrders(doc, oldContainer);
                 location.reload();
             }
         }
-        // Update stat counts
         var newPending = doc.getElementById('countPending');
         var newPicked = doc.getElementById('countPicked');
         var newReady = doc.getElementById('countReady');
@@ -747,6 +744,131 @@ setInterval(function() {
     })
     .catch(function() {});
 }, 15000);
+
+/* ===== THERMAL PRINTER AUTO-PRINT ===== */
+var printerEnabled = localStorage.getItem('kitchen_printer') === 'true';
+var printedOrderIds = JSON.parse(localStorage.getItem('printed_orders') || '[]');
+
+function togglePrinter() {
+    printerEnabled = !printerEnabled;
+    localStorage.setItem('kitchen_printer', printerEnabled);
+    var btn = document.getElementById('printerToggle');
+    if (btn) {
+        btn.style.background = printerEnabled ? '#16a34a' : 'rgba(255,255,255,.07)';
+        btn.title = printerEnabled ? 'Printer ON - Auto printing' : 'Printer OFF - Click to enable';
+    }
+    if (printerEnabled) {
+        // Test print to detect printer
+        printReceipt({ id: 0, items: [{qty: 1, name: 'PRINTER TEST', variant: null}], type: 'Dine In', table: null, customer: 'Test', time: new Date().toLocaleTimeString(), notes: 'Printer connected!' });
+    }
+}
+
+function autoPrintNewOrders(newDoc, oldContainer) {
+    if (!printerEnabled) return;
+    var oldIds = Array.from(oldContainer.querySelectorAll('.order-card')).map(function(c) { return c.dataset.orderId; });
+    var newCards = newDoc.querySelectorAll('.order-card');
+    newCards.forEach(function(card) {
+        var id = card.dataset.orderId;
+        if (oldIds.indexOf(id) === -1 && printedOrderIds.indexOf(id) === -1) {
+            // New order found - build receipt data
+            var items = [];
+            card.querySelectorAll('.order-item').forEach(function(item) {
+                var qty = item.querySelector('.item-qty');
+                var name = item.querySelector('.item-name div');
+                items.push({
+                    qty: qty ? qty.textContent.replace('×', '') : '1',
+                    name: name ? name.textContent.trim() : 'Unknown',
+                    variant: null
+                });
+            });
+            var orderData = {
+                id: id,
+                items: items,
+                type: card.querySelector('.order-type-badge') ? card.querySelector('.order-type-badge').textContent : 'Dine In',
+                table: card.querySelector('.order-table') ? card.querySelector('.order-table').textContent.trim() : null,
+                customer: card.querySelector('[style*="color:#64748b"]') ? card.querySelector('[style*="color:#64748b"]').textContent.trim() : 'Customer',
+                time: new Date().toLocaleTimeString(),
+                notes: card.querySelector('.order-notes') ? card.querySelector('.order-notes').textContent.trim() : null
+            };
+            printReceipt(orderData);
+            printedOrderIds.push(id);
+            localStorage.setItem('printed_orders', JSON.stringify(printedOrderIds));
+        }
+    });
+}
+
+function printReceipt(order) {
+    var lines = [];
+    lines.push('================================');
+    lines.push('         FOODHUB KITCHEN');
+    lines.push('================================');
+    lines.push('Order #' + order.id);
+    lines.push('Type: ' + order.type);
+    if (order.table) lines.push('Table: ' + order.table);
+    lines.push('Customer: ' + order.customer);
+    lines.push('Time: ' + order.time);
+    lines.push('--------------------------------');
+    order.items.forEach(function(item) {
+        lines.push('x' + item.qty + '  ' + item.name);
+        if (item.variant) lines.push('      (' + item.variant + ')');
+    });
+    lines.push('--------------------------------');
+    if (order.notes) lines.push('NOTES: ' + order.notes);
+    lines.push('================================');
+    lines.push('');
+
+    var receiptText = lines.join('\n');
+
+    // Method 1: Web Print API (auto-detects thermal printer)
+    var printWindow = window.open('', '_blank', 'width=300,height=600');
+    if (printWindow) {
+        printWindow.document.write('<html><head><title>Order #' + order.id + '</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('@page { size: 80mm auto; margin: 2mm; }');
+        printWindow.document.write('body { font-family: monospace; font-size: 12px; white-space: pre; margin: 0; padding: 4px; width: 72mm; }');
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write(receiptText);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        setTimeout(function() { printWindow.print(); }, 500);
+        setTimeout(function() { printWindow.close(); }, 2000);
+    } else {
+        // Fallback: use iframe
+        var iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.top = '-9999px';
+        iframe.style.left = '-9999px';
+        iframe.style.width = '80mm';
+        document.body.appendChild(iframe);
+        var doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write('<html><head><style>@page{size:80mm auto;margin:2mm;}body{font-family:monospace;font-size:12px;white-space:pre;margin:0;padding:4px;width:72mm;}</style></head><body>');
+        doc.write(receiptText);
+        doc.write('</body></html>');
+        doc.close();
+        setTimeout(function() { iframe.contentWindow.print(); }, 500);
+        setTimeout(function() { document.body.removeChild(iframe); }, 3000);
+    }
+}
+</script>
+
+<!-- Printer toggle button -->
+<div style="position:fixed;top:0;right:80px;z-index:10001;">
+    <button id="printerToggle" onclick="togglePrinter()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:white;padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;" title="Toggle Auto-Print">
+        <i class="fas fa-print"></i> <span style="font-size:11px;">Printer</span>
+    </button>
+</div>
+
+<script>
+// Set initial printer button state from localStorage
+(function() {
+    var pe = localStorage.getItem('kitchen_printer') === 'true';
+    var btn = document.getElementById('printerToggle');
+    if (btn && pe) {
+        btn.style.background = '#16a34a';
+        btn.title = 'Printer ON - Auto printing new orders';
+    }
+})();
 </script>
 </body>
 </html>

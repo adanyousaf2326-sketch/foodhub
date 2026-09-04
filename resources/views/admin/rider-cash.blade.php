@@ -83,7 +83,6 @@
 <div class="container">
     <div class="page-header">
         <h1><i class="fas fa-money-bill-wave"></i> Rider Cash Collection</h1>
-        <p class="subtitle">Receive cash from riders — one click closes all orders</p>
     </div>
 
     @if(session('success'))
