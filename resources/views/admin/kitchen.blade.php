@@ -175,15 +175,8 @@
 <div class="orders-container">
     @forelse($pendingOrders as $order)
         @php
-            $maxPrepTime = 0;
-            foreach ($order->items as $item) {
-                $food = $item->food;
-                $itemPrep = $food ? ($food->prep_time ?? 15) : 15;
-                $maxPrepTime = max($maxPrepTime, $itemPrep * $item->quantity);
-            }
-            $maxPrepTime = max($maxPrepTime, 5);
+            $totalPrepMinutes = \App\Services\PrepTimeCalculator::calculate($order);
             $createdAt = $order->created_at;
-            $totalPrepMinutes = $maxPrepTime;
         @endphp
 
         <div class="order-card status-{{ strtolower(str_replace(' ', '', $order->status)) }}"
