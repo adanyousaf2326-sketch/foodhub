@@ -134,22 +134,27 @@ if ('serviceWorker' in navigator) {
 
 .admin-topbar {
     background: #111827;
-    padding: 0 5%;
-    height: 60px;
+    padding: 0.5em 5%;
+    min-height: 48px;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 0.8em;
     position: sticky;
     top: 0;
     z-index: 10000;
     box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
+.admin-topbar::-webkit-scrollbar { display: none; }
 
 /* Logo */
 .atb-logo {
     color: #ff6b00;
-    font-size: 22px;
+    font-size: clamp(16px, 1.5vw, 22px);
     font-weight: 800;
     text-decoration: none;
     white-space: nowrap;
@@ -171,9 +176,9 @@ if ('serviceWorker' in navigator) {
 .atb-links a {
     color: #cbd5e1;
     text-decoration: none;
-    padding: 7px 10px;
+    padding: 0.45em 0.7em;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: clamp(10px, 1.1vw, 13px);
     font-weight: 600;
     white-space: nowrap;
     transition: background 0.2s, color 0.2s;
@@ -188,7 +193,7 @@ if ('serviceWorker' in navigator) {
 .atb-actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0.3em;
     flex-shrink: 0;
 }
 
@@ -198,11 +203,11 @@ if ('serviceWorker' in navigator) {
     background: rgba(255,255,255,.07);
     border: 1px solid rgba(255,255,255,.1);
     color: white;
-    width: 38px;
-    height: 38px;
+    width: clamp(30px, 2.5vw, 38px);
+    height: clamp(30px, 2.5vw, 38px);
     border-radius: 9px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: clamp(12px, 1.2vw, 16px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -235,10 +240,10 @@ if ('serviceWorker' in navigator) {
     background: #dc2626;
     color: white;
     border: none;
-    padding: 8px 14px;
+    padding: 0.5em 1em;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: clamp(10px, 1.1vw, 13px);
     font-weight: 700;
     white-space: nowrap;
     transition: background 0.2s;
@@ -467,10 +472,11 @@ if ('serviceWorker' in navigator) {
 }
 
 @media (max-width: 640px) {
-    .atb-logo { font-size: 19px; }
-    .admin-topbar { padding: 0 3%; height: 56px; }
-    .atb-mobile-menu { top: 56px; }
-    .atb-mm-links a { font-size: 14px; padding: 12px 12px; }
+    .atb-logo { font-size: 16px; }
+    .admin-topbar { padding: 0.4em 3%; min-height: 44px; }
+    .atb-mobile-menu { top: 50px; }
+    .atb-mm-links a { font-size: 13px; padding: 10px 12px; }
+    .atb-icon-btn { width: 30px; height: 30px; font-size: 13px; }
 }
 
 /* ============================================================
