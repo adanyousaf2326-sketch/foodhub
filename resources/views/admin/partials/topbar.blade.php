@@ -146,10 +146,7 @@ if ('serviceWorker' in navigator) {
     z-index: 10000;
     box-shadow: 0 2px 12px rgba(0,0,0,.4);
     flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
-.admin-topbar::-webkit-scrollbar { display: none; }
 
 /* Logo */
 .atb-logo {
@@ -254,7 +251,7 @@ if ('serviceWorker' in navigator) {
 /* ============================================================
    CHAT DROPDOWN
    ============================================================ */
-.atb-chat-wrap { position: relative; }
+.atb-chat-wrap { position: relative; z-index: 10002; }
 
 .atb-chat-dropdown {
     display: none;
