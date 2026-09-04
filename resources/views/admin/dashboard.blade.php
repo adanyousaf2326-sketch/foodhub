@@ -294,7 +294,7 @@
             </button>
             <a href="{{ route("admin.orders.export.pdf", request()->query()) }}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:10px 16px;border-radius:8px;background:#dc2626;color:white;text-decoration:none;font-size:13px;font-weight:bold;"><i class="fas fa-file-pdf"></i> PDF</a>
             @if(Auth::user()->role === 'Admin')
-                <form method="POST" action="{{ route('admin.close-all') }}" style="display:inline;" onsubmit="return confirm('🔄 Start New Day?\n\nThis will:\n• Turn OFF all riders\n• Reset assigned orders\n• Close all cash pending orders\n\nAre you sure?')">
+                <form method="POST" action="{{ route('admin.close-all') }}" style="display:inline;" onsubmit="return confirm('🌙 Start New Day?\n\nThis will:\n\n🛵 Turn OFF all riders\n📋 Reset assigned orders → Pending\n💰 Close cash pending → Delivered\n✅ Close stuck orders → Delivered\n🍕 Re-enable ALL disabled food items\n🪑 Free all occupied tables\n🗑️ Clear all caches\n\nAre you sure?')">
                     @csrf
                     <button type="submit" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;font-size:14px;background:linear-gradient(135deg,#f59e0b,#d97706);">
                         <i class="fas fa-moon"></i> Close All

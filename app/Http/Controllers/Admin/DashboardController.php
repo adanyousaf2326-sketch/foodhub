@@ -363,25 +363,53 @@ class DashboardController extends Controller
     }
 
     /**
-     * Close All — Admin manually resets the day
-     * - Turns off all riders
-     * - Resets assigned orders back to Pending
-     * - Marks delivered/cash-pending orders as closed
+     * Close All — Full daily reset in one click
      */
     public function closeAll()
     {
-        // 1. Turn off all riders
-        \App\Models\Rider::where('is_on_duty', true)->update(['is_on_duty' => false]);
+        $log = [];
 
-        // 2. Reset assigned orders (not picked up) back to Pending
-        Order::whereIn('status', ['Assigned'])
+        // 1. 🛵 Turn off ALL riders
+        $ridersOff = \App\Models\Rider::where('is_on_duty', true)->update(['is_on_duty' => false]);
+        $log[] = "🛵 {$ridersOff} riders turned OFF";
+
+        // 2. 📋 Reset Assigned orders (not picked up) → Pending
+        $assignedReset = Order::where('status', 'Assigned')
             ->whereNull('picked_up_at')
             ->update(['status' => 'Pending', 'rider_id' => null]);
+        $log[] = "📋 {$assignedReset} assigned orders → Pending";
 
-        // 3. Mark all Cash Pending orders as Delivered (closed)
-        Order::where('status', 'Cash Pending')
+        // 3. 💰 Mark Cash Pending → Delivered (closed)
+        $cashClosed = Order::where('status', 'Cash Pending')
             ->update(['status' => 'Delivered']);
+        $log[] = "💰 {$cashClosed} cash pending → Delivered";
 
-        return back()->with('success', '✅ All orders closed! New day started. Riders turned off.');
+        // 4. ✅ Mark Picked Up / Out for Delivery (stuck orders) → Delivered
+        $stuckClosed = Order::whereIn('status', ['Picked Up', 'Out for Delivery'])
+            ->update(['status' => 'Delivered']);
+        $log[] = "✅ {$stuckClosed} stuck orders → Delivered";
+
+        // 5. 🍕 Re-enable ALL disabled food items
+        $foodReenabled = \App\Models\Food::where('is_in_stock', false)
+            ->update(['is_in_stock' => true, 'available_at' => null]);
+        $log[] = "🍕 {$foodReenabled} food items re-enabled";
+
+        // 6. 🪑 Reset all occupied tables → available
+        $tablesReset = \App\Models\RestaurantTable::where('status', 'occupied')
+            ->update(['status' => 'available']);
+        $log[] = "🪑 {$tablesReset} tables freed";
+
+        // 7. 🗑️ Clear all caches
+        \Cache::forget('home_foods');
+        \Cache::forget('home_categories');
+        \Cache::forget('home_announcements');
+        \Cache::forget('stats_categories');
+        \Cache::forget('stats_food');
+        \Cache::forget('stats_available_food');
+        $log[] = "🗑️ All caches cleared";
+
+        $summary = implode(' • ', $log);
+
+        return back()->with('success', "✅ New Day Started! {$summary}");
     }
 }
