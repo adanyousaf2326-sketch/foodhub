@@ -2371,7 +2371,7 @@
     body.dark-theme .section-title p { color: #94a3b8; }
 
     /* Categories */
-    body.dark-theme .category { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+    body.dark-theme .category { background: #1e293b; color: #e2e8f0; border: 2px solid #334155; border-radius: 70px; }
     body.dark-theme .category:hover { border-color: #ff6b00; }
     body.dark-theme .category h3 { color: #f1f5f9; }
     body.dark-theme .category p { color: #94a3b8; }
