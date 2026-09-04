@@ -622,9 +622,12 @@
                     </div>
 
                     <!-- Map Picker -->
-                    <div style="margin-top:10px;">
+                    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
                         <button type="button" onclick="useMyLocation()" style="padding:8px 14px;border:1px solid #d1d5db;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#374151;">
                             <i class="fas fa-location-crosshairs" style="color:#ff6b00;"></i> Use My Current Location
+                        </button>
+                        <button type="button" onclick="calcDeliveryFromAddress()" id="calcAddrBtn" style="padding:8px 14px;border:1px solid #16a34a;border-radius:8px;background:#f0fdf4;cursor:pointer;font-size:13px;color:#166534;font-weight:600;display:none;">
+                            <i class="fas fa-truck"></i> Calculate Delivery
                         </button>
                     </div>
 
@@ -769,6 +772,15 @@
 
             @endforeach
 
+
+            <!-- Estimated Time (always shown for delivery) -->
+            <div id="summaryTime" style="display:none;padding:10px 0;border-bottom:1px solid #eee;">
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:#6b7280;"><i class="fas fa-clock"></i> Estimated Delivery</span>
+                    <span id="summaryDeliveryTime" style="color:#2563eb;font-weight:600;">35 min</span>
+                </div>
+                <div id="summaryReadyTime" style="font-size:12px;color:#9ca3af;margin-top:3px;">Food ready in ~15 min</div>
+            </div>
 
             <!-- Delivery Charges -->
             <div id="summaryDelivery" style="display:none;padding:10px 0;border-bottom:1px solid #eee;">
@@ -936,16 +948,23 @@ var cartTotal = {{ $total }};
 var deliveryDebounce = null;
 
 function debounceCalcDelivery() {
+    var address = document.getElementById('address').value.trim();
+    var calcBtn = document.getElementById('calcAddrBtn');
+    if (address.length >= 5) {
+        calcBtn.style.display = 'inline-block';
+    } else {
+        calcBtn.style.display = 'none';
+    }
     clearTimeout(deliveryDebounce);
-    deliveryDebounce = setTimeout(calcDeliveryFromAddress, 800);
+    deliveryDebounce = setTimeout(calcDeliveryFromAddress, 1200);
 }
 
 function calcDeliveryFromAddress() {
     var address = document.getElementById('address').value.trim();
     if (address.length < 5) return;
 
-    // Use Nominatim (OpenStreetMap) for free geocoding
-    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address) + '&limit=1', {
+    // Try Nominatim geocoding
+    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address) + '&limit=1&countrycodes=pk', {
         headers: { 'Accept-Language': 'en' }
     })
     .then(function(r) { return r.json(); })
@@ -956,9 +975,31 @@ function calcDeliveryFromAddress() {
             document.getElementById('customerLat').value = lat;
             document.getElementById('customerLng').value = lng;
             fetchDeliveryCharges(lat, lng);
+        } else {
+            // Fallback: use default city-center estimate
+            useFallbackCharges();
         }
     })
-    .catch(function() {});
+    .catch(function() {
+        useFallbackCharges();
+    });
+}
+
+function useFallbackCharges() {
+    // Default: assume 3 km (base delivery charge)
+    var fallbackData = {
+        distance_km: 3,
+        delivery_charges: 50,
+        delivery_message: 'Delivery charges: Rs. 50',
+        is_free_delivery: false,
+        delivery_time_min: 35,
+        is_within_radius: true,
+        max_km: 25,
+        estimated_ready_min: 15
+    };
+    document.getElementById('customerLat').value = '';
+    document.getElementById('customerLng').value = '';
+    fetchDeliveryCharges(fallbackData);
 }
 
 function useMyLocation() {
@@ -990,15 +1031,22 @@ function useMyLocation() {
     });
 }
 
-function fetchDeliveryCharges(lat, lng) {
-    fetch('/api/delivery-calc?lat=' + lat + '&lng=' + lng, {
+function fetchDeliveryCharges(latOrData, lng) {
+    // If called with pre-built data object (fallback)
+    if (typeof latOrData === 'object' && latOrData !== null) {
+        updateDeliveryUI(latOrData);
+        return;
+    }
+    fetch('/api/delivery-calc?lat=' + latOrData + '&lng=' + lng, {
         headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
         updateDeliveryUI(data);
     })
-    .catch(function() {});
+    .catch(function() {
+        useFallbackCharges();
+    });
 }
 
 function updateDeliveryUI(data) {
