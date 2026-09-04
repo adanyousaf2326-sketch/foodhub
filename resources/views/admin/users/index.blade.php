@@ -187,9 +187,16 @@
             <h1><i class="fas fa-users"></i> Admin Users</h1>
         </div>
 
-        <a href="{{ route('admin.users.create') }}" class="add-btn">
-            ➕ Add New User
-        </a>
+        <div style="display:flex;gap:10px;">
+            <a href="{{ route('admin.change-password') }}" style="background:#2563eb;color:white;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:bold;">
+                🔑 Change Password
+            </a>
+            @if(Auth::user()->role === 'Admin')
+                <a href="{{ route('admin.users.create') }}" class="add-btn">
+                    ➕ Add New User
+                </a>
+            @endif
+        </div>
 
     </div>
 
@@ -255,16 +262,16 @@
                         </td>
 
                         <td>
+                            @if(Auth::user()->role === 'Admin' || Auth::id() === $user->id)
+                                <a
+                                    href="{{ route('admin.users.edit', $user) }}"
+                                    class="edit"
+                                >
+                                    <i class="fas fa-pen"></i> Edit
+                                </a>
+                            @endif
 
-                            <a
-                                href="{{ route('admin.users.edit', $user) }}"
-                                class="edit"
-                            >
-                                <i class="fas fa-pen"></i> Edit
-                            </a>
-
-                            @if(Auth::id() !== $user->id)
-
+                            @if(Auth::user()->role === 'Admin' && Auth::id() !== $user->id)
                                 <form
                                     method="POST"
                                     action="{{ route('admin.users.destroy', $user) }}"
@@ -280,9 +287,13 @@
                                     </button>
 
                                 </form>
-
                             @endif
 
+                            @if(Auth::id() === $user->id)
+                                <a href="{{ route('admin.change-password') }}" style="color:#2563eb;font-weight:bold;font-size:13px;text-decoration:none;margin-left:6px;">
+                                    🔑 Password
+                                </a>
+                            @endif
                         </td>
 
                     </tr>

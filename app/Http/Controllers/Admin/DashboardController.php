@@ -333,7 +333,7 @@ class DashboardController extends Controller
     public function kitchen()
     {
         $pendingOrders = Order::where('status', 'Pending')
-            ->with(['items.food', 'restaurant_table'])
+            ->with(['items.food', 'table'])
             ->latest()
             ->get();
 

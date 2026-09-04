@@ -342,7 +342,7 @@
                 </div>
                 <div class="order-meta">
                     @if($order->table_id)
-                        <span class="order-table"><i class="fas fa-chair"></i> Table #{{ $order->restaurant_table->table_number ?? '?' }}</span>
+                        <span class="order-table"><i class="fas fa-chair"></i> Table #{{ $order->table->table_number ?? '?' }}</span>
                     @endif
                     <span class="order-type-badge badge-{{ strtolower(str_replace(' ', '', $order->order_type)) }}">
                         {{ $order->order_type }}

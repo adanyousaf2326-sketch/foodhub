@@ -723,6 +723,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
     Route::resource('users', UserController::class)
         ->except(['show']);
 
+    // Change Password (any logged-in user)
+    Route::get('/change-password', [UserController::class, 'changePassword'])->name('change-password');
+    Route::put('/change-password', [UserController::class, 'updatePassword'])->name('update-password');
+
     Route::resource('orders', OrderController::class)
         ->only(['index', 'show', 'update', 'destroy']);
 
