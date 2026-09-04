@@ -27,9 +27,19 @@ class AnnouncementController extends Controller
     {
         $announcement = $this->saveAnnouncement($request);
 
+        // Send notification to all customers
+        try {
+            \App\Models\CustomerNotification::notifyAllCustomers(
+                '🔥 New Deal: ' . $announcement->title,
+                $announcement->description ?? 'Check out our latest deal!',
+                'deal',
+                ['announcement_id' => $announcement->id]
+            );
+        } catch (\Exception $e) { /* notification failed, don't break main flow */ }
+
         return redirect()
             ->route('admin.announcements.index')
-            ->with('success', 'Announcement published successfully!');
+            ->with('success', 'Announcement published + notifications sent to all customers!');
     }
 
     public function edit(Announcement $announcement)
@@ -44,9 +54,19 @@ class AnnouncementController extends Controller
     {
         $this->saveAnnouncement($request, $announcement);
 
+        // Notify customers about updated deal
+        try {
+            \App\Models\CustomerNotification::notifyAllCustomers(
+                '📢 Deal Updated: ' . $announcement->title,
+                $announcement->description ?? 'A deal has been updated!',
+                'deal',
+                ['announcement_id' => $announcement->id]
+            );
+        } catch (\Exception $e) { /* notification failed */ }
+
         return redirect()
             ->route('admin.announcements.index')
-            ->with('success', 'Announcement updated successfully!');
+            ->with('success', 'Announcement updated + notifications sent!');
     }
 
     public function destroy(Announcement $announcement)

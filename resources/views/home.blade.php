@@ -3129,7 +3129,26 @@
             <i class="fas fa-shopping-cart"></i> Cart
             <span class="cart-count" id="navCartCount">0</span>
         </a>
+
         @if(session('customer_id'))
+            <!-- Notification Bell -->
+            <div style="position:relative;display:inline-block;margin-left:6px;">
+                <button type="button" onclick="toggleNotifications()" id="notifBell" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:white;cursor:pointer;font-size:17px;transition:all .25s ease;position:relative;">
+                    <i class="fas fa-bell"></i>
+                    <span id="notifBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;align-items:center;justify-content:center;padding:0 3px;border:2px solid #0f172a;"></span>
+                </button>
+                <!-- Notification Dropdown -->
+                <div id="notifDropdown" style="display:none;position:absolute;top:44px;right:0;width:340px;max-height:420px;background:white;border-radius:14px;box-shadow:0 12px 50px rgba(0,0,0,.2);overflow:hidden;z-index:10000;border:1px solid #e5e7eb;">
+                    <div style="padding:14px 16px;background:#111827;color:white;display:flex;justify-content:space-between;align-items:center;">
+                        <strong style="font-size:14px;"><i class="fas fa-bell"></i> Notifications</strong>
+                        <button onclick="markAllRead()" style="background:rgba(255,255,255,.15);border:none;color:white;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">Mark all read</button>
+                    </div>
+                    <div id="notifList" style="max-height:340px;overflow-y:auto;">
+                        <div style="text-align:center;padding:30px;color:#9ca3af;font-size:13px;">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
             <a href="{{ route('customer.profile') }}" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:linear-gradient(135deg,#ff6b00,#ff8c33);color:white;font-weight:700;font-size:13px;text-decoration:none;margin-left:6px;transition:all .25s ease;">
                 <i class="fas fa-user"></i> {{ session('customer_name', 'My Account') }}
             </a>
@@ -4743,6 +4762,129 @@ document.addEventListener(
         })
         .catch(function() {});
     }
+
+    /* ===== NOTIFICATIONS ===== */
+    var notifOpen = false;
+
+    function toggleNotifications() {
+        var dd = document.getElementById('notifDropdown');
+        notifOpen = !notifOpen;
+        if (notifOpen) {
+            dd.style.display = 'block';
+            loadNotifications();
+        } else {
+            dd.style.display = 'none';
+        }
+    }
+
+    function loadNotifications() {
+        var list = document.getElementById('notifList');
+        list.innerHTML = '<div style="text-align:center;padding:20px;color:#9ca3af;">Loading...</div>';
+
+        fetch('/api/notifications', { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var badge = document.getElementById('notifBadge');
+            if (data.unread_count > 0) {
+                badge.textContent = data.unread_count > 9 ? '9+' : data.unread_count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            if (!data.notifications || !data.notifications.length) {
+                list.innerHTML = '<div style="text-align:center;padding:30px;color:#9ca3af;"><i class="fas fa-bell-slash" style="font-size:20px;margin-bottom:8px;display:block;"></i>No notifications yet</div>';
+                return;
+            }
+
+            var html = '';
+            data.notifications.forEach(function(n) {
+                var icon = n.type === 'deal' ? '🔥' : (n.type === 'order' ? '📦' : '📢');
+                var bg = n.is_read ? 'white' : '#fffbeb';
+                var dot = n.is_read ? '' : '<span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>';
+                html += '<div onclick="readNotification(' + n.id + ')" style="padding:12px 16px;border-bottom:1px solid #f3f4f6;cursor:pointer;display:flex;gap:10px;align-items:flex-start;background:' + bg + ';transition:background .2s;" onmouseover="this.style.background=#f9fafb" onmouseout="this.style.background=\'' + bg + '\'">';
+                html += '<div style="font-size:20px;flex-shrink:0;margin-top:2px;">' + icon + '</div>';
+                html += '<div style="flex:1;min-width:0;">';
+                html += '<div style="font-weight:600;font-size:13px;color:#111;margin-bottom:2px;">' + n.title + '</div>';
+                html += '<div style="font-size:12px;color:#6b7280;">' + n.message + '</div>';
+                html += '<div style="font-size:11px;color:#9ca3af;margin-top:3px;">' + timeAgo(n.created_at) + '</div>';
+                html += '</div>';
+                html += dot;
+                html += '</div>';
+            });
+            list.innerHTML = html;
+        })
+        .catch(function() {
+            list.innerHTML = '<div style="text-align:center;padding:20px;color:#ef4444;">Failed to load</div>';
+        });
+    }
+
+    function readNotification(id) {
+        fetch('/api/notifications/' + id + '/read', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        }).then(function() {
+            loadNotifications();
+        }).catch(function() {});
+    }
+
+    function markAllRead() {
+        fetch('/api/notifications/read-all', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        }).then(function() {
+            loadNotifications();
+        }).catch(function() {});
+    }
+
+    function timeAgo(dateStr) {
+        var now = new Date();
+        var d = new Date(dateStr);
+        var secs = Math.floor((now - d) / 1000);
+        if (secs < 60) return 'just now';
+        if (secs < 3600) return Math.floor(secs / 60) + 'm ago';
+        if (secs < 86400) return Math.floor(secs / 3600) + 'h ago';
+        return Math.floor(secs / 86400) + 'd ago';
+    }
+
+    // Auto-check notifications every 30 seconds
+    (function() {
+        function checkUnread() {
+            fetch('/api/notifications/unread-count', { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var badge = document.getElementById('notifBadge');
+                if (!badge) return;
+                if (data.count > 0) {
+                    badge.textContent = data.count > 9 ? '9+' : data.count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            })
+            .catch(function() {});
+        }
+        checkUnread();
+        setInterval(checkUnread, 30000);
+    })();
+
+    // Close notification dropdown on outside click
+    document.addEventListener('click', function(e) {
+        var dd = document.getElementById('notifDropdown');
+        var bell = document.getElementById('notifBell');
+        if (dd && notifOpen && !dd.contains(e.target) && bell && !bell.contains(e.target)) {
+            dd.style.display = 'none';
+            notifOpen = false;
+        }
+    });
 
     function toggleCustomerTheme() {
         var body = document.body;

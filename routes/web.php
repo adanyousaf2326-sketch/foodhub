@@ -741,6 +741,14 @@ Route::post('/api/wishlist/{foodId}', [\App\Http\Controllers\WishlistController:
 Route::delete('/api/wishlist/{foodId}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
 /*
+ * CUSTOMER NOTIFICATIONS
+ */
+Route::get('/api/notifications/unread-count', [\App\Http\Controllers\CustomerNotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+Route::get('/api/notifications', [\App\Http\Controllers\CustomerNotificationController::class, 'index'])->name('notifications.index');
+Route::post('/api/notifications/{id}/read', [\App\Http\Controllers\CustomerNotificationController::class, 'markRead'])->name('notifications.mark-read');
+Route::post('/api/notifications/read-all', [\App\Http\Controllers\CustomerNotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
+
+/*
  * LIVE TRACKING MAP
  */
 Route::get('/track/{orderId}/map', [\App\Http\Controllers\TrackingMapController::class, 'customerMap'])->name('tracking.map');
