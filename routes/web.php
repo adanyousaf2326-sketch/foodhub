@@ -874,20 +874,31 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () { 
         // Inventory Management
         Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory');
         Route::get('/inventory-json', function () {
-            // Auto-create columns if missing (SQLite fix)
-            $columns = DB::select('PRAGMA table_info(food)');
-            $columnNames = array_column($columns, 'name');
-            if (!in_array('is_in_stock', $columnNames)) {
-                DB::statement('ALTER TABLE food ADD COLUMN stock_quantity INTEGER NOT NULL DEFAULT -1');
-                DB::statement('ALTER TABLE food ADD COLUMN is_in_stock BOOLEAN NOT NULL DEFAULT 1');
-                DB::statement('ALTER TABLE food ADD COLUMN low_stock_threshold INTEGER NOT NULL DEFAULT 5');
-                DB::statement('ALTER TABLE food ADD COLUMN available_at TIMESTAMP NULL DEFAULT NULL');
-            }
+            try {
+                // Auto-create columns if missing (SQLite fix)
+                $columns = DB::select('PRAGMA table_info(food)');
+                $columnNames = array_column($columns, 'name');
+                if (!in_array('is_in_stock', $columnNames)) {
+                    DB::statement('ALTER TABLE food ADD COLUMN stock_quantity INTEGER NOT NULL DEFAULT -1');
+                    DB::statement('ALTER TABLE food ADD COLUMN is_in_stock BOOLEAN NOT NULL DEFAULT 1');
+                    DB::statement('ALTER TABLE food ADD COLUMN low_stock_threshold INTEGER NOT NULL DEFAULT 5');
+                    DB::statement('ALTER TABLE food ADD COLUMN available_at TIMESTAMP NULL DEFAULT NULL');
+                }
 
-            $foods = \App\Models\Food::select('id', 'name', 'is_in_stock', 'stock_quantity', 'low_stock_threshold', 'available_at')
-                ->orderBy('name')
-                ->get();
-            return response()->json(['foods' => $foods]);
+                // Re-check after potential ALTER
+                $columns = DB::select('PRAGMA table_info(food)');
+                $columnNames = array_column($columns, 'name');
+
+                $selectCols = ['id', 'name'];
+                foreach (['is_in_stock', 'stock_quantity', 'low_stock_threshold', 'available_at'] as $col) {
+                    if (in_array($col, $columnNames)) $selectCols[] = $col;
+                }
+
+                $foods = \App\Models\Food::select($selectCols)->orderBy('name')->get();
+                return response()->json(['foods' => $foods]);
+            } catch (\Exception $e) {
+                return response()->json(['foods' => [], 'error' => $e->getMessage()], 500);
+            }
         });
         Route::post('/food/{id}/stock', [\App\Http\Controllers\Admin\InventoryController::class, 'updateStock'])->name('food.update-stock');
         Route::post('/food/{id}/toggle-stock', [\App\Http\Controllers\Admin\InventoryController::class, 'toggleInStock'])->name('food.toggle-stock');

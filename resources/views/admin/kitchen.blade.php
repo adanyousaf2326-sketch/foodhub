@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: white; min-height: 100vh; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: white; min-height: 100vh; padding-bottom: 80px; }
 
         .kitchen-topbar {
             background: linear-gradient(135deg, #1e293b, #334155);
@@ -76,7 +76,6 @@
         .badge-delivery { background: #3b82f620; color: #93c5fd; border: 1px solid #3b82f640; }
         .badge-takeaway { background: #f59e0b20; color: #fcd34d; border: 1px solid #f59e0b40; }
 
-        /* Status Badge */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -98,7 +97,6 @@
         .sb-cancelled .dot { background: #fca5a5; }
         @keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        /* Rider Info */
         .rider-info {
             padding: 8px 16px;
             display: flex;
@@ -111,9 +109,7 @@
         }
         .rider-info i { color: #8b5cf6; }
         .rider-info strong { color: #c4b5fd; }
-        .rider-info .rider-phone { color: #64748b; font-size: 12px; margin-left: auto; }
 
-        /* Timer */
         .timer-section { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
         .timer-display { font-size: 28px; font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: 2px; }
         .timer-display.on-time { color: #10b981; }
@@ -142,12 +138,68 @@
         .btn-clear { background: #ef4444; color: white; }
         .btn-clear:hover { background: #dc2626; }
 
-        /* Cancelled order details */
         .cancelled-info { padding: 8px 16px; font-size: 12px; color: #94a3b8; }
         .cancelled-info i { color: #ef4444; }
 
         .no-orders { text-align: center; padding: 60px 20px; color: #475569; grid-column: 1 / -1; }
         .no-orders i { font-size: 50px; margin-bottom: 10px; display: block; }
+
+        /* ===== STOCK CONTROL PANEL ===== */
+        #stockPanelWrap {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999;
+        }
+        #stockPanelContent {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 380px;
+            max-height: 70vh;
+            background: #1e293b;
+            border-radius: 14px;
+            border: 2px solid #334155;
+            overflow: hidden;
+            z-index: 99998;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        .stock-header { padding: 12px 16px; background: #16a34a; color: white; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .stock-header button { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 4px; }
+        .stock-search { padding: 10px 12px; border-bottom: 1px solid #334155; }
+        .stock-search input { width: 100%; padding: 10px 12px 10px 36px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #e2e8f0; font-size: 13px; outline: none; }
+        .stock-search input:focus { border-color: #ff6b00; }
+        .stock-search-wrap { position: relative; }
+        .stock-search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px; }
+        .stock-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #334155; transition: background 0.2s; }
+        .stock-item:hover { background: rgba(255,255,255,.04); }
+        .stock-item-name { flex: 1; font-size: 13px; color: #e2e8f0; font-weight: 600; }
+        .stock-item-time { font-size: 10px; color: #f59e0b; margin-top: 2px; }
+        .stock-item-status { font-weight: 700; font-size: 12px; min-width: 28px; text-align: center; }
+        .stock-btn-disable { padding: 5px 10px; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; background: rgba(239,68,68,.12); color: #fca5a5; transition: all 0.2s; }
+        .stock-btn-disable:hover { background: rgba(239,68,68,.3); }
+        .stock-btn-enable { padding: 5px 10px; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; background: rgba(16,185,129,.12); color: #6ee7b7; transition: all 0.2s; }
+        .stock-btn-enable:hover { background: rgba(16,185,129,.3); }
+        .stock-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 99997; }
+        .stock-overlay.show { display: block; }
+
+        .time-quick-btn {
+            padding: 5px 10px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            color: #94a3b8;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .time-quick-btn:hover { border-color: #ff6b00; color: #ff6b00; background: rgba(255,107,0,.1); }
+        .time-quick-btn.selected { border-color: #16a34a; color: #4ade80; background: rgba(22,163,74,.15); }
+
+        .time-modal { display: none; padding: 12px; border-bottom: 1px solid #334155; background: #0f172a; }
+        .time-modal.show { display: block; }
+
+        #stockList { padding: 6px; overflow-y: auto; max-height: calc(70vh - 140px); }
 
         @media (max-width: 768px) {
             .orders-container { grid-template-columns: 1fr 1fr; padding: 0 8px 8px; gap: 8px; }
@@ -157,20 +209,17 @@
             .stat-item .count { font-size: 14px; }
             .order-header { padding: 8px 12px; }
             .order-id { font-size: 16px; }
-            .order-body { padding: 8px 12px; }
-            .order-detail { font-size: 11px; margin-bottom: 3px; }
             .order-items { font-size: 10px; padding: 6px 12px; }
             .order-actions { padding: 6px 12px; }
             .action-btn { padding: 6px 8px; font-size: 11px; }
             .section-label { padding: 10px 12px 6px; font-size: 12px; }
+            #stockPanelContent { width: calc(100% - 20px); right: 10px; bottom: 70px; }
         }
         @media (max-width: 480px) {
             .orders-container { grid-template-columns: 1fr; gap: 6px; }
             .order-card { border-radius: 10px; }
             .order-header { padding: 6px 10px; }
             .order-id { font-size: 14px; }
-            .order-body { padding: 6px 10px; }
-            .order-detail { font-size: 10px; }
             .order-items { font-size: 9px; padding: 4px 10px; }
             .action-btn { padding: 5px 6px; font-size: 10px; }
         }
@@ -182,9 +231,9 @@
     <a href="{{ route('admin.dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
     <div class="logo"><i class="fas fa-fire"></i> Kitchen Display</div>
     <div class="stats">
-        <div class="stat-item stat-pending"><i class="fas fa-clock"></i><span class="count">{{ $pendingOrders->count() }}</span><span>Pending</span></div>
-        <div class="stat-item stat-picked"><i class="fas fa-motorcycle"></i><span class="count">{{ $pickedUpOrders->count() }}</span><span>Picked Up</span></div>
-        <div class="stat-item stat-delivered"><i class="fas fa-check-circle"></i><span class="count">{{ $readyOrders->count() }}</span><span>Ready</span></div>
+        <div class="stat-item stat-pending"><i class="fas fa-clock"></i><span class="count" id="countPending">{{ $pendingOrders->count() }}</span><span>Pending</span></div>
+        <div class="stat-item stat-picked"><i class="fas fa-motorcycle"></i><span class="count" id="countPicked">{{ $pickedUpOrders->count() }}</span><span>Picked Up</span></div>
+        <div class="stat-item stat-delivered"><i class="fas fa-check-circle"></i><span class="count" id="countReady">{{ $readyOrders->count() }}</span><span>Ready</span></div>
         @if($cancelledOrders->count() > 0)
             <div class="stat-item stat-cancelled"><i class="fas fa-times-circle"></i><span class="count">{{ $cancelledOrders->count() }}</span><span>Cancelled</span></div>
         @endif
@@ -192,8 +241,9 @@
 </div>
 
 {{-- ACTIVE ORDERS --}}
+<div id="ordersSection">
 <div class="section-label"><i class="fas fa-fire" style="color:#ff6b00;"></i> Active Orders</div>
-<div class="orders-container">
+<div class="orders-container" id="ordersContainer">
     @forelse($pendingOrders as $order)
         @php
             $totalPrepMinutes = \App\Services\PrepTimeCalculator::calculate($order);
@@ -228,7 +278,6 @@
                 </div>
             </div>
 
-            {{-- Rider Info --}}
             @if($order->rider)
                 <div class="rider-info">
                     <i class="fas fa-motorcycle"></i>
@@ -361,36 +410,36 @@
         @endforeach
     </div>
 @endif
+</div>
 
-<!-- STOCK CONTROL SIDEBAR -->
-<div id="stockPanel" style="position:fixed;bottom:20px;right:20px;z-index:1000;">
-    <button onclick="toggleStockPanel()" style="background:#16a34a;color:white;border:none;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(22,163,74,0.3);">
-        <i class="fas fa-boxes-stacked"></i> Stock Control
+{{-- STOCK CONTROL PANEL --}}
+<div class="stock-overlay" id="stockOverlay" onclick="closeStockPanel()"></div>
+<div id="stockPanelWrap">
+    <button id="stockToggleBtn" onclick="openStockPanel()" style="background:#16a34a;color:white;border:none;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(22,163,74,0.4);display:flex;align-items:center;gap:8px;transition:transform .2s;">
+        <i class="fas fa-boxes-stacked"></i> <span>Stock Control</span>
     </button>
 </div>
 
-<div id="stockPanelContent" style="display:none;position:fixed;bottom:70px;right:20px;width:380px;max-height:70vh;background:#1e293b;border-radius:14px;border:2px solid #334155;overflow:hidden;z-index:999;box-shadow:0 10px 40px rgba(0,0,0,0.4);">
-    <div style="padding:12px 16px;background:#16a34a;color:white;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+<div id="stockPanelContent">
+    <div class="stock-header">
         <span><i class="fas fa-boxes-stacked"></i> Stock Control</span>
-        <button onclick="toggleStockPanel()" style="background:none;border:none;color:white;font-size:18px;cursor:pointer;">×</button>
+        <button onclick="closeStockPanel()" title="Close">&times;</button>
     </div>
-    <!-- Search Bar -->
-    <div style="padding:10px 12px;border-bottom:1px solid #334155;">
-        <div style="position:relative;">
-            <input type="text" id="stockSearch" placeholder="🔍 Search items..." oninput="filterStockItems()" style="width:100%;padding:10px 12px 10px 36px;background:#0f172a;border:1px solid #475569;border-radius:8px;color:#e2e8f0;font-size:13px;outline:none;">
-            <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#64748b;font-size:13px;"></i>
+    <div class="stock-search">
+        <div class="stock-search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" id="stockSearch" placeholder="🔍 Search items..." oninput="filterStockItems()">
         </div>
     </div>
-    <!-- Time Picker Modal (hidden by default) -->
-    <div id="timeModal" style="display:none;padding:12px;border-bottom:1px solid #334155;background:#0f172a;">
+    <div class="time-modal" id="timeModal">
         <div style="font-size:12px;color:#94a3b8;margin-bottom:8px;">⏰ When will this item be available again?</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-            <button onclick="setTimeQuick(30)" class="time-quick-btn">30 min</button>
-            <button onclick="setTimeQuick(60)" class="time-quick-btn">1 hour</button>
-            <button onclick="setTimeQuick(120)" class="time-quick-btn">2 hours</button>
-            <button onclick="setTimeQuick(240)" class="time-quick-btn">4 hours</button>
-            <button onclick="setTimeQuick(480)" class="time-quick-btn">8 hours</button>
-            <button onclick="setTimeQuick(1440)" class="time-quick-btn">Tomorrow</button>
+            <button onclick="setTimeQuick(30, this)" class="time-quick-btn">30 min</button>
+            <button onclick="setTimeQuick(60, this)" class="time-quick-btn">1 hour</button>
+            <button onclick="setTimeQuick(120, this)" class="time-quick-btn">2 hours</button>
+            <button onclick="setTimeQuick(240, this)" class="time-quick-btn">4 hours</button>
+            <button onclick="setTimeQuick(480, this)" class="time-quick-btn">8 hours</button>
+            <button onclick="setTimeQuick(1440, this)" class="time-quick-btn">Tomorrow</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
             <label style="font-size:11px;color:#94a3b8;white-space:nowrap;">Or set time:</label>
@@ -401,219 +450,303 @@
             <button onclick="cancelDisable()" style="padding:8px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;font-size:12px;cursor:pointer;">Cancel</button>
         </div>
     </div>
-    <div id="stockList" style="padding:6px;overflow-y:auto;max-height:calc(70vh - 120px);">
-        <div style="text-align:center;color:#64748b;padding:20px;">Loading items...</div>
+    <div id="stockList">
+        <div style="text-align:center;color:#64748b;padding:20px;">Click "Stock Control" to load items</div>
     </div>
 </div>
 
-<style>
-    .time-quick-btn {
-        padding: 5px 10px;
-        background: #1e293b;
-        border: 1px solid #475569;
-        border-radius: 6px;
-        color: #94a3b8;
-        font-size: 11px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .time-quick-btn:hover { border-color: #ff6b00; color: #ff6b00; background: rgba(255,107,0,.1); }
-    .time-quick-btn.selected { border-color: #16a34a; color: #4ade80; background: rgba(22,163,74,.15); }
-</style>
-
 <script>
-    var stockAllItems = [];
-    var pendingDisableId = null;
-    var selectedMinutes = null;
+/* ===== STOCK CONTROL ===== */
+var stockAllItems = [];
+var pendingDisableId = null;
+var selectedMinutes = null;
+var stockPanelOpen = false;
 
-    function toggleStockPanel() {
-        var panel = document.getElementById('stockPanelContent');
-        if (panel.style.display === 'none') {
-            panel.style.display = 'block';
-            loadStockItems();
-        } else {
-            panel.style.display = 'none';
-            document.getElementById('timeModal').style.display = 'none';
-            pendingDisableId = null;
-        }
+function openStockPanel() {
+    stockPanelOpen = true;
+    document.getElementById('stockPanelContent').style.display = 'block';
+    document.getElementById('stockOverlay').classList.add('show');
+    document.getElementById('stockToggleBtn').style.display = 'none';
+    loadStockItems();
+    console.log('Stock panel opened');
+}
+
+function closeStockPanel() {
+    stockPanelOpen = false;
+    document.getElementById('stockPanelContent').style.display = 'none';
+    document.getElementById('stockOverlay').classList.remove('show');
+    document.getElementById('timeModal').style.display = 'none';
+    document.getElementById('stockToggleBtn').style.display = 'flex';
+    pendingDisableId = null;
+    selectedMinutes = null;
+}
+
+function loadStockItems() {
+    var stockList = document.getElementById('stockList');
+    stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:15px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+    var token = document.querySelector('meta[name="csrf-token"]');
+    console.log('Fetching /admin/inventory-json...');
+
+    fetch('/admin/inventory-json', {
+        credentials: 'same-origin',
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(function(r) {
+        console.log('Response status:', r.status);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    })
+    .then(function(data) {
+        console.log('Stock data received:', data);
+        stockAllItems = data.foods || [];
+        renderStockList(stockAllItems);
+    })
+    .catch(function(err) {
+        console.error('Stock load error:', err);
+        stockList.innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;"><i class="fas fa-exclamation-triangle"></i><br>Error loading items<br><small>' + err.message + '</small></div>';
+    });
+}
+
+function renderStockList(items) {
+    var stockList = document.getElementById('stockList');
+    if (!items || !items.length) {
+        stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;"><i class="fas fa-inbox"></i><br>No food items found</div>';
+        return;
     }
-
-    function loadStockItems() {
-        var stockList = document.getElementById('stockList');
-        stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:15px;">Loading...</div>';
-
-        fetch('/admin/inventory-json')
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                stockAllItems = data.foods || [];
-                renderStockList(stockAllItems);
-            })
-            .catch(function(err) {
-                console.error('Stock load error:', err);
-                stockList.innerHTML = '<div style="text-align:center;color:#ef4444;padding:20px;">Error loading items</div>';
-            });
-    }
-
-    function renderStockList(items) {
-        var stockList = document.getElementById('stockList');
-        if (!items.length) {
-            stockList.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">No items found</div>';
-            return;
-        }
-        var html = '';
-        items.forEach(function(food) {
-            var inStock = food.is_in_stock !== undefined ? food.is_in_stock : true;
-            var stockQty = food.stock_quantity !== undefined ? food.stock_quantity : -1;
-            var threshold = food.low_stock_threshold !== undefined ? food.low_stock_threshold : 5;
-            var statusColor = !inStock ? '#ef4444' : (stockQty >= 0 && stockQty <= threshold ? '#f59e0b' : '#10b981');
-            var statusText = !inStock ? 'OUT' : (stockQty == -1 ? '∞' : stockQty);
-            var availMsg = food.available_at ? ' ⏰ ' + new Date(food.available_at).toLocaleString() : '';
-            html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #334155;transition:background 0.2s;" onmouseover="this.style.background=\'rgba(255,255,255,.03)\'" onmouseout="this.style.background=\'none\'">
-                <div style="flex:1;">
-                    <div style="font-size:13px;color:#e2e8f0;font-weight:600;">' + food.name + '</div>
-                    ' + (availMsg ? '<div style="font-size:10px;color:#f59e0b;margin-top:2px;">' + availMsg + '</div>' : '') + '
-                </div>
-                <div style="color:' + statusColor + ';font-weight:700;font-size:12px;min-width:28px;text-align:center;">' + statusText + '</div>
-                ' + (inStock
-                    ? '<button onclick="startDisable(' + food.id + ')" style="padding:5px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.12);color:#fca5a5;transition:all 0.2s;">Disable</button>'
-                    : '<button onclick="quickEnable(' + food.id + ', this)" style="padding:5px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(16,185,129,.12);color:#6ee7b7;">Enable</button>'
-                ) + '
-            </div>';
-        });
-        stockList.innerHTML = html;
-    }
-
-    function filterStockItems() {
-        var query = document.getElementById('stockSearch').value.toLowerCase();
-        var filtered = stockAllItems.filter(function(f) {
-            return f.name.toLowerCase().indexOf(query) !== -1;
-        });
-        renderStockList(filtered);
-    }
-
-    function startDisable(foodId) {
-        pendingDisableId = foodId;
-        selectedMinutes = null;
-        document.getElementById('availableAt').value = '';
-        document.querySelectorAll('.time-quick-btn').forEach(function(b) { b.classList.remove('selected'); });
-        document.getElementById('timeModal').style.display = 'block';
-    }
-
-    function cancelDisable() {
-        pendingDisableId = null;
-        document.getElementById('timeModal').style.display = 'none';
-    }
-
-    function setTimeQuick(minutes) {
-        selectedMinutes = minutes;
-        document.querySelectorAll('.time-quick-btn').forEach(function(b) { b.classList.remove('selected'); });
-        event.target.classList.add('selected');
-        // Also set the datetime input
-        var dt = new Date(Date.now() + minutes * 60000);
-        var formatted = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0') + 'T' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
-        document.getElementById('availableAt').value = formatted;
-    }
-
-    function confirmDisable() {
-        if (!pendingDisableId) return;
-
-        var body = { is_in_stock: false };
-        var dtVal = document.getElementById('availableAt').value;
-
-        if (selectedMinutes) {
-            body.available_in_minutes = selectedMinutes;
-        } else if (dtVal) {
-            body.available_at = dtVal;
-        }
-        // else: no time set → null → "Currently unavailable"
-
-        fetch('/admin/food/' + pendingDisableId + '/toggle-stock', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-        .then(function(r) { return r.json(); })
-        .then(function() {
-            document.getElementById('timeModal').style.display = 'none';
-            pendingDisableId = null;
-            loadStockItems();
-        })
-        .catch(function(err) {
-            console.error('Toggle error:', err);
-            alert('Error updating stock.');
-        });
-    }
-
-    function quickEnable(foodId, btn) {
-        if (btn) { btn.textContent = '...'; btn.disabled = true; }
-        fetch('/admin/food/' + foodId + '/toggle-stock', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ is_in_stock: true })
-        })
-        .then(function(r) { return r.json(); })
-        .then(function() { loadStockItems(); })
-        .catch(function(err) {
-            console.error('Enable error:', err);
-            if (btn) { btn.textContent = 'Error'; btn.disabled = false; }
-        });
-    }
-</script>
-
-<script>
-    function updateTimers() {
-        const now = Math.floor(Date.now() / 1000);
-        document.querySelectorAll('.order-card[data-status]').forEach(card => {
-            if (card.dataset.status === 'done' || card.dataset.status === 'Cancelled') return;
-            const orderId = card.dataset.orderId;
-            const created = parseInt(card.dataset.created);
-            const prepTime = parseInt(card.dataset.prepTime) * 60;
-            const elapsed = now - created;
-            const remaining = prepTime - elapsed;
-            const timerEl = document.getElementById('timer-' + orderId);
-            const barEl = document.getElementById('bar-' + orderId);
-            if (!timerEl || !barEl) return;
-            if (remaining <= 0) {
-                timerEl.innerHTML = '<i class="fas fa-check-circle"></i> READY!';
-                timerEl.className = 'timer-display done';
-                barEl.style.width = '0%';
-                card.dataset.status = 'done';
+    var html = '';
+    items.forEach(function(food) {
+        var inStock = food.is_in_stock !== undefined ? food.is_in_stock : true;
+        var stockQty = food.stock_quantity !== undefined ? food.stock_quantity : -1;
+        var statusColor = !inStock ? '#ef4444' : '#10b981';
+        var statusText = !inStock ? 'OUT' : 'OK';
+        var availMsg = '';
+        if (!inStock && food.available_at) {
+            var availDate = new Date(food.available_at);
+            var now = new Date();
+            if (availDate > now) {
+                var diffMs = availDate - now;
+                var diffMins = Math.ceil(diffMs / 60000);
+                var hours = Math.floor(diffMins / 60);
+                var mins = diffMins % 60;
+                availMsg = hours > 0 ? '⏰ Available in ' + hours + 'h ' + mins + 'm' : '⏰ Available in ' + mins + ' min';
             } else {
-                const mins = Math.floor(remaining / 60);
-                const secs = remaining % 60;
-                timerEl.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-                const pct = (remaining / prepTime) * 100;
-                barEl.style.width = pct + '%';
-                if (pct > 50) { timerEl.className = 'timer-display on-time'; barEl.className = 'timer-bar on-time'; }
-                else if (pct > 20) { timerEl.className = 'timer-display warning'; barEl.className = 'timer-bar warning'; }
-                else { timerEl.className = 'timer-display overdue'; barEl.className = 'timer-bar overdue'; }
+                availMsg = '⏰ Available now (restart needed)';
             }
-        });
-    }
-    setInterval(updateTimers, 1000);
-    updateTimers();
+        } else if (!inStock) {
+            availMsg = '⏰ Currently unavailable';
+        }
 
-    function clearOrder(orderId) {
-        if (!confirm('Mark order #' + orderId + ' as cancelled?')) return;
-        fetch('/admin/orders/' + orderId + '/cancel', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+        html += '<div class="stock-item">';
+        html += '  <div class="stock-item-name">' + food.name;
+        if (availMsg) html += '<div class="stock-item-time">' + availMsg + '</div>';
+        html += '  </div>';
+        html += '  <div class="stock-item-status" style="color:' + statusColor + ';">' + statusText + '</div>';
+        if (inStock) {
+            html += '  <button class="stock-btn-disable" onclick="startDisable(' + food.id + ', \'' + food.name.replace(/'/g, "\\'") + '\')">Disable</button>';
+        } else {
+            html += '  <button class="stock-btn-enable" onclick="quickEnable(' + food.id + ', this)">Enable</button>';
+        }
+        html += '</div>';
+    });
+    stockList.innerHTML = html;
+}
+
+function filterStockItems() {
+    var query = document.getElementById('stockSearch').value.toLowerCase();
+    var filtered = stockAllItems.filter(function(f) {
+        return f.name.toLowerCase().indexOf(query) !== -1;
+    });
+    renderStockList(filtered);
+}
+
+function startDisable(foodId, foodName) {
+    pendingDisableId = foodId;
+    selectedMinutes = null;
+    document.getElementById('availableAt').value = '';
+    document.querySelectorAll('.time-quick-btn').forEach(function(b) { b.classList.remove('selected'); });
+    document.getElementById('timeModal').style.display = 'block';
+}
+
+function cancelDisable() {
+    pendingDisableId = null;
+    document.getElementById('timeModal').style.display = 'none';
+}
+
+function setTimeQuick(minutes, btn) {
+    selectedMinutes = minutes;
+    document.querySelectorAll('.time-quick-btn').forEach(function(b) { b.classList.remove('selected'); });
+    if (btn) btn.classList.add('selected');
+    var dt = new Date(Date.now() + minutes * 60000);
+    var formatted = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0') + 'T' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+    document.getElementById('availableAt').value = formatted;
+}
+
+function confirmDisable() {
+    if (!pendingDisableId) return;
+    var btn = event.target;
+    btn.textContent = 'Disabling...';
+    btn.disabled = true;
+
+    var body = { is_in_stock: false };
+    var dtVal = document.getElementById('availableAt').value;
+
+    if (selectedMinutes) {
+        body.available_in_minutes = selectedMinutes;
+    } else if (dtVal) {
+        body.available_at = dtVal;
+    }
+
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    fetch('/admin/food/' + pendingDisableId + '/toggle-stock', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(body),
+        credentials: 'same-origin'
+    })
+    .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    })
+    .then(function(data) {
+        console.log('Disable success:', data);
+        document.getElementById('timeModal').style.display = 'none';
+        pendingDisableId = null;
+        selectedMinutes = null;
+        loadStockItems();
+        btn.textContent = '✅ Confirm Disable';
+        btn.disabled = false;
+    })
+    .catch(function(err) {
+        console.error('Toggle error:', err);
+        btn.textContent = '✅ Confirm Disable';
+        btn.disabled = false;
+        alert('Error disabling item: ' + err.message);
+    });
+}
+
+function quickEnable(foodId, btn) {
+    if (btn) { btn.textContent = '...'; btn.disabled = true; }
+
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    fetch('/admin/food/' + foodId + '/toggle-stock', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ is_in_stock: true }),
+        credentials: 'same-origin'
+    })
+    .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    })
+    .then(function(data) {
+        console.log('Enable success:', data);
+        loadStockItems();
+    })
+    .catch(function(err) {
+        console.error('Enable error:', err);
+        if (btn) { btn.textContent = 'Enable'; btn.disabled = false; }
+        alert('Error enabling item: ' + err.message);
+    });
+}
+
+/* ===== TIMER COUNTDOWN ===== */
+function updateTimers() {
+    var now = Math.floor(Date.now() / 1000);
+    document.querySelectorAll('.order-card[data-status]').forEach(function(card) {
+        var st = card.dataset.status;
+        if (st === 'done' || st === 'Cancelled') return;
+        var orderId = card.dataset.orderId;
+        var created = parseInt(card.dataset.created);
+        var prepTime = parseInt(card.dataset.prepTime) * 60;
+        var elapsed = now - created;
+        var remaining = prepTime - elapsed;
+        var timerEl = document.getElementById('timer-' + orderId);
+        var barEl = document.getElementById('bar-' + orderId);
+        if (!timerEl || !barEl) return;
+        if (remaining <= 0) {
+            timerEl.innerHTML = '<i class="fas fa-check-circle"></i> READY!';
+            timerEl.className = 'timer-display done';
+            barEl.style.width = '0%';
+            card.dataset.status = 'done';
+        } else {
+            var mins = Math.floor(remaining / 60);
+            var secs = remaining % 60;
+            timerEl.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            var pct = (remaining / prepTime) * 100;
+            barEl.style.width = pct + '%';
+            if (pct > 50) { timerEl.className = 'timer-display on-time'; barEl.className = 'timer-bar on-time'; }
+            else if (pct > 20) { timerEl.className = 'timer-display warning'; barEl.className = 'timer-bar warning'; }
+            else { timerEl.className = 'timer-display overdue'; barEl.className = 'timer-bar overdue'; }
+        }
+    });
+}
+setInterval(updateTimers, 1000);
+updateTimers();
+
+/* ===== CLEAR ORDER ===== */
+function clearOrder(orderId) {
+    if (!confirm('Mark order #' + orderId + ' as cancelled?')) return;
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+    fetch('/admin/orders/' + orderId + '/cancel', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    }).then(function(r) { return r.json(); }).then(function() {
+        location.reload();
+    }).catch(function() { alert('Failed to cancel order.'); });
+}
+
+/* ===== AUTO REFRESH (AJAX, no page reload) ===== */
+// Check for new orders every 15 seconds
+setInterval(function() {
+    // Don't refresh if stock panel is open (avoid disrupting user)
+    if (stockPanelOpen) return;
+
+    fetch('/admin/kitchen', { credentials: 'same-origin', headers: { 'Accept': 'text/html' } })
+    .then(function(r) { return r.text(); })
+    .then(function(html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var newContainer = doc.getElementById('ordersContainer');
+        var oldContainer = document.getElementById('ordersContainer');
+        if (newContainer && oldContainer) {
+            var newCount = newContainer.querySelectorAll('.order-card').length;
+            var oldCount = oldContainer.querySelectorAll('.order-card').length;
+            if (newCount !== oldCount) {
+                // Orders changed - do a soft reload to keep timers
+                location.reload();
             }
-        }).then(r => r.json()).then(() => { location.reload(); }).catch(() => { alert('Failed.'); });
-    }
-
-    setInterval(() => { location.reload(); }, 30000);
+        }
+        // Update stat counts
+        var newPending = doc.getElementById('countPending');
+        var newPicked = doc.getElementById('countPicked');
+        var newReady = doc.getElementById('countReady');
+        if (newPending) document.getElementById('countPending').textContent = newPending.textContent;
+        if (newPicked) document.getElementById('countPicked').textContent = newPicked.textContent;
+        if (newReady) document.getElementById('countReady').textContent = newReady.textContent;
+    })
+    .catch(function() {});
+}, 15000);
 </script>
 </body>
 </html>
